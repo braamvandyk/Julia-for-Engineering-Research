@@ -1,0 +1,17 @@
+---
+title: "Julia for Engineering Research"
+---
+
+This is an introductory course to using the [Julia programming language](www.julialang.org) for technical programming.
+
+It assumes some nominal programming background and knowledge of the engineering sciences and numerical methods to fully appreciate the examples.
+
+
+
+
+
+
+
+This is a Quarto website.
+
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.

@@ -1,0 +1,23 @@
+{
+  "index.qmd": {
+    "index.html": "36650593"
+  },
+  "about.qmd": {
+    "about.html": "f151995d"
+  },
+  "Getting_started_with_Julia.qmd": {
+    "Getting_started_with_Julia.html": "cb2d6fd0"
+  },
+  "Installing Julia.qmd": {
+    "Installing Julia.html": "bc49a0e0"
+  },
+  "Installing_Julia.qmd": {
+    "Installing_Julia.html": "d029b765"
+  },
+  "An_Overview_of_the_Language.qmd": {
+    "An_Overview_of_the_Language.html": "7e815b70"
+  },
+  "Running_Julia.qmd": {
+    "Running_Julia.html": "2b600d4a"
+  }
+}

@@ -1,0 +1,24 @@
+project:
+  type: website
+
+website:
+  title: "Julia for Process Engineering"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - Getting_started_with_Julia.qmd
+      - Installing_Julia.qmd
+      - Running_Julia.qmd
+      - An_Overview_of_the_Language.qmd
+
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    monofont: "JetBrains Mono"
+
+
+

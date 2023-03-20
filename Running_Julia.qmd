@@ -1,0 +1,96 @@
+---
+title: "Running Julia"
+---
+
+## The REPL
+When you open up Julia, you will be presented with the REPL (Read Execute Print Loop). This is basically a command prompt that Reads your input, Executes the instructions, Prints the results and then Loops back to waiting for a new input.
+
+```
+               _
+   _       _ _(_)_     |  Documentation: https://docs.julialang.org
+  (_)     | (_) (_)    |
+   _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
+  | | | | | | |/ _` |  |
+  | | |_| | | | (_| |  |  Version 1.8.5 (2023-01-08)
+ _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
+|__/                   |
+
+julia>
+```
+
+You can enter code directly at the `julia>` prompt, but since none of this will be saved, it is probably not the prefered way of coding.
+
+A better way would be to save your code into a file, e.g. *myscript.jl*, and then execute this *script* by using the `include()` command. For example, if the file myscript.jl includes the following:
+
+```julia
+using UnicodePlots
+
+barplot(["A", "B", "C"], rand(3))
+```
+
+then my can run the script as follows:
+
+```julia
+julia> include("myscript.jl")
+     ┌                                        ┐
+   A ┤■■■■■■■■■■■■■■■■■■■ 0.479201
+   B ┤■■■■■■■■■■■■■■■■ 0.394627
+   C ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 0.754307
+     └                                        ┘
+```
+
+You can also run the script from the commandline with:
+
+```julia myscript.jl```
+
+The REPL has a few modes. You can access the package manager by pressing `]` at the `julia>` prompt. To access the help mode, use `?` (also inside the package manager). You can also access the underlying shell with `;`, but unless you are running Julia inside Windows Terminal, very little will work in Shell Mode.
+
+While it is good to be familiar with the REPL, realisitically speaking, the only thing the average user will every do in the REPL is to access the package manager. This is where to install or remove packages and update installed packages.
+
+You can use Unicode characters in the REPL, but unless you are using Windows Terminal, most non-ASCII characters won't display properly.
+
+### Keyboard Shortcuts
+The REPL has commandline completion. For example, if you typed:
+
+```julia
+include("myscript.jl")
+```
+
+in the previous example, then typing `inc` and pressing the up cursor will repeat the previous line that started with `inc`, i.e. `include("myscript.jl")`.
+
+You could also start typing a command and hit `<tab>` to get full command with some intelligence built-in. E.g., type `prin` and hit `<tab>`. Julia will complete the command to `print`. Hit `<tab>` again, and you get:
+
+```julia
+julia> print
+print        println      printstyled
+julia> print
+```
+Since there are more than one command that starts with `print`, Julia lists them all, creates a new prompt and starts off with the letters `print`, so you can complete the line.
+
+You can clear the REPL with `ctrl-L` and close it with `ctrl-D` on an empty line.
+
+## Running Julia inside VSCode
+One of the most common ways of working with Julia is from inside VSCode. If everything is set up correctly, simply do the following
+
+1. Create a folder for your project
+2. Right click inside the folder in Windows Explorer and select `Open with Code`. This will start up VSCode and open the folder inside the editor.
+3. Add a file to contain your code. Be sure to give it a *.jl* extension, so VSCode can identify it as Julia code.
+
+Now you can enter code.
+
+To execute the code, either click the run button to execute the whole file, or click on a line you want to execute and hit `Shift-Enter` to execute the code block. A code block is intelligently identified, so if the line you are on is inside a function definition, for example, the function will be compiled.
+
+Once you are executing code, a Julia REPL will be open in the Terminal inside VSCode. Anything you can do in the REPL can be done here. The Julia add-in also provides more features, like listing all exising variables in the current scope and their values, as well as a plot pane and many other useful tools.
+
+## Jupyter and Pluto
+There are two more useful tools for running Julia.
+* Jupyter notebooks
+* Pluto notebooks
+
+These run inside your browser. Code is entered in cells and results displayed below (Jupyter) or above (Pluto) the cell after it is executed.
+
+The main difference between the two is that Jupyter cells are static - they only run when you execute them manually, while Pluto is *reactive*. If a cell in pluto assigns a value to variable and is edited, then Pluto will also execute all other cells that use this variable.
+
+Jupyter can be used with Python and R as well as Julia (the name Jupyter is from **Ju**lia, **Pyt**hon and **R**). Pluto is only for Julia.
+
+More on these later.

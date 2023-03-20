@@ -1,0 +1,11 @@
+{
+  "hash": "a3802a7018fb3374e1b519da171b3e8d",
+  "result": {
+    "markdown": "---\ntitle: About\nauthor: Braam van Dyk\ndate: 2023/03/10\nformat:\n  html:\n    code-fold: true\n---\n\nThis is an introductory course to using the [Julia programming language](www.julialang.org) for technical programming.\n\n",
+    "supporting": [
+      "about_files\\figure-html"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Julia for Process Engineering - An Overview of the Language</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Julia for Process Engineering</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./Getting_started_with_Julia.html">
+ <span class="menu-text">Getting Started with Julia</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./Installing_Julia.html">
+ <span class="menu-text">Installing Julia</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./Running_Julia.html">
+ <span class="menu-text">Running Julia</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./An_Overview_of_the_Language.html" aria-current="page">
+ <span class="menu-text">An Overview of the Language</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#package-management" id="toc-package-management" class="nav-link active" data-scroll-target="#package-management">Package Management</a></li>
+  <li><a href="#using-vs-import" id="toc-using-vs-import" class="nav-link" data-scroll-target="#using-vs-import">Using vs Import</a></li>
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables">Variables</a>
+  <ul class="collapse">
+  <li><a href="#integers-and-floating-point-values" id="toc-integers-and-floating-point-values" class="nav-link" data-scroll-target="#integers-and-floating-point-values">Integers and Floating-point Values</a></li>
+  <li><a href="#bigint-and-bigfloat" id="toc-bigint-and-bigfloat" class="nav-link" data-scroll-target="#bigint-and-bigfloat">BigInt and BigFloat</a></li>
+  <li><a href="#complex-numbers" id="toc-complex-numbers" class="nav-link" data-scroll-target="#complex-numbers">Complex Numbers</a></li>
+  <li><a href="#rational-numbers" id="toc-rational-numbers" class="nav-link" data-scroll-target="#rational-numbers">Rational Numbers</a></li>
+  <li><a href="#arrays-tuples-and-ranges" id="toc-arrays-tuples-and-ranges" class="nav-link" data-scroll-target="#arrays-tuples-and-ranges">Arrays, Tuples and Ranges</a></li>
+  </ul></li>
+  <li><a href="#the-type-hierarchy" id="toc-the-type-hierarchy" class="nav-link" data-scroll-target="#the-type-hierarchy">The Type Hierarchy</a></li>
+  <li><a href="#type-stability" id="toc-type-stability" class="nav-link" data-scroll-target="#type-stability">Type Stability</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">An Overview of the Language</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="package-management" class="level2">
+<h2 class="anchored" data-anchor-id="package-management">Package Management</h2>
+<p>Julia will open up in the default environment, e.g.&nbsp;<code>@v1.8</code>. You can add packages to this environment and they will be available to load as soon as you open Julia. Be very careful about doing this, as this can very often lead to what is lightly called <em>dependency hell</em>. This is what happens when a package you want to update depends on another package that can’t update, sometime because it depends on a specific version of yet another package. The more packages you have in the current environment, to more often this will happen. The solution is to create a new environment for each project and add only the packages you are actually using.</p>
+<pre><code>               _
+   _       _ _(_)_     |  Documentation: https://docs.julialang.org
+  (_)     | (_) (_)    |
+   _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
+  | | | | | | |/ _` |  |
+  | | |_| | | | (_| |  |  Version 1.8.5 (2023-01-08)
+ _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
+|__/                   |
+
+julia&gt; cd("./Dummy")
+
+julia&gt; pwd()
+"D:\\JuliaCode\\Dummy"
+
+(@v1.8) pkg&gt; activate .
+  Activating project at `D:\JuliaCode\Dummy`
+
+(Dummy) pkg&gt; add UnicodePlots
+    Updating registry at `C:\Users\Braam\.julia\registries\General.toml`
+   Resolving package versions...
+    Updating `D:\JuliaCode\Dummy\Project.toml`
+  [b8865327] + UnicodePlots v3.4.1
+    Updating `D:\JuliaCode\Dummy\Manifest.toml`
+  [d360d2e6] + ChainRulesCore v1.15.7
+  [9e997f8a] + ChangesOfVariables v0.1.6
+  [35d6a980] + ColorSchemes v3.20.0
+  .
+  .
+  .
+
+(Dummy) pkg&gt; st
+Status `D:\JuliaCode\Dummy\Project.toml`
+  [b8865327] UnicodePlots v3.4.1</code></pre>
+<p>Here we changed the current directory to the <em>Dummy</em> sub-folder. Note the use of a forward slash. Backslashes are used for special characters, e.g.&nbsp;<code>\n</code> for a new line and must themselves be <em>escaped</em> by typing a double backslash: <code>cd(".\\Dummy")</code>. Or you can use a raw string: <code>cd(raw".\Dummy")</code>. The forward slash however works just as well in Linux and MaxOS, so is preferred.</p>
+<p><code>pwd()</code> is a function that replicates the Unix (Linux) command for <em>print working directory</em> and simply returns the name of the current folder.</p>
+<p>The package manager is then activated with <code>]</code> and the current folder is activated as a project with <code>activate .</code>, where <code>.</code> means the current directory (<code>..</code> means the parent directory).</p>
+<p>Finally we add a registered packages, UnicodePlots.jl, and once the installation is done, check which packages and versions are currently installed with the <code>st</code> command (short for <code>status</code>).</p>
+<p>Once a package is installed, it can be loaded by issuing the <code>using</code> command:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">UnicodePlots</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In the <code>Dummy</code> folder, Julia creates two files: <code>project.toml</code> and <code>manifest.toml</code>. These hold the record of the specific versions of packages that have been installed. The packages directly installed are in the <code>project.toml</code> file, while the version numbers of dependencies are tracked in <code>manifest.toml</code>. These two files mean that someone else can reinstate the exact environment you developed your code in by activating the project and issuing the <code>instantiate</code> command to the package manager. This will install the same versions of the packages and dependencies as listed in the <code>*.toml</code> files.</p>
+<p>Each project should be in its own folder, with its own <code>*.toml</code> files. This means different projects can potentially use different versions of the same package, depending on what other packages are in use.</p>
+<p>To update the packages and dependencies to the latest versions (as allowed for by the specified versions of dependencies for each packages), use the <code>up</code> command of the package manager. This updates packages for the <strong>current</strong> project only.</p>
+</section>
+<section id="using-vs-import" class="level2">
+<h2 class="anchored" data-anchor-id="using-vs-import">Using vs Import</h2>
+<p>There are two ways to load a Julia package: <code>using</code> and <code>import</code></p>
+<p>If you use <code>using</code>, all methods and variables exported by a package are brought into the current namespace. You can call them directly:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">scatter</span>(<span class="fu">rand</span>(<span class="fl">10</span>), <span class="fu">rand</span>(<span class="fl">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This does mean that several functions and variables you are not using are now also in the namespace and you cannot define a new function with the same name, or use another package that exports a function with the same name. For those cases, you can use <code>import</code>. If a package is <code>import</code>ed, you need to prepend each function call with the package name.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">Plots</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">GLMakie</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>Plots.<span class="fu">scatter</span>(<span class="fu">rand</span>(<span class="fl">10</span>), <span class="fu">rand</span>(<span class="fl">10</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>GLMakie.<span class="fu">scatter</span>(<span class="fu">rand</span>(<span class="fl">10</span>), <span class="fu">rand</span>(<span class="fl">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Try this
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>See what happens when you use <code>using</code> for the previous example.</p>
+</div>
+</div>
+<p>You can load specific functions or variables from a package:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Plots</span>: scatter</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">GLMakie</span>: lines</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>None of the other exported variables or functions will become available. When loading a single item, you can also rename it using the <code>as</code> keyword:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">Plots.scatter </span>as ps</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> <span class="bu">GLMakie</span>: scatter as ms</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ps</span>(<span class="fu">rand</span>(<span class="fl">10</span>), <span class="fu">rand</span>(<span class="fl">10</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ms</span>(<span class="fu">rand</span>(<span class="fl">10</span>), <span class="fu">rand</span>(<span class="fl">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>or even rename the package during import:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">import</span> <span class="bu">BenchmarkTools </span>as bt</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> bt.<span class="pp">@benchmark</span> <span class="fu">sin</span>.(<span class="fl">1</span><span class="op">:</span><span class="fl">1_000_000</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>BenchmarkTools.Trial<span class="op">:</span> <span class="fl">400</span> samples with <span class="fl">1</span> evaluation.</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a> <span class="dt">Range</span> (min <span class="op">…</span> max)<span class="op">:</span>  <span class="fl">11.751</span> ms <span class="op">…</span> <span class="fl">24.278</span> ms  ┊ GC (min <span class="op">…</span> max)<span class="op">:</span> <span class="fl">0.00</span><span class="op">%</span> <span class="op">…</span> <span class="fl">49.13</span><span class="op">%</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a> <span class="dt">Time</span>  (median)<span class="op">:</span>     <span class="fl">12.043</span> ms              ┊ GC (median)<span class="op">:</span>    <span class="fl">0.00</span><span class="op">%</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a> <span class="dt">Time</span>  (mean <span class="op">±</span> σ)<span class="op">:</span>   <span class="fl">12.515</span> ms <span class="op">±</span>  <span class="fl">2.246</span> ms  ┊ GC (mean <span class="op">±</span> σ)<span class="op">:</span>  <span class="fl">3.56</span><span class="op">%</span> <span class="op">±</span>  <span class="fl">9.50</span><span class="op">%</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  ▆█▅</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  ████▆▁▄▁▁▁▁▄▁▁▁▁▁▁▁▁▁▁▁▁▄▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▄▁▁▁▁▅▇▆ ▆</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fl">11.8</span> ms      Histogram<span class="op">:</span> <span class="fu">log</span>(frequency) by time        <span class="fl">24</span> ms <span class="op">&lt;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a> Memory estimate<span class="op">:</span> <span class="fl">7.63</span> MiB, allocs estimate<span class="op">:</span> <span class="fl">2</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="variables" class="level2">
+<h2 class="anchored" data-anchor-id="variables">Variables</h2>
+<p>There is no programming without variables. In Julia, there is no need to pre-declare a variable and variables can be reassigned to a value of another type:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> x <span class="op">=</span> <span class="fl">1</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(x)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="dt">Int64</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> x <span class="op">=</span> <span class="fl">2.4</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fl">2.4</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(x)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="dt">Float64</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> x <span class="op">=</span> <span class="st">"Hello, World"</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="st">"Hello, World"</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(x)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="dt">String</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When assigning a value to the variable <code>x</code>, Julia infers the type of the value, e.g.&nbsp;<code>Int64</code> and then associates the name, <code>x</code>, with that value.</p>
+<p>As illustrated, the function <code>typeof()</code> will return the type of the variable or value.</p>
+<section id="integers-and-floating-point-values" class="level3">
+<h3 class="anchored" data-anchor-id="integers-and-floating-point-values">Integers and Floating-point Values</h3>
+<p>Julia has the usual selection of variable types for integers and floating point values. There are signed and unsigned versions of 8, 16, 32, 64 and 128-bit integers. See the <a href="https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/">manual</a> for details.</p>
+<p>There is also a <code>Bool</code> type that holds either <code>true</code> (1) or <code>false</code> (0).</p>
+<p>For floating point values, there is Float16, Float32 and Float64.</p>
+<p>The default integer, <code>Int</code> is Int64 for 64-bit Julia and <code>Int32</code> for 32-bit Julia. Generally, you would want to use <code>Float64</code> for floating-point numbers, unless there is a specific reason not to. Calculations on a GPU (via e.g.&nbsp;<code>CUDA.jl</code>) should be done using <code>Float32</code>.</p>
+<section id="a-word-on-floating-point-values" class="level4">
+<h4 class="anchored" data-anchor-id="a-word-on-floating-point-values">A Word on Floating Point Values</h4>
+<p>Floating point values are stored in a limited number of bits (typically 64 bits - a.k.a. double precision) and hence have a limited precision. The result is that most values cannot be precisley stored in a <code>Float64</code> variable. As a simple example, 1/10, which is clearly precisely equal to 0.1, is actually calculated as 0.1000000000000000055511151231257827021181583404541015625 with 256-bit precision.</p>
+<p>The smallest positive value that can be stored in a <code>Float64</code>, is 2.220446049250313e-16. You can calculate this in Julia using the <code>eps()</code> function, e.g.&nbsp;<code>eps(Float64)</code>. The value epsilon is an indication of the precision you can expect. It is the smallest value you can add to the floating point value that will cause it to result in a new value. Anything smaller may as well be zero. Obviously epsilon depends on the magnitude of the values you are working with and you can again use the <code>eps()</code> function: <code>eps(100) = 1.4210854715202004e-14</code>, so adding a smaller amount to 100 will not change the value.</p>
+<p>While you can safely ignore this for many, if not most engineering calculations, it can sometimes become an issue when you least expect it. Consider adding up a very large number of small values. The larger the difference between the running total and the next value you are adding, the larger the rounding error will become. At some point in this exercise, the value you are adding to the running total will be in the order of the relative epsilon and the running total will stop increasing, no matter how many more values you add. The solution to this is actually fairly simple and implemented in the Julia <code>sum()</code> function. The list of values is split into pairs and the pairs are added to each other, then this is repeated over and over until there is only one value left - the answer. The algorithm works under the inherent assumption that the values are fairly equally sized and so adding similar values results in minimal rounding error. Once the pairs have been summed, the new values should also be simialrly sized and so the process repeats, with a minimum rounding error at each step.</p>
+<p>Something else to consider, which much more often trips up new programmers, is that you will very rarely find two identical floating point values through calculations. Directly comparing values that are realistically speaking equal, will very often result in the wrong part of an <code>if</code> statement executing. When comparing floating point values, always use a check for approximate equality. This is done either via the <code>≈</code> operator (<code>\approx&lt;tab&gt;</code>), or the <code>isapprox()</code> function, which allows you to specify absolute and relative tolerances. The <code>≈</code> operator calls <code>isapprox()</code> with default tolerances.</p>
+<p>The internal storage of floating point values is standardised by the <a href="https://en.wikipedia.org/wiki/Double-precision_floating-point_format">IEEE 754</a> standard, which is used in just about every programming language.</p>
+</section>
+</section>
+<section id="bigint-and-bigfloat" class="level3">
+<h3 class="anchored" data-anchor-id="bigint-and-bigfloat">BigInt and BigFloat</h3>
+<p>Sometimes, you may find a need for additional precision. Arbitrary precicion integer and floating point types are available as BigInt and BigFloat.</p>
+<p>There are several ways to specifiy that you are using <code>big</code> numbers, but the simplest is via the <code>big()</code> function:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> x <span class="op">=</span> <span class="fu">big</span>(<span class="fl">10.0</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fl">10.0</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(x)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="dt">BigFloat</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The precision again comes at the cost of performance. See the <a href="https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts">manual</a> for more details.</p>
+</section>
+<section id="complex-numbers" class="level3">
+<h3 class="anchored" data-anchor-id="complex-numbers">Complex Numbers</h3>
+<p>Julia has built-in types for complex numbers, which depend on the integer or floating-point type used to store the real and imaginary parts, e.g.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(<span class="fl">1</span> <span class="op">+</span> <span class="fl">2im</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="dt">Complex</span>{<span class="dt">Int64</span>}</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(<span class="fl">1.0</span> <span class="op">+</span> <span class="fl">2.0im</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="dt">ComplexF64</span> (alias <span class="cf">for</span> <span class="dt">Complex</span>{<span class="dt">Float64</span>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As you will notice, a complex type is specified as <code>Complex{T}</code> where T is an integer or floating point type. Any of the integer and floating points types mentioned before could be used, including <code>BigInt</code> and <code>BigFloat</code>. Simply define the value as:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> z <span class="op">=</span> <span class="fu">big</span>(<span class="fl">10.0</span>) <span class="op">+</span> <span class="fl">1.0im</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fl">10.0</span> <span class="op">+</span> <span class="fl">1.0im</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(z)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="dt">Complex</span>{<span class="dt">BigFloat</span>}</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> z <span class="op">=</span> <span class="fu">big</span>(<span class="fl">10</span>) <span class="op">+</span> <span class="fl">1im</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fl">10</span> <span class="op">+</span> <span class="fl">1im</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(z)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="dt">Complex</span>{<span class="dt">BigInt</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The imaginary part of the number is indicated by adding <code>im</code> directly behind the number - no space!</p>
+<p>The standard functions used with complex numbers are available, including:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> z <span class="op">=</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">1im</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span> <span class="op">+</span> <span class="fl">1im</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">real</span>(z) <span class="co"># real part</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">imag</span>(z) <span class="co"># imaginary part</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">conj</span>(z) <span class="co"># complex conjugate</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span> <span class="op">-</span> <span class="fl">1im</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">abs</span>(z) <span class="co"># absolute value - distance from zero</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="fl">1.4142135623730951</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">abs2</span>(z) <span class="co"># squared absolute value</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">angle</span>(z) <span class="co"># phase angle (radians)</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="fl">0.7853981633974483</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">angle</span>(z) <span class="op">*</span> <span class="fl">360</span><span class="op">/</span><span class="fl">2</span>π <span class="co"># convert to degrees</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="fl">45.0</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> √z</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="fl">1.09868411346781</span> <span class="op">+</span> <span class="fl">0.45508986056222733im</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">sqrt</span>(z)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="fl">1.09868411346781</span> <span class="op">+</span> <span class="fl">0.45508986056222733im</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="rational-numbers" class="level3">
+<h3 class="anchored" data-anchor-id="rational-numbers">Rational Numbers</h3>
+<p>You can also work with rational numbers.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> a <span class="op">=</span> <span class="fl">1</span><span class="op">//</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span><span class="op">//</span><span class="fl">8</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fl">7</span><span class="op">//</span><span class="fl">8</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">float</span>(a)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fl">0.875</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">rationalize</span>(<span class="fl">0.875</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fl">7</span><span class="op">//</span><span class="fl">8</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This eliminates rounding losses, but at a loss of performance:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="kw">function</span> <span class="fu">myfunc</span>(x)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>           sum <span class="op">=</span> <span class="fu">zero</span>(x)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>           <span class="cf">for</span> i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10_000</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>               sum <span class="op">+=</span> x <span class="op">*</span> i</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>           <span class="cf">end</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>           <span class="cf">return</span> sum</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>       <span class="kw">end</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>myfunc (generic <span class="kw">function</span> with <span class="fl">1</span> method)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">BenchmarkTools</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="pp">@benchmark</span> <span class="fu">myfunc</span>(<span class="fl">1.0</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>BenchmarkTools.Trial<span class="op">:</span> <span class="fl">10000</span> samples with <span class="fl">3</span> evaluations.</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a> <span class="dt">Range</span> (min <span class="op">…</span> max)<span class="op">:</span>  <span class="fl">8.500</span> μs <span class="op">…</span>  <span class="fl">73.733</span> μs  ┊ GC (min <span class="op">…</span> max)<span class="op">:</span> <span class="fl">0.00</span><span class="op">%</span> <span class="op">…</span> <span class="fl">0.00</span><span class="op">%</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a> <span class="dt">Time</span>  (median)<span class="op">:</span>     <span class="fl">8.700</span> μs               ┊ GC (median)<span class="op">:</span>    <span class="fl">0.00</span><span class="op">%</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a> <span class="dt">Time</span>  (mean <span class="op">±</span> σ)<span class="op">:</span>   <span class="fl">8.704</span> μs <span class="op">±</span> <span class="fl">966.620</span> ns  ┊ GC (mean <span class="op">±</span> σ)<span class="op">:</span>  <span class="fl">0.00</span><span class="op">%</span> <span class="op">±</span> <span class="fl">0.00</span><span class="op">%</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  ▅  █  ▆  ▃         █  █   ▅  ▂  ▁   ▁  ▁                    ▂</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  █▁▁█▁▁█▁▁█▁▁▁█▁▁█▁▁█▁▁█▁▁▁█▁▁█▁▁█▁▁▁█▁▁█▁▁█▁▁█▁▁▁▇▁▁█▁▁▇▁▁▄ █</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  <span class="fl">8.5</span> μs       Histogram<span class="op">:</span> <span class="fu">log</span>(frequency) by time       <span class="fl">9.1</span> μs <span class="op">&lt;</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a> Memory estimate<span class="op">:</span> <span class="fl">0</span> bytes, allocs estimate<span class="op">:</span> <span class="fl">0</span>.</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="pp">@benchmark</span> <span class="fu">myfunc</span>(<span class="fl">1</span><span class="op">//</span><span class="fl">1</span>)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>BenchmarkTools.Trial<span class="op">:</span> <span class="fl">7295</span> samples with <span class="fl">1</span> evaluation.</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a> <span class="dt">Range</span> (min <span class="op">…</span> max)<span class="op">:</span>  <span class="fl">663.600</span> μs <span class="op">…</span>  <span class="fl">1.234</span> ms  ┊ GC (min <span class="op">…</span> max)<span class="op">:</span> <span class="fl">0.00</span><span class="op">%</span> <span class="op">…</span> <span class="fl">0.00</span><span class="op">%</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a> <span class="dt">Time</span>  (median)<span class="op">:</span>     <span class="fl">680.100</span> μs              ┊ GC (median)<span class="op">:</span>    <span class="fl">0.00</span><span class="op">%</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a> <span class="dt">Time</span>  (mean <span class="op">±</span> σ)<span class="op">:</span>   <span class="fl">682.504</span> μs <span class="op">±</span> <span class="fl">29.021</span> μs  ┊ GC (mean <span class="op">±</span> σ)<span class="op">:</span>  <span class="fl">0.00</span><span class="op">%</span> <span class="op">±</span> <span class="fl">0.00</span><span class="op">%</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>  ▇█▆▃▂▃██▅▄▃▃▃▂▃▁▁▁▁       ▁                                  ▂</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>  ███████████████████████▇▇████▇▇█▆▆▇▇▇▅▆▆▅▆▅▅▅▃▅▅▄▆▅▃▅▅▄▄▁▃▃▅ █</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>  <span class="fl">664</span> μs        Histogram<span class="op">:</span> <span class="fu">log</span>(frequency) by time       <span class="fl">811</span> μs <span class="op">&lt;</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a> Memory estimate<span class="op">:</span> <span class="fl">0</span> bytes, allocs estimate<span class="op">:</span> <span class="fl">0</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>So, floating point calculations are about 78x faster than with rational numbers. What about integers?</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="pp">@benchmark</span> <span class="fu">myfunc</span>(<span class="fl">1</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>BenchmarkTools.Trial<span class="op">:</span> <span class="fl">10000</span> samples with <span class="fl">1000</span> evaluations.</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a> <span class="dt">Range</span> (min <span class="op">…</span> max)<span class="op">:</span>  <span class="fl">1.900</span> ns <span class="op">…</span> <span class="fl">27.200</span> ns  ┊ GC (min <span class="op">…</span> max)<span class="op">:</span> <span class="fl">0.00</span><span class="op">%</span> <span class="op">…</span> <span class="fl">0.00</span><span class="op">%</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a> <span class="dt">Time</span>  (median)<span class="op">:</span>     <span class="fl">2.000</span> ns              ┊ GC (median)<span class="op">:</span>    <span class="fl">0.00</span><span class="op">%</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a> <span class="dt">Time</span>  (mean <span class="op">±</span> σ)<span class="op">:</span>   <span class="fl">1.976</span> ns <span class="op">±</span>  <span class="fl">0.530</span> ns  ┊ GC (mean <span class="op">±</span> σ)<span class="op">:</span>  <span class="fl">0.00</span><span class="op">%</span> <span class="op">±</span> <span class="fl">0.00</span><span class="op">%</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  ▄                                                        █</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▂</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fl">1.9</span> ns         Histogram<span class="op">:</span> frequency by time           <span class="fl">2</span> ns <span class="op">&lt;</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a> Memory estimate<span class="op">:</span> <span class="fl">0</span> bytes, allocs estimate<span class="op">:</span> <span class="fl">0</span>.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>1.9 nanoseconds?!? That sounds too good to be true, doesn’t it? Let’s see what type of code Julia generated to make that possible.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="pp">@code_llvm</span> <span class="fu">myfunc</span>(<span class="fl">1</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>;  @ <span class="bu">REPL</span>[<span class="fl">6</span>]<span class="op">:</span><span class="fl">1</span> within <span class="ss">`myfunc`</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>; <span class="dt">Function</span> Attrs<span class="op">:</span> uwtable</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>define i64 <span class="pp">@julia_myfunc_739</span>(i64 signext <span class="op">%</span><span class="fl">0</span>) <span class="co">#0 {</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>top<span class="op">:</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>;  @ <span class="bu">REPL</span>[<span class="fl">6</span>]<span class="op">:</span><span class="fl">3</span> within <span class="ss">`myfunc`</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="op">%</span><span class="fl">1</span> <span class="op">=</span> mul i64 <span class="op">%</span><span class="fl">0</span>, <span class="fl">50005000</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>;  @ <span class="bu">REPL</span>[<span class="fl">6</span>]<span class="op">:</span><span class="fl">6</span> within <span class="ss">`myfunc`</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  ret i64 <span class="op">%</span><span class="fl">1</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can again ignore any line starting with a semi-colon. The one line that matters is this:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>  <span class="op">%</span><span class="fl">1</span> <span class="op">=</span> mul i64 <span class="op">%</span><span class="fl">0</span>, <span class="fl">50005000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The Julia compiler could analyse the code well enough to see that the answer to our function is sumply 50005000 times the input value and that is exactly what it returned!</p>
+<p>With floating point and rational values, there were type conversions required before multiplying the integer value of the loop counter with the input value. This “hid” the true nature of the calculation enough that the compiler could not see the short-cut. There is however continuous development in the compiler and we can reasonbly expect this to also be optimised in a future version of Julia.</p>
+</section>
+<section id="arrays-tuples-and-ranges" class="level3">
+<h3 class="anchored" data-anchor-id="arrays-tuples-and-ranges">Arrays, Tuples and Ranges</h3>
+<section id="arrays" class="level4">
+<h4 class="anchored" data-anchor-id="arrays">Arrays</h4>
+<p>In most code, you will find it convenient to deal with a collection of values at the same time. There are several ways of doing this.</p>
+<p>The most common collection of values is an Array. In mathematics, you will be familar with vectors and matrices. These are simply one- and two dimensional arrays. You can have arrays with any number of dimensions (<em>tensors</em>). The keywords <code>Vector</code> and <code>Matrix</code> are also available as synonyms for <code>Array</code> in the special cases of one and two dimensions.</p>
+<p>Simple one dimensional arrays are treated as column vectors for use in linear algebra calculations. You can s Some examples:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> a <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>]   <span class="co"># use commas to specify column vectors</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">-</span>element <span class="dt">Vector</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a> <span class="fl">1</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a> <span class="fl">2</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a> <span class="fl">3</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> b <span class="op">=</span> [<span class="fl">1</span> <span class="fl">2</span> <span class="fl">3</span>]   <span class="co"># use spaces to specify row vectors</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span><span class="op">×</span><span class="fl">3</span> <span class="dt">Matrix</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a> <span class="fl">1</span>  <span class="fl">2</span>  <span class="fl">3</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> a <span class="op">*</span> b </span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">×</span><span class="fl">3</span> <span class="dt">Matrix</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a> <span class="fl">1</span>  <span class="fl">2</span>  <span class="fl">3</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a> <span class="fl">2</span>  <span class="fl">4</span>  <span class="fl">6</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a> <span class="fl">3</span>  <span class="fl">6</span>  <span class="fl">9</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> A <span class="op">=</span> [<span class="fl">1</span> <span class="fl">2</span> <span class="fl">3</span>;   <span class="co"># directly specify a 2D array a.k.a. a matrix</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>            <span class="fl">4</span> <span class="fl">5</span> <span class="fl">6</span>;</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>            <span class="fl">7</span> <span class="fl">8</span> <span class="fl">9</span>]</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">×</span><span class="fl">3</span> <span class="dt">Matrix</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a> <span class="fl">1</span>  <span class="fl">2</span>  <span class="fl">3</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a> <span class="fl">4</span>  <span class="fl">5</span>  <span class="fl">6</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a> <span class="fl">7</span>  <span class="fl">8</span>  <span class="fl">9</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> B <span class="op">=</span> <span class="fu">zeros</span>(<span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>)   <span class="co"># zeros() and ones() fill the array of the specified size</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">×</span><span class="fl">3</span><span class="op">×</span><span class="fl">3</span> <span class="dt">Array</span>{<span class="dt">Float64</span>, <span class="fl">3</span>}<span class="op">:</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>[<span class="op">:</span>, <span class="op">:</span>, <span class="fl">1</span>] <span class="op">=</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.0</span>  <span class="fl">0.0</span>  <span class="fl">0.0</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.0</span>  <span class="fl">0.0</span>  <span class="fl">0.0</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.0</span>  <span class="fl">0.0</span>  <span class="fl">0.0</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>[<span class="op">:</span>, <span class="op">:</span>, <span class="fl">2</span>] <span class="op">=</span></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.0</span>  <span class="fl">0.0</span>  <span class="fl">0.0</span></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.0</span>  <span class="fl">0.0</span>  <span class="fl">0.0</span></span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.0</span>  <span class="fl">0.0</span>  <span class="fl">0.0</span></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>[<span class="op">:</span>, <span class="op">:</span>, <span class="fl">3</span>] <span class="op">=</span></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.0</span>  <span class="fl">0.0</span>  <span class="fl">0.0</span></span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.0</span>  <span class="fl">0.0</span>  <span class="fl">0.0</span></span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.0</span>  <span class="fl">0.0</span>  <span class="fl">0.0</span> </span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> C <span class="op">=</span> [<span class="fl">1</span>;<span class="fl">2</span>;;<span class="fl">3</span>;<span class="fl">4</span>;;;<span class="fl">5</span>;<span class="fl">6</span>;;<span class="fl">7</span>;<span class="fl">8</span>;;;<span class="fl">9</span>;<span class="fl">10</span>;;<span class="fl">11</span>;<span class="fl">12</span>]  <span class="co"># ; separates in first dimension, ;; in second dimension, ;;; in third etc.</span></span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span><span class="op">×</span><span class="fl">2</span><span class="op">×</span><span class="fl">3</span> <span class="dt">Array</span>{<span class="dt">Int64</span>, <span class="fl">3</span>}<span class="op">:</span></span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>[<span class="op">:</span>, <span class="op">:</span>, <span class="fl">1</span>] <span class="op">=</span></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a> <span class="fl">1</span>  <span class="fl">3</span></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a> <span class="fl">2</span>  <span class="fl">4</span></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>[<span class="op">:</span>, <span class="op">:</span>, <span class="fl">2</span>] <span class="op">=</span></span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a> <span class="fl">5</span>  <span class="fl">7</span></span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a> <span class="fl">6</span>  <span class="fl">8</span></span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>[<span class="op">:</span>, <span class="op">:</span>, <span class="fl">3</span>] <span class="op">=</span></span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>  <span class="fl">9</span>  <span class="fl">11</span></span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a> <span class="fl">10</span>  <span class="fl">12</span></span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> A <span class="op">=</span> <span class="dt">Float64</span>[]   <span class="co"># an empty 1D array of Float64</span></span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a><span class="dt">Float64</span>[]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The individual entries of an array are accessed via <code>[]</code>, e.g.&nbsp;</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> A[<span class="fl">2</span>, <span class="fl">3</span>]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fl">6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In the background, <code>[]</code> calls <code>getindex()</code> and <code>setindex()</code> to retrieve or modify the entries of the array. If you define your own array-like type, you will need to supply the appropriate <code>getindex()</code> and <code>setindex()</code> functions.</p>
+<p>You can concatenate arrays horizontally and vertically with <code>hcat()</code> and <code>vcat()</code>, or using the syntax above with spaces or semi-colons:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> A <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>]</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">-</span>element <span class="dt">Vector</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a> <span class="fl">1</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a> <span class="fl">2</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a> <span class="fl">3</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> B <span class="op">=</span> [<span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">6</span>]</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">-</span>element <span class="dt">Vector</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a> <span class="fl">4</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a> <span class="fl">5</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a> <span class="fl">6</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> [A; B]</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="fl">6</span><span class="op">-</span>element <span class="dt">Vector</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a> <span class="fl">1</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a> <span class="fl">2</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a> <span class="fl">3</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a> <span class="fl">4</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a> <span class="fl">5</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a> <span class="fl">6</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> [A B]</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">×</span><span class="fl">2</span> <span class="dt">Matrix</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a> <span class="fl">1</span>  <span class="fl">4</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a> <span class="fl">2</span>  <span class="fl">5</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a> <span class="fl">3</span>  <span class="fl">6</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">vcat</span>(A, B)</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a><span class="fl">6</span><span class="op">-</span>element <span class="dt">Vector</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a> <span class="fl">1</span></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a> <span class="fl">2</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a> <span class="fl">3</span></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a> <span class="fl">4</span></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a> <span class="fl">5</span></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a> <span class="fl">6</span></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">hcat</span>(A, B)</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">×</span><span class="fl">2</span> <span class="dt">Matrix</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a> <span class="fl">1</span>  <span class="fl">4</span></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a> <span class="fl">2</span>  <span class="fl">5</span></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a> <span class="fl">3</span>  <span class="fl">6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="tuples" class="level4">
+<h4 class="anchored" data-anchor-id="tuples">Tuples</h4>
+<p>Tuples are functionally similar to arrays. They are specified with commas and parentheses. They are intimately linked with passing parameters to functions and returning values from functions, e.g.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="kw">function</span> <span class="fu">myfunc</span>(a, b)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>           <span class="cf">return</span> a<span class="op">*</span>b, a<span class="op">+</span>b</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>       <span class="kw">end</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>myfunc (generic <span class="kw">function</span> with <span class="fl">1</span> method)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">myfunc</span>(<span class="fl">1</span>, <span class="fl">2</span>)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>(<span class="fl">2</span>, <span class="fl">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We pass the parameters to the function as a tuple, (a, b). The results are returned as a tuple, (2, 3). Other than passing parameters to functions, what is the use of tuples? They are fairly widely used in Julial. The main differences from arrays are that while arrays are heap-allocated, tuples are stack-allocated. This is some more computer jargon, but what it means is that tuples can be accessed faster than arrays, but cannot be as large.</p>
+<p>Tuples are also immutable, meaning once created, they cannot be modified. The entries of an array can always be modified. This is important to keep in mind when writing functions in Julia. The only way you can modify a parameter passed to a function is if that parameter is an array. And then only the contents of the array can be changed.</p>
+<p>Some examples:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> a <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(a)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="dt">Tuple</span>{<span class="dt">Int64</span>, <span class="dt">Int64</span>, <span class="dt">Int64</span>}</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> b <span class="op">=</span> (<span class="fl">1</span>., <span class="fl">2</span>., <span class="fl">3</span>.)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>(<span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(b)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="dt">Tuple</span>{<span class="dt">Float64</span>, <span class="dt">Float64</span>, <span class="dt">Float64</span>}</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> a[<span class="fl">2</span>]</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> c <span class="op">=</span> (<span class="fl">1</span>,)</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>(<span class="fl">1</span>,)</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(c)</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="dt">Tuple</span>{<span class="dt">Int64</span>}</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> d <span class="op">=</span> <span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>  <span class="co"># the parentheses are optional here</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>)</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(d)</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="dt">Tuple</span>{<span class="dt">Int64</span>, <span class="dt">Int64</span>, <span class="dt">Int64</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We again use <code>[]</code> to access the individual entries.</p>
+<p>Tuples can be unpacked into variables:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> a</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> x, y, z <span class="op">=</span> a</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> x</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> y</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> z</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And since the parentheses are option in the direct specification of tuples, we can do this:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> x <span class="op">=</span> <span class="fl">1</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> y <span class="op">=</span> <span class="fl">2</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> y, x <span class="op">=</span> x, y</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>(<span class="fl">1</span>, <span class="fl">2</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> x</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> y</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here we defined a tuple <code>(x, y)</code> and then unpacked it into the variables <code>y</code> and <code>x</code>, swopping their values.</p>
+<p>Since tuples have superior performance to arrays, there exists a package that builds small arrays from tuples - <a href="https://github.com/JuliaArrays/StaticArrays.jl"><code>StaticArrays.jl</code></a>. This is commonly used for maximum performance, but only for smallish arrays, typically less than 200-300 entries. More than that and you run out of space on the stack, which has a limited size.</p>
+</section>
+<section id="named-tuples" class="level4">
+<h4 class="anchored" data-anchor-id="named-tuples">Named Tuples</h4>
+<p>You can also name the entries in a tuple and access them via the names instead or indeces:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> nt <span class="op">=</span> (a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span>, c <span class="op">=</span> <span class="st">"Bob"</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>(a <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span>, c <span class="op">=</span> <span class="st">"Bob"</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> nt.a</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> nt[<span class="fl">2</span>]</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> nt.c</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="st">"Bob"</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(nt)</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="dt">NamedTuple</span>{(<span class="op">:</span>a, <span class="op">:</span>b, <span class="op">:</span>c), <span class="dt">Tuple</span>{<span class="dt">Int64</span>, <span class="dt">Int64</span>, <span class="dt">String</span>}}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that the entries in a tuple or named tuple needn’t be all of the same type. This is also true for arrays, but in that case the array will be of type <code>Any</code> and performance will be hugely impacted. Avoid this whenever possible!</p>
+</section>
+<section id="ranges" class="level4">
+<h4 class="anchored" data-anchor-id="ranges">Ranges</h4>
+<p>The third collection type we are considering are ranges. There are several ways to specify a range:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> a <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>   <span class="co">#start : stop with default step of one, hence a unit range</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span><span class="op">:</span><span class="fl">10</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(a)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="dt">UnitRange</span>{<span class="dt">Int64</span>}</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> b <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="fl">20</span>   <span class="co"># start : step : stop, hence a step range</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="fl">19</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(b)</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="dt">StepRange</span>{<span class="dt">Int64</span>, <span class="dt">Int64</span>}</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> c <span class="op">=</span> <span class="fl">1.0</span><span class="op">:</span><span class="fl">0.5</span><span class="op">:</span><span class="fl">5.0</span> <span class="co"># with floating point steps, we get a StepRangeLen - start, stop, length</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="fl">1.0</span><span class="op">:</span><span class="fl">0.5</span><span class="op">:</span><span class="fl">5.0</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(c)</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="dt">StepRangeLen</span>{<span class="dt">Float64</span>, <span class="bu">Base</span>.TwicePrecision{<span class="dt">Float64</span>}, <span class="bu">Base</span>.TwicePrecision{<span class="dt">Float64</span>}, <span class="dt">Int64</span>}</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> d <span class="op">=</span> <span class="fu">range</span>(<span class="fl">2.0</span>, step<span class="op">=</span><span class="fl">5.3</span>, length<span class="op">=</span><span class="fl">5</span>)  <span class="co"># instead of colon notation, you can call the function with more options</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="fl">2.0</span><span class="op">:</span><span class="fl">5.3</span><span class="op">:</span><span class="fl">23.2</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">typeof</span>(d)</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="dt">StepRangeLen</span>{<span class="dt">Float64</span>, <span class="bu">Base</span>.TwicePrecision{<span class="dt">Float64</span>}, <span class="bu">Base</span>.TwicePrecision{<span class="dt">Float64</span>}, <span class="dt">Int64</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And just like before, we access the entries with <code>[]</code>:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> a[<span class="fl">2</span>]</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> b[<span class="fl">3</span>]</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="fl">5</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> c[<span class="fl">4</span>]</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="fl">2.5</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> d[<span class="fl">5</span>]</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="fl">23.2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The main difference is that, while arrays and tuples consist of values stored in memory, ranges are <em>lazy</em>. The values are only calculated when they are requested and no matter the length of the range, it takes up the same amount of memory - just enough to store the <em>start</em>, <em>step</em> and <em>stop</em> values that are needed to calculate any entry and know when you have run through the whole range.</p>
+</section>
+<section id="iterables" class="level4">
+<h4 class="anchored" data-anchor-id="iterables">Iterables</h4>
+<p>Arrays, tuples and ranges are all iterable types, meaning you can iterate through their entries:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> a <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span>]</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">-</span>element <span class="dt">Vector</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fl">1</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fl">5</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a> <span class="fl">10</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="cf">for</span> i <span class="kw">in</span> a</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>           <span class="fu">println</span>(i)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>       <span class="cf">end</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="fl">5</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="fl">10</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="cf">for</span> j <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>           <span class="fu">println</span>(j<span class="op">*</span><span class="fl">2</span>)</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>       <span class="cf">end</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="fl">4</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="fl">6</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> t <span class="op">=</span> (<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>)</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>)</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="cf">for</span> k <span class="kw">in</span> t</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>           <span class="fu">println</span>(k)</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>       <span class="cf">end</span></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>From a programmer’s point of view, iterable types all behave the same. I can therefore write a function that can handle any iterable type. The only requirement here is that the item passed should have at least two entries, or there will be an error.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="kw">function</span> <span class="fu">mycomp</span>(a)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>           <span class="cf">if</span> a[<span class="fl">1</span>] <span class="op">&gt;</span> a[<span class="fl">2</span>]</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>               <span class="cf">return</span> <span class="cn">true</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>           <span class="cf">else</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>               <span class="cf">return</span> <span class="cn">false</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>           <span class="cf">end</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>       <span class="kw">end</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>mycomp (generic <span class="kw">function</span> with <span class="fl">1</span> method)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> ar <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>]</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span><span class="op">-</span>element <span class="dt">Vector</span>{<span class="dt">Int64</span>}<span class="op">:</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a> <span class="fl">1</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a> <span class="fl">2</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> t <span class="op">=</span> (<span class="fl">2</span>, <span class="fl">1</span>)</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>(<span class="fl">2</span>, <span class="fl">1</span>)</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> r <span class="op">=</span> <span class="fl">10</span><span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span></span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a><span class="fl">10</span><span class="op">:-</span><span class="fl">1</span><span class="op">:</span><span class="fl">1</span></span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">mycomp</span>(ar)</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a><span class="cn">false</span></span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">mycomp</span>(t)</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a><span class="cn">true</span></span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="fu">mycomp</span>(r)</span>
+<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a><span class="cn">true</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For each case, the Julia compiler will generate optimised code depending on the type of the variable passed.</p>
+</section>
+<section id="indexing" class="level4">
+<h4 class="anchored" data-anchor-id="indexing">Indexing</h4>
+<p>In the examples above, we used one dimensional arrays and there was really no choice in how to index into the structure. In the case if multi-dimensional arrays, there are better and worse options. This is because of how the values are stored in memory. It is faster to sequencially access values that are stored next to each other than to jump around in memory. Julia is <em>column major</em>, meaning that the values in the first column of a matrix are stored next to each other in memory, followed by the values of the next column etc. For higher dimenstions, the sequence is similar: each subsequent index follows the next. This is then the fastest way of iterating through the whole array.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> A <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">10_000</span>, <span class="fl">10_000</span>);  <span class="co"># the _ is ignored - it is just to make reading easier. The ; at the end suppresses output of the result</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="kw">function</span> <span class="fu">myfunc</span>(A)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>           mysum <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>           m, n <span class="op">=</span> <span class="fu">size</span>(A)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>           <span class="cf">for</span> i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span>m, j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span>n  <span class="co"># we are running through the matrix a row at a time</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>               mysum <span class="op">+=</span> A[i, j]</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>           <span class="cf">end</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>           <span class="cf">return</span> mysum</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>       <span class="kw">end</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>myfunc (generic <span class="kw">function</span> with <span class="fl">1</span> method)</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="kw">function</span> <span class="fu">myfunc2</span>(A)</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>           mysum <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>           m, n <span class="op">=</span> <span class="fu">size</span>(A)</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>           <span class="cf">for</span> j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span>n, i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span>m  <span class="co"># we are running through the matrix a column at a time</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>               mysum <span class="op">+=</span> A[i, j]</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>           <span class="cf">end</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>           <span class="cf">return</span> mysum</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>       <span class="kw">end</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>myfunc2 (generic <span class="kw">function</span> with <span class="fl">1</span> method)</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="im">using</span> <span class="bu">BenchmarkTools</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="pp">@btime</span> <span class="fu">myfunc</span>(A) <span class="co"># @btime is similar to @benchmark, but just returns the minimum time</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>  <span class="fl">1.827</span> s (<span class="fl">1</span> allocation<span class="op">:</span> <span class="fl">16</span> bytes)</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a><span class="fl">5.000090241950586e7</span></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="pp">@btime</span> <span class="fu">myfunc2</span>(A)</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>  <span class="fl">96.449</span> ms (<span class="fl">1</span> allocation<span class="op">:</span> <span class="fl">16</span> bytes)</span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a><span class="fl">5.000090241950418e7</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>So, in our 10,000 x 10,000 random matrix, summing up the values row-wise takes 1.827s, while column-wise it takes only 96.449ms. Quite the improvement! If you are worried you won’t remember the correct way of iterating through a structure, Julia has you covered. Use <code>eachindex()</code> to get the optimal sequence:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="kw">function</span> <span class="fu">myfunc3</span>(A)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>           mysum <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>           m, n <span class="op">=</span> <span class="fu">size</span>(A)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>           <span class="cf">for</span> i <span class="kw">in</span> <span class="fu">eachindex</span>(A)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>               mysum <span class="op">+=</span> A[i]</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>           <span class="cf">end</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>           <span class="cf">return</span> mysum</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>       <span class="kw">end</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>myfunc3 (generic <span class="kw">function</span> with <span class="fl">1</span> method)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="pp">@btime</span> <span class="fu">myfunc3</span>(A)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="fl">96.394</span> ms (<span class="fl">1</span> allocation<span class="op">:</span> <span class="fl">16</span> bytes)</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="fl">5.000090241950418e7</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><code>eachindex()</code> returns a linear index, no matter what the dimensionality of the array is and sequences it for the fastest sequencial access.</p>
+<p>Another useful indexing function is <code>enumerate</code>. It returns an iterator if tuples, each containing an index and value pair. The indeces are linear, not cartesian.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> A <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">2</span>,<span class="fl">2</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span><span class="op">×</span><span class="fl">2</span> <span class="dt">Matrix</span>{<span class="dt">Float64</span>}<span class="op">:</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.488632</span>  <span class="fl">0.177813</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.221677</span>  <span class="fl">0.559213</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="cf">for</span> (index, value) <span class="kw">in</span> <span class="fu">enumerate</span>(A)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>           <span class="fu">println</span>(<span class="st">"</span><span class="sc">$</span>index<span class="st"> </span><span class="sc">$</span>value<span class="st">"</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>       <span class="cf">end</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span> <span class="fl">0.4886321057630626</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> <span class="fl">0.22167740760406662</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span> <span class="fl">0.17781317540395236</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="fl">4</span> <span class="fl">0.5592126504604934</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For more information, see the <a href="https://docs.julialang.org/en/v1/base/iterators/#Base.Iterators.enumerate">manual</a>.</p>
+</section>
+</section>
+</section>
+<section id="the-type-hierarchy" class="level2">
+<h2 class="anchored" data-anchor-id="the-type-hierarchy">The Type Hierarchy</h2>
+<p>The built-in types have a hieracrchy:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://thautwarm.github.io/Site-32/_images/julia-type-hierarchy.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">The type hierarchy - Ref: https://thautwarm.github.io/</figcaption><p></p>
+</figure>
+</div>
+<p>This consists of abstract and concrete types. You can only instanciate a variable of a concrete type, but the abstracts types are useful to specificy groups of types that would behave similarly, e.g.&nbsp;<code>Float64</code> and <code>Int64</code> could both the added or multiplied. This is true for all the <code>Number</code> types, be they <code>Real</code> or <code>Complex</code>. We could specify allowed groups of types, via the <code>&lt;:</code> operator, or specific types, via <code>::</code>, e.g.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">f</span>(x<span class="op">::</span><span class="dt">T</span>) <span class="kw">where</span> T <span class="op">&lt;:</span><span class="dt"> Number</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">#do something</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here, Julia will allow us to call f(x) with any sub-type of the <code>Number</code> abstract type, such as <code>Float64</code>, <code>Int32</code> or <code>ComplexF64</code>. Calling f(x) with a <code>String</code> type will give an error.</p>
+</section>
+<section id="type-stability" class="level2">
+<h2 class="anchored" data-anchor-id="type-stability">Type Stability</h2>
+<p>Being able to change the type of a variable can be useful, but it does also open the door to something that can cause slowdown in your code: <strong>type instability</strong>. This is when the type of x changes during the execution of your code, making many of the optimisations Julia could do impossible. Instead, additional code is required to handle the type changes. Keep a look-out for something like this:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="kw">function</span> <span class="fu">myfunc</span>(n)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>           sum <span class="op">=</span> <span class="fl">0</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>           <span class="cf">for</span> i <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span>n</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>               sum <span class="op">+=</span> <span class="fl">1.5</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>           <span class="cf">end</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>           <span class="cf">return</span> sum</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>       <span class="kw">end</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>myfunc (generic <span class="kw">function</span> with <span class="fl">1</span> method)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>At first glance, there is nothing strange about this code. If you take a closer look however, you will see that <code>sum</code> is created as an integer via <code>sum = 0</code>, but then we assign floating point values to it.</p>
+<p>Julia has a lot of code analyses tools. One of which is <code>@code_warntype</code>:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> <span class="pp">@code_warntype</span> <span class="fu">myfunc</span>(<span class="fl">5</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>MethodInstance <span class="cf">for</span> <span class="fu">myfunc</span>(<span class="op">::</span><span class="dt">Int64</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  from <span class="fu">myfunc</span>(n) <span class="kw">in</span> <span class="bu">Main</span> at <span class="bu">REPL</span>[<span class="fl">20</span>]<span class="op">:</span><span class="fl">1</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>Arguments</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#self#::Core.Const(myfunc)</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  n<span class="op">::</span><span class="dt">Int64</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>Locals</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="pp">@_3</span><span class="op">::</span><span class="dt">Union{Nothing, Tuple{Int64, Int64}}</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  sum<span class="op">::</span><span class="dt">Union{Float64, Int64}</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  i<span class="op">::</span><span class="dt">Int64</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>Body<span class="op">::</span><span class="dt">Union{Float64, Int64}</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a><span class="fl">1</span> ─       (sum <span class="op">=</span> <span class="fl">0</span>)</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>│   <span class="op">%</span><span class="fl">2</span>  <span class="op">=</span> (<span class="fl">1</span><span class="op">:</span>n)<span class="op">::</span><span class="dt">Core.PartialStruct</span>(<span class="dt">UnitRange</span>{<span class="dt">Int64</span>}, <span class="dt">Any</span>[<span class="bu">Core</span>.<span class="fu">Const</span>(<span class="fl">1</span>), <span class="dt">Int64</span>])</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>│         (<span class="pp">@_3</span> <span class="op">=</span> <span class="bu">Base</span>.<span class="fu">iterate</span>(<span class="op">%</span><span class="fl">2</span>))</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>│   <span class="op">%</span><span class="fl">4</span>  <span class="op">=</span> (<span class="pp">@_3</span> <span class="op">===</span> <span class="cn">nothing</span>)<span class="op">::</span><span class="dt">Bool</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>│   <span class="op">%</span><span class="fl">5</span>  <span class="op">=</span> <span class="bu">Base</span>.<span class="fu">not_int</span>(<span class="op">%</span><span class="fl">4</span>)<span class="op">::</span><span class="dt">Bool</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>└──       goto <span class="co">#4 if not %5</span></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a><span class="fl">2</span> ┄ <span class="op">%</span><span class="fl">7</span>  <span class="op">=</span> <span class="pp">@_3</span><span class="op">::</span><span class="dt">Tuple{Int64, Int64}</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>│         (i <span class="op">=</span> <span class="bu">Core</span>.<span class="fu">getfield</span>(<span class="op">%</span><span class="fl">7</span>, <span class="fl">1</span>))</span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>│   <span class="op">%</span><span class="fl">9</span>  <span class="op">=</span> <span class="bu">Core</span>.<span class="fu">getfield</span>(<span class="op">%</span><span class="fl">7</span>, <span class="fl">2</span>)<span class="op">::</span><span class="dt">Int64</span></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>│         (sum <span class="op">=</span> sum <span class="op">+</span> <span class="fl">1.5</span>)</span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>│         (<span class="pp">@_3</span> <span class="op">=</span> <span class="bu">Base</span>.<span class="fu">iterate</span>(<span class="op">%</span><span class="fl">2</span>, <span class="op">%</span><span class="fl">9</span>))</span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a>│   <span class="op">%</span><span class="fl">12</span> <span class="op">=</span> (<span class="pp">@_3</span> <span class="op">===</span> <span class="cn">nothing</span>)<span class="op">::</span><span class="dt">Bool</span></span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>│   <span class="op">%</span><span class="fl">13</span> <span class="op">=</span> <span class="bu">Base</span>.<span class="fu">not_int</span>(<span class="op">%</span><span class="fl">12</span>)<span class="op">::</span><span class="dt">Bool</span></span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>└──       goto <span class="co">#4 if not %13</span></span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span> ─       goto <span class="co">#2</span></span>
+<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a><span class="fl">4</span> ┄       <span class="cf">return</span> sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Like when we looked at the LLVM code generated for a function, this may seem intimidating, but the important bit is this:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>sum<span class="op">::</span><span class="dt">Union{Float64, Int64}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In the REPL this is helpfully printed in red to draw your attention.</p>
+</div>
+</div>
+<p>Julia indicates that the variable <code>sum</code> is not type stable. It is assigned both <code>Int64</code> and <code>Float64</code>values.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
