@@ -4,7 +4,7 @@ title: "An Overview of the Language"
 
 
 ## Package Management
-Julia will open up in the default environment, e.g. `@v1.8`. You can add packages to this environment and they will be available to load as soon as you open Julia. Be very careful about doing this, as this can very often lead to what is lightly called *dependency hell*. This is what happens when a package you want to update depends on another package that can't update, sometime because it depends on a specific version of yet another package. The more packages you have in the current environment, to more often this will happen. The solution is to create a new environment for each project and add only the packages you are actually using.
+Julia will open up in the default environment, e.g. `@v1.8`. You can add packages to this environment and they will be available to load as soon as you open Julia. Be very careful about doing this, as this can very often lead to what is lightly called *dependency hell*. This is what happens when a package you want to update depends on another package that can't update, sometime because it depends on a specific version of yet another package. The more packages you have in the current environment, to more often this will happen. The solution is to create a new environment for each project and add only the packages you are actually using in the project.
 
 ```
                _
@@ -48,7 +48,7 @@ Here we changed the current directory to the *Dummy* sub-folder. Note the use of
 
 The package manager is then activated with `]` and the current folder is activated as a project with `activate .`, where `.` means the current directory (`..` means the parent directory).
 
-Finally we add a registered packages, UnicodePlots.jl, and once the installation is done, check which packages and versions are currently installed with the `st` command (short for `status`).
+Finally we add a registered package, UnicodePlots.jl, and once the installation is done, check which packages and versions are currently installed with the `st` command (short for `status`).
 
 Once a package is installed, it can be loaded by issuing the `using` command:
 
@@ -150,9 +150,31 @@ String
 ```
 When assigning a value to the variable `x`, Julia infers the type of the value, e.g. `Int64` and then associates the name, `x`, with that value.
 
-As illustrated, the function `typeof()` will return the type of the variable or value.
+As illustrated, the function `typeof()` will return the type of the variable or value. While you don't have to specify the types of variables, Julia is a *strongly-typed* language, just like C or Fortran. The type of a variable is just automatically inferred whenever possible.
 
-Since variables can be reassigned in the global scope, this makes it difficult for the compiler to generate optimised code - the type of the variable could change. If you want fast code, then avoid using global variables, or if you absolutely have to use them, declare them as `const`. This freezes the type of the variable, allowing more optimisations. The best practise however, is to put your code inside functions.
+Since variables can be reassigned in the global scope, this makes it difficult for the compiler to generate optimised code - the type of the variable could change. If you want fast code, then avoid using global variables, or if you absolutely have to use them, declare them as `const`.
+
+```julia
+julia> const MyConst = 1
+1
+
+julia> typeof(MyConst)
+Int64
+
+julia> MyConst = 2
+WARNING: redefinition of constant MyConst. This may fail, cause incorrect answers, or produce other errors.
+2
+
+julia> MyConst = 2.0
+ERROR: invalid redefinition of constant MyConst
+Stacktrace:
+ [1] top-level scope
+   @ REPL[4]:1
+```
+
+Declaring a variable as `const` freezes the type of the variable, allowing more optimisations. It is possible, but not recommended, to change the value, but not the type. It is expected that changes to the values will also be prevented in future versions of Julia.
+
+The best practise however, is to put your code inside functions.
 
 ### Strings and Characters
 Text values are stored as either strings (`"This is a string"`, type `String`) or single characters (`'c'`, type `Char`). A string can also be just one character long: `"A"`. Strings can also include multiple lines, and quotation marks, when enclosed with triple quotation marks:
@@ -227,7 +249,9 @@ Floating point values are stored in a limited number of bits (typically 64 bits 
 
 The smallest positive value that can be stored in a `Float64`, is 2.220446049250313e-16. You can calculate this in Julia using the `eps()` function, e.g. `eps(Float64)`. The value epsilon is an indication of the precision you can expect. It is the smallest value you can add to the floating point value that will cause it to result in a new value. Anything smaller may as well be zero. Obviously epsilon depends on the magnitude of the values you are working with and you can again use the `eps()` function: `eps(100) = 1.4210854715202004e-14`, so adding a smaller amount to 100 will not change the value.
 
-While you can safely ignore this for many, if not most engineering calculations, it can sometimes become an issue when you least expect it. Consider adding up a very large number of small values. The larger the difference between the running total and the next value you are adding, the larger the rounding error will become. At some point in this exercise, the value you are adding to the running total will be in the order of the relative epsilon and the running total will stop increasing, no matter how many more values you add. The solution to this is actually fairly simple and implemented in the Julia `sum()` function. The list of values is split into pairs and the pairs are added to each other, then this is repeated over and over until there is only one value left - the answer. The algorithm works under the inherent assumption that the values are fairly equally sized and so adding similar values results in minimal rounding error. Once the pairs have been summed, the new values should also be simialrly sized and so the process repeats, with a minimum rounding error at each step.
+While you can safely ignore this for many, if not most engineering calculations, it can sometimes become an issue when you least expect it. Consider adding up a very large number of small values. The larger the difference between the running total and the next value you are adding, the larger the rounding error will become. At some point in this exercise, the value you are adding to the running total will be in the order of the relative epsilon and the running total will stop increasing, no matter how many more values you add. The solution to this is actually fairly simple and implemented in the Julia `sum()` function.
+
+The list of values is split into pairs and the pairs are added to each other, then this is repeated over and over until there is only one value left - the answer. The algorithm works under the inherent assumption that the values are fairly equally sized and so adding similar values results in minimal rounding error. Once the pairs have been summed, the new values should also be simialrly sized and so the process repeats, with a minimum rounding error at each step.
 
 Something else to consider, which much more often trips up new programmers, is that you will very rarely find two identical floating point values through calculations. Directly comparing values that are realistically speaking equal, will very often result in the wrong part of an `if` statement executing. When comparing floating point values, always use a check for approximate equality. This is done either via the `≈` operator (`\approx<tab>`), or the `isapprox()` function, which allows you to specify absolute and relative tolerances. The `≈` operator calls `isapprox()` with default tolerances.
 
