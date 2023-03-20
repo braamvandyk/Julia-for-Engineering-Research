@@ -431,7 +431,10 @@ In most code, you will find it convenient to deal with a collection of values at
 
 The most common collection of values is an Array. In mathematics, you will be familar with vectors and matrices. These are simply one- and two dimensional arrays. You can have arrays with any number of dimensions (*tensors*). The keywords `Vector` and `Matrix` are also available as synonyms for `Array` in the special cases of one and two dimensions.
 
-Simple one dimensional arrays are treated as column vectors for use in linear algebra calculations. You can s
+::: {.callout-note}
+Simple one dimensional arrays are treated as column vectors for use in linear algebra calculations.
+:::
+
 Some examples:
 
 ```julia
@@ -548,7 +551,7 @@ julia> hcat(A, B)
 ```
 
 #### Tuples
-Tuples are functionally similar to arrays. They are specified with commas and parentheses. They are intimately linked with passing parameters to functions and returning values from functions, e.g.
+Tuples are functionally similar to arrays. They are specified with commas and (optional) parentheses. They are intimately linked with passing parameters to functions and returning values from functions, e.g.
 
 ```julia
 julia> function myfunc(a, b)
@@ -558,11 +561,14 @@ myfunc (generic function with 1 method)
 
 julia> myfunc(1, 2)
 (2, 3)
+
+julia> typeof(myfunc(1, 2))
+Tuple{Int64, Int64}
 ```
 
-We pass the parameters to the function as a tuple, (a, b). The results are returned as a tuple, (2, 3). Other than passing parameters to functions, what is the use of tuples? They are fairly widely used in Julial. The main differences from arrays are that while arrays are heap-allocated, tuples are stack-allocated. This is some more computer jargon, but what it means is that tuples can be accessed faster than arrays, but cannot be as large.
+We pass the parameters to the function as a tuple, (a, b). The results are returned as a tuple, (2, 3). Other than passing parameters to functions, what is the use of tuples? They are fairly widely used in Julia. The main differences from arrays are that while arrays are heap-allocated, tuples are stack-allocated. This is some more computer jargon, but what it means in practise is that tuples can be accessed faster than arrays, but cannot be as large.
 
-Tuples are also immutable, meaning once created, they cannot be modified. The entries of an array can always be modified. This is important to keep in mind when writing functions in Julia. The only way you can modify a parameter passed to a function is if that parameter is an array. And then only the contents of the array can be changed.
+Tuples are also *immutable*, meaning once created, they cannot be modified. The entries of an array can always be modified. This is important to keep in mind when writing functions in Julia. The only way you can modify a parameter passed to a function is if that parameter is an array. And then only the individual entries of the array can be changed - you cannot replace the array with another one (more detail later). 
 
 Some examples:
 
@@ -573,11 +579,11 @@ julia> a = (1, 2, 3)
 julia> typeof(a)
 Tuple{Int64, Int64, Int64}
 
-julia> b = (1., 2., 3.)
-(1.0, 2.0, 3.0)
+julia> b = (1., 2., 3, 1//2)
+(1.0, 2.0, 3, 1//2)
 
 julia> typeof(b)
-Tuple{Float64, Float64, Float64}
+Tuple{Float64, Float64, Int64, Rational{Int64}}
 
 julia> a[2]
 2
@@ -588,7 +594,7 @@ julia> c = (1,)
 julia> typeof(c)
 Tuple{Int64}
 
-julia> d = 1,2,3  # the parentheses are optional here
+julia> d = 1,2,3  # the parentheses are optional
 (1, 2, 3)
 
 julia> typeof(d)
@@ -596,6 +602,14 @@ Tuple{Int64, Int64, Int64}
 ```
 
 We again use `[]` to access the individual entries.
+
+```julia
+julia> a = (1, 2, 3)
+(1, 2, 3)
+
+julia> a[2]
+2
+```
 
 Tuples can be unpacked into variables:
 
@@ -616,7 +630,7 @@ julia> z
 3
 ```
 
-And since the parentheses are option in the direct specification of tuples, we can do this:
+And since the parentheses are optional in the direct specification of tuples, we can do this:
 
 
 ```julia
@@ -638,7 +652,7 @@ julia> y
 
 Here we defined a tuple `(x, y)` and then unpacked it into the variables `y` and `x`, swopping their values.
 
-Since tuples have superior performance to arrays, there exists a package that builds small arrays from tuples - [`StaticArrays.jl`](https://github.com/JuliaArrays/StaticArrays.jl). This is commonly used for maximum performance, but only for smallish arrays, typically less than 200-300 entries. More than that and you run out of space on the stack, which has a limited size.
+Since tuples have superior performance to arrays, there exists a package that builds small arrays-like structures from tuples - [`StaticArrays.jl`](https://github.com/JuliaArrays/StaticArrays.jl). This is commonly used for maximum performance, but only for smallish arrays, typically less than 200-300 entries. More than that and you run out of space on the stack, which has a limited size.
 
 #### Named Tuples
 You can also name the entries in a tuple and access them via the names instead or indeces:
@@ -646,6 +660,9 @@ You can also name the entries in a tuple and access them via the names instead o
 ```julia
 julia> nt = (a = 1, b = 2, c = "Bob")
 (a = 1, b = 2, c = "Bob")
+
+julia> typeof(nt)
+NamedTuple{(:a, :b, :c), Tuple{Int64, Int64, String}}
 
 julia> nt.a
 1
@@ -656,8 +673,8 @@ julia> nt[2]
 julia> nt.c
 "Bob"
 
-julia> typeof(nt)
-NamedTuple{(:a, :b, :c), Tuple{Int64, Int64, String}}
+julia> nt.c === nt[3] # The values are "egal", i.e. not just equal, but the actual same bits in memory
+true
 ```
 
 Note that the entries in a tuple or named tuple needn't be all of the same type. This is also true for arrays, but in that case the array will be of type `Any` and performance will be hugely impacted. Avoid this whenever possible! 
@@ -666,7 +683,7 @@ Note that the entries in a tuple or named tuple needn't be all of the same type.
 The third collection type we are considering are ranges. There are several ways to specify a range:
 
 ```julia
-julia> a = 1:10   #start : stop with default step of one, hence a unit range
+julia> a = 1:10   # start : stop with default step of one, hence a unit range
 1:10
 
 julia> typeof(a)
@@ -678,7 +695,7 @@ julia> b = 1:2:20   # start : step : stop, hence a step range
 julia> typeof(b)
 StepRange{Int64, Int64}
 
-julia> c = 1.0:0.5:5.0 # with floating point steps, we get a StepRangeLen - start, stop, length
+julia> c = 1.0:0.5:5.0 # with floating point steps, we get a StepRangeLen
 1.0:0.5:5.0
 
 julia> typeof(c)
@@ -707,7 +724,7 @@ julia> d[5]
 23.2
 ```
 
-The main difference is that, while arrays and tuples consist of values stored in memory, ranges are *lazy*. The values are only calculated when they are requested and no matter the length of the range, it takes up the same amount of memory - just enough to store the *start*, *step* and *stop* values that are needed to calculate any entry and know when you have run through the whole range.
+The main difference is that, while arrays and tuples consist of values stored in memory, ranges are *lazy*. The values are only calculated when they are requested and no matter the length of the range, it takes up the same amount of memory - just enough to store the *start*, *step* and *stop*/*length* values that are needed to calculate any entry and know when you have run through the whole range.
 
 You can change a range into an array, with the `collect()` function:
 
@@ -760,8 +777,10 @@ julia> for k in t
 2
 3
 ```
-
-From a programmer's point of view, iterable types all behave the same. We can therefore write a function that can handle any iterable type. The only requirement here is that the item passed should have at least two entries, or there will be an error.
+::: {.callout-note}
+You can also use the Unicode symbol ∈ (`\in<tab>`) in place of the word `in`.
+:::
+From a programmer's point of view, iterable types all behave the same. We can therefore write a function that can handle any iterable type. The only requirement for this example is that the item passed should have at least two entries, or there will be an error.
 
 ```julia
 julia> function mycomp(a)
@@ -796,7 +815,11 @@ true
 For each case, the Julia compiler will generate optimised code depending on the type of the variable passed.
 
 #### Indexing
-In the examples above, we used one dimensional arrays and there was really no choice in how to index into the structure. In the case if multi-dimensional arrays, there are better and worse options. This is because of how the values are stored in memory. It is faster to sequencially access values that are stored next to each other than to jump around in memory. Julia is *column major*, meaning that the values in the first column of a matrix are stored next to each other in memory, followed by the values of the next column etc. For higher dimenstions, the sequence is similar: each subsequent index follows the next. This is then the fastest way of iterating through the whole array.
+In the examples above, we used one dimensional arrays and there was really no choice in how to index into the structure. The entries are all in a row in memory.
+
+In the case if multi-dimensional arrays, the entries are still sequential in memory - that is how RAM works! Here, however, there are better and worse options for accessing a given entry in the array.
+
+This is because of how the values are stored in memory. It is faster to sequencially access values that are stored next to each other than to jump around in memory. Julia is *column major*, meaning that the values in the first column of a matrix are stored next to each other in memory, followed by the values of the second column etc. For higher dimenstions, the sequence is similar: each subsequent index follows the next. This is then the fastest way of iterating through the whole array.
 
 
 ```julia
@@ -824,15 +847,15 @@ myfunc2 (generic function with 1 method)
 
 julia> using BenchmarkTools
 
-julia> @btime myfunc(A) # @btime is similar to @benchmark, but just returns the minimum time
-  1.827 s (1 allocation: 16 bytes)
-5.000090241950586e7
+julia> @btime myfunc(A)
+  644.754 ms (1 allocation: 16 bytes)
+4.99959369384022e7
 
 julia> @btime myfunc2(A)
-  96.449 ms (1 allocation: 16 bytes)
-5.000090241950418e7
+  94.296 ms (1 allocation: 16 bytes)
+4.999593693838226e7
 ```
-So, in our 10,000 x 10,000 random matrix, summing up the values row-wise takes 1.827s, while column-wise it takes only 96.449ms. Quite the improvement! If you are worried you won't remember the correct way of iterating through a structure, Julia has you covered. Use `eachindex()` to get the optimal sequence:
+So, in our 10,000 x 10,000 random matrix, summing up the values row-wise takes 644.754ms, while column-wise it takes only 96.449ms. Quite the improvement! If you are worried you won't remember the correct way of iterating through a structure, Julia has you covered. Use `eachindex()` to get the optimal sequence:
 
 ```julia
 julia> function myfunc3(A)
@@ -852,7 +875,7 @@ julia> @btime myfunc3(A)
 
 `eachindex()` returns a linear index, no matter what the dimensionality of the array is and sequences it for the fastest sequencial access.
 
-Another useful indexing function is `enumerate`. It returns an iterator if tuples, each containing an index and value pair. The indeces are linear, not cartesian.
+Another useful indexing function is `enumerate`. It returns an iterator of tuples, each containing an index and value pair. The indeces are linear, not cartesian.
 
 ```julia
 julia> A = rand(2,2)
@@ -870,8 +893,27 @@ julia> for (index, value) in enumerate(A)
 ```
 For more information, see the [manual](https://docs.julialang.org/en/v1/base/iterators/#Base.Iterators.enumerate).
 
+
+::: {.callout-note}
+Julia also provides the keywords `begin` and `end` to directly index the first and last entries in an array:
+
+```julia
+julia> a = [1, 2, 3]
+3-element Vector{Int64}: …
+
+julia> a[begin]
+1
+
+julia> a[end]
+3
+
+julia> a[end-1] # second last entry
+2
+```
+:::
+
 #### Array Assignments
-The array variable is a pointer that holds the address of the memory space where the contents is kept (on the heap). This is not an implementation detail - it is an important thing to keep in mind:
+The array variable is a pointer that holds the address of the memory space where the contents is kept (on the heap). This is not an implementation detail - it is an important thing to keep in mind, as there is a difference between modifying the entries of the array (the values in the memory the array variable points to) and changing the array variable (which memory it points to):
 
 ```julia
 julia> a = collect(1:5)
@@ -913,7 +955,7 @@ julia> b
   5
 ```
 
-Here we created an array variable, `a`. Then we assigned `a` to `b`. The result is a new array variable that point **to the same memory space**. If we change the contents of `b`, we also change the contents of `a`, and vice versa.
+Here we created an array variable, `a`. Then we assigned `a` to `b`. The result is a new array variable that **points to the same memory space**. If we change the contents of `b`, we also change the contents of `a`, and vice versa.
 
 If you want an independent copy of `a`, then use the `copy()` function:
 
@@ -971,7 +1013,26 @@ julia> a = [sin(i^2) for i in 0:0.1:2π]
  -0.9917788534431158
  -0.4698420526176865
   0.6749435215575963
+
+julia> [1/(x+y) for x in 1:3, y in 1:3]
+3×3 Matrix{Float64}:
+ 0.5       0.333333  0.25
+ 0.333333  0.25      0.2
+ 0.25      0.2       0.166667
+
+julia> [1/(x+y) for x in 1:3 for y in 1:3]
+9-element Vector{Float64}:
+ 0.5
+ 0.3333333333333333       
+ 0.25
+ 0.3333333333333333
+ 0.25
+ 0.2
+ 0.25
+ 0.2
+ 0.16666666666666666 
 ```
+Take note of the subtle difference between the second and third examples. This is not terribly intuitive! 
 
 #### Broadcasting
 You can process each entry in an iterable in a loop, or you can use the built-in broadcasting (a.k.a. dot notation). The following are equivalent:
@@ -1029,9 +1090,9 @@ julia> e = sqrt.(d) # works for any function (note the . is between the name and
 ### The Type Hierarchy
 The built-in types have a hieracrchy:
 
-![The type hierarchy - Ref: https://thautwarm.github.io/](https://thautwarm.github.io/Site-32/_images/julia-type-hierarchy.png)
+![The type hierarchy - Image from https://thautwarm.github.io/](https://thautwarm.github.io/Site-32/_images/julia-type-hierarchy.png)
 
-This consists of abstract and concrete types. You can only instanciate a variable of a concrete type, but the abstracts types are useful to specificy groups of types that would behave similarly, e.g. `Float64` and `Int64` could both the added or multiplied. This is true for all the `Number` types, be they `Real` or `Complex`. We could specify allowed groups of types, via the `<:` operator, or specific types, via `::`, e.g.
+This consists of abstract and concrete types. You can only instansiate a variable of a concrete type, but the abstracts types are useful to specificy groups of types that would behave similarly, e.g. `Float64` and `Int64` could both the added or multiplied. This is true for all the `Number` types, be they `Real` or `Complex`. We could specify allowed groups of types, via the `<:` operator, or specific types, via `::`, e.g.
 
 ```julia
 function f(x::T) where T <: Number
@@ -1039,7 +1100,7 @@ function f(x::T) where T <: Number
 end
 ```
 
-Here, Julia will allow us to call f(x) with any sub-type of the `Number` abstract type, such as `Float64`, `Int32` or `ComplexF64`. Calling f(x) with a `String` type will give an error.
+Here, Julia will allow us to call f(x) with any sub-type of the `Number` abstract type, such as `Float64`, `Int32` or `ComplexF64`. Calling f(x) with a `String` type will give an error, rather than try to compile a specialised version of `f()`.
 
 ### Structs
 Structs are use-defined complex types that can contain multiple fields. They are defined using the `struct` keyword:
@@ -1047,12 +1108,15 @@ Structs are use-defined complex types that can contain multiple fields. They are
 ```julia
 julia> struct PersonData
            name::String
-           Address::String
+           address::String
            ID::Int64
        end
 
 julia> customers = PersonData[] # empty array of PersonData structs
 PersonData[]
+
+julia> typeof(customers)
+Vector{PersonData} (alias for Array{PersonData, 1})
 
 julia> bob = PersonData("Robert Smith", "2 Cypress Lane", 123456) # create a variable of type PersonData by calling the constructor
 PersonData("Robert Smith", "2 Cypress Lane", 123456)
@@ -1088,7 +1152,7 @@ To make a `struct` mutable, simply add the keyword `mutable` to the definition.
 ```julia
 julia> mutable struct PersonData2
            name::String
-           Address::String
+           address::String
            ID::Int64
        end
 
@@ -1107,8 +1171,74 @@ PersonData2("Joe Bloggs", "2 Cypress Lane", 123456)
 
 The `struct` is immutable by default to allow additional compiler optimisations. Mutable structs will therefore have worse performance, but more flexibility.
 
+#### Constructors
+Julia automatically creates a *contructor* for each struct you define. This is a function that takes the values of the fields, creates a new structure in memory and assigns the specified values to the fields.
+
+You can also create additional constructors. There are two types:
+
+- Outer constructors and
+- Inner constructors
+
+The default constructor is an outer constructor. You can also speficy additional outer constructors that, e.g. have default values for some fields, or calculate some values from others:
+
+```julia
+julia> struct PersonData
+           name::String
+           address::String
+           ID::Int64
+       end
+
+julia> bob = PersonData("Robert Smith", "2 Cypress Lane", 123456)
+PersonData("Robert Smith", "2 Cypress Lane", 123456)
+
+julia> function PersonData(name, ID)
+           # Call the default constructor to do the allocations and assignments
+           PersonData(name, "No known address", ID) 
+       end
+PersonData
+
+julia> sally = PersonData("Sally Jones", 123)
+PersonData("Sally Jones", "No known address", 123)
+
+julia> sally.address
+"No known address"
+
+julia> tom = PersonData("Tom Jones", "Las Vegas", 34556) # The default is still available
+PersonData("Tom Jones", "Las Vegas", 34556
+```
+
+Inner constructors are defined as part of the `struct` definition and are used to validate the entries for the struct before creating the instance.
+
+```julia
+julia> struct OnlyNegatives
+           val::Float64
+           OnlyNegatives(val) = val > 0 ? error("Non-negative value!") : new(val)
+       end
+
+julia> OnlyNegatives(-1)
+OnlyNegatives(-1.0)
+
+julia> OnlyNegatives(1)
+ERROR: Non-negative value!
+Stacktrace:
+ [1] error(s::String)
+   @ Base .\error.jl:35
+ [2] OnlyNegatives(val::Int64)
+   @ Main .\REPL[7]:3
+ [3] top-level scope
+   @ REPL[9]:1
+```
+
+Inner constructors have access to a special local function, `new()`, which acts like the default outer constructor would.
+
+::: {.callout-important}
+If you define an inner constructor, NO default constructors are created. You need to handle all cases via your inner constructors.
+:::
+
+
 ## Loops
-Julia provides two types of loops
+Julia provides two types of loops:
+
 1. `for` loops for iterating over an iterable contruct, like a range or array with a known length
 2. `while` loops for iterating until a logical criterium is met, with an initially unknown number of iterations
 
@@ -1157,7 +1287,7 @@ end
 
 The `elseif` and `else` blocks are optional. You can have multiple `elseif` blocks with different criteria. You can also nest `if` statements. The `end` statement is a requirement.
 
-Julia also offers a short-cut alternative for for simple `if` statements. The following two statements will both print the value `Negative`
+Julia also offers a short-cut alternative for for simple `if` statements. The following two statements will both print the value `Negative` if `a < 0`.
 
 ```julia
 a < 0 && println("Negative")
@@ -1165,9 +1295,17 @@ a >= 0 || println("Negative")
 ```
 This looks a little arcane. It works as follows:
 
-The `&&` operator is a logical `and`. For an `and` statement to be true, both criteria must be true, so if the first statement (before the `&&`) is false, Julia won't bother to evaluate the second statement (after the `&&`), since the whole cannot be true. This means the `println()` is only executed if `a` is indeed less than zero.
+The `&&` operator is a logical `and`. For an `and` statement to be true, both criteria must be true, so if the first statement (before the `&&`) is false, Julia won't bother to evaluate the second statement (after the `&&`), since the whole cannot be true. This is called *short-circuit evaluation*. This means the `println()` is only executed if `a` is indeed less than zero.
 
-The `||` operator is a logical `or`. For an `or` statement to be true, either of the two criteria must be true, so if the first statement is true, there is no need need to also evaluate the second - the whole is already true. The `println()` will therefore not be executed is a is larger than or equal to zero.
+The `||` operator is a logical `or`. For an `or` statement to be true, either of the two criteria must be true, so if the first statement is true, there is no need need to also evaluate the second - the whole is already true. The `println()` will therefore not be executed if `a` is larger than or equal to zero.
+
+::: {.callout-tip}
+To help you remember how *short-circuit evaluations* work, try this:
+
+`a < 0 && println("Negative")` reads as  `a < 0` AND then `println()`
+
+`a >= 0 || println("Negative")` reads as  `a >= 0` OR else `println()`
+:::
 
 You may very well choose to stick to more readily understandable `if` statements in your code, but these *short-circuit* notations are commonly used and you will encounter them often in other people's code
 
