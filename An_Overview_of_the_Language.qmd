@@ -1328,17 +1328,48 @@ julia> b = a > 0 ? "Positive" : (a == 0 ? "Zero" : "Negative")
 The parentheses around the final statement are optional, but significantly improves readability.
 
 ## Functions
+Functions are the core of any Julia program. Inputs are passed as parameters and any number and type of values can be returned as a tuple. You can also modify the values of array parameters passed to the function. In this case, the function is called *mutating* and it is accepted practise in Julia to end the function name with an exclamation mark (or a bang, if you are American), to indicate that the function mutates one or more parameters. Typically, it would be the first parameter that is mutated.
+
+There are four ways to declare a function:
+
+1. Full declaration
+```julia
+function myfunc(a, b)
+    return a + b
+end
+```
+The keyword `return` is optional, but it significantly improves readability. In the absense of a `return` statement, Julia will return the last calculated result. You can also have multiple `return` statements in an `if` block. When a `return` is executed (evaluated in Julia parlance), the function will return the specified value and exit.
 
 
+2. Short-cut for single line functions
+```julia
+myfunc(a, b) = a + b
+```
 
+3. Anonymous functions, typically used when passing a single-use function to a higher-level function (which takes a function as input)
+```julia
+mysum = sum(x -> x^2 + √x, somearray)
+```
+Here Julia will apply the function `x -> x^2 + √x` to each entry in the array `somearray` and then adds up the results.
 
+You technically can pass only one parameter to an anonynous function, but since that parameter can be a tuple (and tuples can contain arrays or other tuples), there is practically no limit to the number of parameters passed, e.g.
+```julia
+f = x(x, y) -> 2x/y^2
+```
+Here we alo asign the result of the function definition to a variable, `f`, which means we can later call `f(x, y)`. There is really no reason to do this. Rather use the short-cut function definition above.
 
+4. Do blocks (similar to anonymous functions, but for multi-line functions)
+```julia
+open("myfile.txt", "w") do io
+    write(io, "Hello world!")
+end
+```
+Here, there are a few things to pay attention to:
 
+- We are calling the higher level function `open()`, which takes another function as its first parameter. The `do` block **ALWAYS** passes the specified (anonymous) function to the first parameter of the calling function. The nominal syntax for `open()` is `open(f::Function, args...; kwargs...)`. The function, `f` is specified by the `do` block.
+- We pass the parameter `io` to the function be specifying `io` next to the keyword `do`. This is similar to the `x -> ...` in an anonymous function, here we effectively have `io -> ...`
 
-
-
-
-## Type Stability
+## Type Stability and Fast Code
  Being able to change the type of a variable can be useful, but it does also open the door to something that can cause slowdown in your code: **type instability**. This is when the type of x changes during the execution of your code, making many of the optimisations Julia could do impossible. Instead, additional code is required to handle the type changes. Keep a look-out for something like this:
 
 ```julia
@@ -1386,15 +1417,28 @@ Body::Union{Float64, Int64}
 4 ┄       return sum
 ```
 
-Like when we looked at the LLVM code generated for a function, this may seem intimidating, but the important bit is this:
+Like when we looked at the LLVM code generated for a function, this may seem intimidating, but the important bits are these:
 
 ```julia
 sum::Union{Float64, Int64}
 ```
+and
+```julia
+Body::Union{Float64, Int64}
+```
 
 ::: {.callout-note}
-In the REPL this is helpfully printed in red to draw your attention.
+In the REPL these are helpfully printed in red to draw your attention.
 :::
 
-Julia indicates that the variable `sum` is not type stable. It is assigned both `Int64` and `Float64`values.
+Julia indicates that the variable `sum` is not type stable. It is assigned both `Int64` and `Float64`values. This limits the amount of optimisation that is allowed and ends up in slower code.
 
+To learn more about type stability and many other useful tips to help you write faster code, refer to the [Performance Tips](https://docs.julialang.org/en/v1/manual/performance-tips/) section in the manual.
+
+The main things to consider, if you want fast code are:
+
+1. The fastest code is code that you don't need to execute. Better algorithms always trump more optimised code
+2. Avoid type instability in your code.
+3. Avoid unnecessary memory allocation by re-using arrays where possible.
+
+Once you have these issues under control, learning to properly benchmark your code (using [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl)) will allow you to finetune the performance of your code. Writing gast code is mostly about *not writing slow code*.
