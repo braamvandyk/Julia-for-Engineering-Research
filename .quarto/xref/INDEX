@@ -6,18 +6,52 @@
     "about.html": "f151995d"
   },
   "Getting_started_with_Julia.qmd": {
-    "Getting_started_with_Julia.html": "cb2d6fd0"
+    "Getting_started_with_Julia.html": "cb2d6fd0",
+    "Getting_started_with_Julia.docx": "590403c0"
   },
   "Installing Julia.qmd": {
     "Installing Julia.html": "bc49a0e0"
   },
   "Installing_Julia.qmd": {
-    "Installing_Julia.html": "d029b765"
+    "Installing_Julia.html": "d029b765",
+    "Installing_Julia.docx": "6295e790"
   },
   "An_Overview_of_the_Language.qmd": {
-    "An_Overview_of_the_Language.html": "7e815b70"
+    "An_Overview_of_the_Language.html": "7e815b70",
+    "An_Overview_of_the_Language.docx": "6fc1f87a"
   },
   "Running_Julia.qmd": {
     "Running_Julia.html": "2b600d4a"
+  },
+  "01_Getting_started_with_Julia.qmd": {
+    "01_Getting_started_with_Julia.html": "7f611437"
+  },
+  "02_Installing_Julia.qmd": {
+    "02_Installing_Julia.html": "8fdc358e"
+  },
+  "03_Running_Julia.qmd": {
+    "03_Running_Julia.html": "bea44399"
+  },
+  "04_An_Overview_of_the_Language.qmd": {
+    "04_An_Overview_of_the_Language.html": "8b9f5a9d"
+  },
+  "05_Plotting.qmd": {
+    "05_Plotting.html": "d3ae2b0b",
+    "05_Plotting.docx": "41ffb14b"
+  },
+  "06_Solving_Linear_Systems.qmd": {
+    "06_Solving_Linear_Systems.html": "8493feef"
+  },
+  "07_Solving_Non-linear_Systems.qmd": {
+    "07_Solving_Non-linear_Systems.html": "c47521d4"
+  },
+  "08_Solving_Differential_Equations.qmd": {
+    "08_Solving_Differential_Equations.html": "4b0e600f"
+  },
+  "09_Optimisation.qmd": {
+    "09_Optimisation.html": "06275909"
+  },
+  "10_Working_with_Data.qmd": {
+    "10_Working_with_Data.html": "2d9203cc"
   }
 }

@@ -89,8 +89,26 @@ There are two more useful tools for running Julia.
 
 These run inside your browser. Code is entered in cells and results displayed below (Jupyter) or above (Pluto) the cell after it is executed.
 
-The main difference between the two is that Jupyter cells are static - they only run when you execute them manually, while Pluto is *reactive*. If a cell in pluto assigns a value to variable and is edited, then Pluto will also execute all other cells that use this variable.
+The main difference between the two is that Jupyter cells are static - they only run when you execute them manually, while Pluto is *reactive*. If a cell in Pluto assigns a value to variable and is edited, then Pluto will also execute all other cells that use this variable. To enable this, you should limit Pluto cells to single statements, or wrap code in a `begin..end` block, but still limit it to a single assignment per cell.
 
-Jupyter can be used with Python and R as well as Julia (the name Jupyter is from **Ju**lia, **Pyt**hon and **R**). Pluto is only for Julia.
+Jupyter can be used with Python and R as well as Julia (the name Jupyter is from **Ju**lia, **Pyt**hon and **R**) as well as ~40 other languages. Pluto is only for Julia.
 
-More on these later.
+### Installing Jupyter
+The easiest way to install Jupyter is to add the `IJulia.jl` package to Julia from within the REPL. Julia will install a private copy of Python as well as all the add-ins it needs. To launch Jupyter, do the following from within Julia:
+
+```julia
+using IJulia
+notebook(dir = ".") # sets the starting folder to the current folder
+```
+This will open up your default browser and start Jupyter with the Julia kernel selected.
+
+### Installing Pluto
+Pluto is installed as a Julia package, so just open the package manager and `add Pluto`.
+
+To launch Pluto, then do the following:
+
+```julia
+using Pluto
+Pluto.run()
+```
+This will open your default browser and start Pluto.

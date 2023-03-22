@@ -4,7 +4,7 @@ title: "An Overview of the Language"
 
 
 ## Package Management
-Julia will open up in the default environment, e.g. `@v1.8`. You can add packages to this environment and they will be available to load as soon as you open Julia. Be very careful about doing this, as this can very often lead to what is lightly called *dependency hell*. This is what happens when a package you want to update depends on another package that can't update, sometime because it depends on a specific version of yet another package. The more packages you have in the current environment, to more often this will happen. The solution is to create a new environment for each project and add only the packages you are actually using in the project.
+Julia will open up in the default environment, e.g., `@v1.8`. You can add packages to this environment, and they will be available to load as soon as you open Julia. Be very careful about doing this, as this can very often lead to what is lightly called *dependency hell*. This is what happens when a package you want to update depends on another package that can't update, sometime because it depends on a specific version of yet another package. The more packages you have in the current environment, to more often this will happen. The solution is to create a new environment for each project and add only the packages you are actually using in the project.
 
 ```
                _
@@ -42,13 +42,13 @@ Status `D:\JuliaCode\Dummy\Project.toml`
   [b8865327] UnicodePlots v3.4.1
 ```
 
-Here we changed the current directory to the *Dummy* sub-folder. Note the use of a forward slash. Backslashes are used for special characters, e.g. `\n` for a new line and must themselves be *escaped* by typing a double backslash: `cd(".\\Dummy")`. Or you can use a raw string: `cd(raw".\Dummy")`. The forward slash however works just as well in Linux and MaxOS, so is preferred.
+Here we changed the current directory to the *Dummy* sub-folder. Note the use of a forward slash. Backslashes are used for special characters, , `\n` for a new line and must themselves be *escaped* by typing a double backslash: `cd(".\\Dummy")`. Or you can use a raw string: `cd(raw".\Dummy")`. The forward slash however works just as well in Linux and MaxOS, so is preferred.
 
 `pwd()` is a function that replicates the Unix (Linux) command for *print working directory* and simply returns the name of the current folder. 
 
 The package manager is then activated with `]` and the current folder is activated as a project with `activate .`, where `.` means the current directory (`..` means the parent directory).
 
-Finally we add a registered package, UnicodePlots.jl, and once the installation is done, check which packages and versions are currently installed with the `st` command (short for `status`).
+Finally, we add a registered package, UnicodePlots.jl, and once the installation is done, check which packages and versions are currently installed with the `st` command (short for `status`).
 
 Once a package is installed, it can be loaded by issuing the `using` command:
 
@@ -60,7 +60,7 @@ In the `Dummy` folder, Julia creates two files: `project.toml` and `manifest.tom
 
 Each project should be in its own folder, with its own `*.toml` files. This means different projects can potentially use different versions of the same package, depending on what other packages are in use.
 
-To update the packages and dependencies to the latest versions (as allowed for by the specified versions of dependencies for each packages), use the `up` command of the package manager. This updates packages for the **current** project only.
+To update the packages and dependencies to the latest versions (as allowed for by the specified versions of dependencies for each package), use the `up` command of the package manager. This updates packages for the **current** project only.
 
 ## Using vs Import
 
@@ -74,7 +74,7 @@ using Plots
 scatter(rand(10), rand(10))
 ```
 
-This does mean that several functions and variables you are not using are now also in the namespace and you cannot define a new function with the same name, or use another package that exports a function with the same name. For those cases, you can use `import`. If a package is `import`ed, you need to prepend each function call with the package name.
+This does mean that several functions and variables you are not using are now also in the namespace and you cannot define a new function with the same name or use another package that exports a function with the same name. For those cases, you can use `import`. If a package is `import`ed, you need to prepend each function call with the package name.
 
 ```julia
 import Plots
@@ -148,9 +148,9 @@ julia> x = "Hello, World"
 julia> typeof(x)
 String
 ```
-When assigning a value to the variable `x`, Julia infers the type of the value, e.g. `Int64` and then associates the name, `x`, with that value.
+When assigning a value to the variable `x`, Julia infers the type of the value, e.g., `Int64` and then associates the name, `x`, with that value.
 
-As illustrated, the function `typeof()` will return the type of the variable or value. While you don't have to specify the types of variables, Julia is a *strongly-typed* language, just like C or Fortran. The type of a variable is just automatically inferred whenever possible.
+As illustrated, the function `typeof()` will return the type of the variable or value. While you don't have to specify the types of variables, Julia is a *strongly typed* language, just like C or Fortran. The type of a variable is just automatically inferred whenever possible.
 
 Since variables can be reassigned in the global scope, this makes it difficult for the compiler to generate optimised code - the type of the variable could change. If you want fast code, then avoid using global variables, or if you absolutely have to use them, declare them as `const`.
 
@@ -174,7 +174,7 @@ Stacktrace:
 
 Declaring a variable as `const` freezes the type of the variable, allowing more optimisations. It is possible, but not recommended, to change the value, but not the type. It is expected that changes to the values will also be prevented in future versions of Julia.
 
-The best practise however, is to put your code inside functions.
+The best practice, however, is to put your code inside functions.
 
 ### Strings and Characters
 Text values are stored as either strings (`"This is a string"`, type `String`) or single characters (`'c'`, type `Char`). A string can also be just one character long: `"A"`. Strings can also include multiple lines, and quotation marks, when enclosed with triple quotation marks:
@@ -236,29 +236,29 @@ Twice the value is: 2.0
 ```
 
 ### Integers and Floating-point Values
-Julia has the usual selection of variable types for integers and floating point values. There are signed and unsigned versions of 8, 16, 32, 64 and 128-bit integers. See the [manual](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/) for details.
+Julia has the usual selection of variable types for integers and floating-point values. There are signed and unsigned versions of 8, 16, 32, 64 and 128-bit integers. See the [manual](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/) for details.
 
 There is also a `Bool` type that holds either `true` (1) or `false` (0).
 
-For floating point values, there is Float16, Float32 and Float64.
+For floating-point values, there is Float16, Float32 and Float64.
 
-The default integer, `Int` is Int64 for 64-bit Julia and `Int32` for 32-bit Julia. Generally, you would want to use `Float64` for floating-point numbers, unless there is a specific reason not to. Calculations on a GPU (via e.g. `CUDA.jl`) should be done using `Float32`.
+The default integer, `Int` is Int64 for 64-bit Julia and `Int32` for 32-bit Julia. Generally, you would want to use `Float64` for floating-point numbers, unless there is a specific reason not to. Calculations on a GPU (via e.g., `CUDA.jl`) should be done using `Float32`.
 
-#### A Word on Floating Point Values
-Floating point values are stored in a limited number of bits (typically 64 bits - a.k.a. double precision) and hence have a limited precision. The result is that most values cannot be precisley stored in a `Float64` variable. As a simple example, 1/10, which is clearly precisely equal to 0.1, is actually calculated as 0.1000000000000000055511151231257827021181583404541015625 with 256-bit precision.
+#### A Word on Floating-Point Values
+Floating-point values are stored in a limited number of bits (typically 64 bits - a.k.a. double precision) and hence have a limited precision. The result is that most values cannot be precisley stored in a `Float64` variable. As a simple example, 1/10, which is clearly precisely equal to 0.1, is actually calculated as 0.1000000000000000055511151231257827021181583404541015625 with 256-bit precision.
 
-The smallest positive value that can be stored in a `Float64`, is 2.220446049250313e-16. You can calculate this in Julia using the `eps()` function, e.g. `eps(Float64)`. The value epsilon is an indication of the precision you can expect. It is the smallest value you can add to the floating point value that will cause it to result in a new value. Anything smaller may as well be zero. Obviously epsilon depends on the magnitude of the values you are working with and you can again use the `eps()` function: `eps(100) = 1.4210854715202004e-14`, so adding a smaller amount to 100 will not change the value.
+The smallest positive value that can be stored in a `Float64`, is 2.220446049250313e-16. You can calculate this in Julia using the `eps()` function e.g., `eps(Float64)`. The value epsilon is an indication of the precision you can expect. It is the smallest value you can add to the floating-point value that will cause it to result in a new value. Anything smaller may as well be zero. Obviously, epsilon depends on the magnitude of the values you are working with, and you can again use the `eps()` function: `eps(100) = 1.4210854715202004e-14`, so adding a smaller amount to 100 will not change the value.
 
 While you can safely ignore this for many, if not most engineering calculations, it can sometimes become an issue when you least expect it. Consider adding up a very large number of small values. The larger the difference between the running total and the next value you are adding, the larger the rounding error will become. At some point in this exercise, the value you are adding to the running total will be in the order of the relative epsilon and the running total will stop increasing, no matter how many more values you add. The solution to this is actually fairly simple and implemented in the Julia `sum()` function.
 
 The list of values is split into pairs and the pairs are added to each other, then this is repeated over and over until there is only one value left - the answer. The algorithm works under the inherent assumption that the values are fairly equally sized and so adding similar values results in minimal rounding error. Once the pairs have been summed, the new values should also be simialrly sized and so the process repeats, with a minimum rounding error at each step.
 
-Something else to consider, which much more often trips up new programmers, is that you will very rarely find two identical floating point values through calculations. Directly comparing values that are realistically speaking equal, will very often result in the wrong part of an `if` statement executing. When comparing floating point values, always use a check for approximate equality. This is done either via the `≈` operator (`\approx<tab>`), or the `isapprox()` function, which allows you to specify absolute and relative tolerances. The `≈` operator calls `isapprox()` with default tolerances.
+Something else to consider, which much more often trips up new programmers, is that you will very rarely find two identical floating-point values through calculations. Directly comparing values that are realistically speaking equal, will very often result in the wrong part of an `if` statement executing. When comparing floating-point values, always use a check for approximate equality. This is done either via the `≈` operator (`\approx<tab>`), or the `isapprox()` function, which allows you to specify absolute and relative tolerances. The `≈` operator calls `isapprox()` with default tolerances.
 
-The internal storage of floating point values is standardised by the [IEEE 754](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) standard, which is used in just about every programming language.
+The internal storage of floating-point values is standardised by the [IEEE 754](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) standard, which is used in just about every programming language.
 
 ### BigInt and BigFloat
-Sometimes, you may find a need for additional precision. Arbitrary precicion integer and floating point types are available as BigInt and BigFloat. 
+Sometimes, you may find a need for additional precision. Arbitrary-precision integer and floating-point types are available as BigInt and BigFloat. 
 
 There are several ways to specifiy that you are using `big` numbers, but the simplest is via the `big()` function:
 
@@ -281,7 +281,7 @@ Complex{Int64}
 julia> typeof(1.0 + 2.0im)
 ComplexF64 (alias for Complex{Float64})
 ```
-As you will notice, a complex type is specified as `Complex{T}` where T is an integer or floating point type. Any of the integer and floating points types mentioned before could be used, including `BigInt` and `BigFloat`. Simply define the value as:
+As you will notice, a complex type is specified as `Complex{T}` where T is an integer or floating-point type. Any of the integer and floating-point types mentioned before could be used, including `BigInt` and `BigFloat`. Simply define the value as:
 
 ```julia
 julia> z = big(10.0) + 1.0im
@@ -385,7 +385,7 @@ BenchmarkTools.Trial: 7295 samples with 1 evaluation.
  Memory estimate: 0 bytes, allocs estimate: 0.
  ```
 
-So, floating point calculations are about 78x faster than with rational numbers. What about integers?
+So, floating-point calculations are about 78x faster than with rational numbers. What about integers?
 
 ```julia
 julia> @benchmark myfunc(1)
@@ -423,16 +423,16 @@ We can again ignore any line starting with a semi-colon. The one line that matte
 
 The Julia compiler could analyse the code well enough to see that the answer to our function is sumply 50005000 times the input value and that is exactly what it returned!
 
-With floating point and rational values, there were type conversions required before multiplying the integer value of the loop counter with the input value. This "hid" the true nature of the calculation enough that the compiler could not see the short-cut. There is however continuous development in the compiler and we can reasonbly expect this to also be optimised in a future version of Julia.
+With floating-point and rational values, there were type conversions required before multiplying the integer value of the loop counter with the input value. This "hid" the true nature of the calculation enough that the compiler could not see the short-cut. There is however continuous development in the compiler, and we can reasonbly expect this to also be optimised in a future version of Julia.
 
 ### Arrays, Tuples and Ranges
 #### Arrays
 In most code, you will find it convenient to deal with a collection of values at the same time. There are several ways of doing this.
 
-The most common collection of values is an Array. In mathematics, you will be familar with vectors and matrices. These are simply one- and two dimensional arrays. You can have arrays with any number of dimensions (*tensors*). The keywords `Vector` and `Matrix` are also available as synonyms for `Array` in the special cases of one and two dimensions.
+The most common collection of values is an Array. In mathematics, you will be familar with vectors and matrices. These are simply one- and two-dimensional arrays. You can have arrays with any number of dimensions (*tensors*). The keywords `Vector` and `Matrix` are also available as synonyms for `Array` in the special cases of one and two dimensions.
 
 ::: {.callout-note}
-Simple one dimensional arrays are treated as column vectors for use in linear algebra calculations.
+Simple one-dimensional arrays are treated as column vectors for use in linear algebra calculations.
 :::
 
 Some examples:
@@ -497,7 +497,7 @@ julia> A = Float64[]   # an empty 1D array of Float64
 Float64[]
 ```
 
-The individual entries of an array are accessed via `[]`, e.g. 
+The individual entries of an array are accessed via `[]`, e.g., 
 ```julia
 julia> A[2, 3]
 6
@@ -566,7 +566,7 @@ julia> typeof(myfunc(1, 2))
 Tuple{Int64, Int64}
 ```
 
-We pass the parameters to the function as a tuple, (a, b). The results are returned as a tuple, (2, 3). Other than passing parameters to functions, what is the use of tuples? They are fairly widely used in Julia. The main differences from arrays are that while arrays are heap-allocated, tuples are stack-allocated. This is some more computer jargon, but what it means in practise is that tuples can be accessed faster than arrays, but cannot be as large.
+We pass the parameters to the function as a tuple, (a, b). The results are returned as a tuple, (2, 3). Other than passing parameters to functions, what is the use of tuples? They are fairly widely used in Julia. The main differences from arrays are that while arrays are heap-allocated, tuples are stack-allocated. This is some more computer jargon, but what it means in practise is that tuples can be accessed faster than arrays but cannot be as large.
 
 Tuples are also *immutable*, meaning once created, they cannot be modified. The entries of an array can always be modified. This is important to keep in mind when writing functions in Julia. The only way you can modify a parameter passed to a function is if that parameter is an array. And then only the individual entries of the array can be changed - you cannot replace the array with another one (more detail later). 
 
@@ -695,7 +695,7 @@ julia> b = 1:2:20   # start : step : stop, hence a step range
 julia> typeof(b)
 StepRange{Int64, Int64}
 
-julia> c = 1.0:0.5:5.0 # with floating point steps, we get a StepRangeLen
+julia> c = 1.0:0.5:5.0 # with floating-point steps, we get a StepRangeLen
 1.0:0.5:5.0
 
 julia> typeof(c)
@@ -815,7 +815,7 @@ true
 For each case, the Julia compiler will generate optimised code depending on the type of the variable passed.
 
 #### Indexing
-In the examples above, we used one dimensional arrays and there was really no choice in how to index into the structure. The entries are all in a row in memory.
+In the examples above, we used one-dimensional arrays and there was really no choice in how to index into the structure. The entries are all in a row in memory.
 
 In the case if multi-dimensional arrays, the entries are still sequential in memory - that is how RAM works! Here, however, there are better and worse options for accessing a given entry in the array.
 
@@ -875,7 +875,7 @@ julia> @btime myfunc3(A)
 
 `eachindex()` returns a linear index, no matter what the dimensionality of the array is and sequences it for the fastest sequencial access.
 
-Another useful indexing function is `enumerate`. It returns an iterator of tuples, each containing an index and value pair. The indeces are linear, not cartesian.
+Another useful indexing function is `enumerate()`. It returns an iterator of tuples, each containing an index and value pair. The indeces are linear, not cartesian.
 
 ```julia
 julia> A = rand(2,2)
@@ -1092,7 +1092,7 @@ The built-in types have a hieracrchy:
 
 ![The type hierarchy - Image from https://thautwarm.github.io/](https://thautwarm.github.io/Site-32/_images/julia-type-hierarchy.png)
 
-This consists of abstract and concrete types. You can only instansiate a variable of a concrete type, but the abstracts types are useful to specificy groups of types that would behave similarly, e.g. `Float64` and `Int64` could both the added or multiplied. This is true for all the `Number` types, be they `Real` or `Complex`. We could specify allowed groups of types, via the `<:` operator, or specific types, via `::`, e.g.
+This consists of abstract and concrete types. You can only instansiate a variable of a concrete type, but the abstract types are useful to specificy groups of types that would behave similarly, e.g., `Float64` and `Int64` could both the added and multiplied. This is true for all the `Number` types, be they `Real` or `Complex`. We could specify allowed groups of types, via the `<:` operator, or specific types, via `::`, e.g.
 
 ```julia
 function f(x::T) where T <: Number
@@ -1179,7 +1179,7 @@ You can also create additional constructors. There are two types:
 - Outer constructors and
 - Inner constructors
 
-The default constructor is an outer constructor. You can also speficy additional outer constructors that, e.g. have default values for some fields, or calculate some values from others:
+The default constructor is an outer constructor. You can also speficy additional outer constructors that e.g., have default values for some fields, or calculate some values from others:
 
 ```julia
 julia> struct PersonData
@@ -1273,7 +1273,7 @@ julia> while a[i] <= 10
 In a `while` loop, it is critical to manually implement a step (`i += 1` in the example), or the loop will execute indefintely!
 
 ## Logic and Flow Control
-At some point in your code you will want to execute different instructions depending on some criteria. The most basic form of flow control is the `if` statement:
+At some point in your code, you will want to execute different instructions depending on some criteria. The most basic form of flow control is the `if` statement:
 
 ```julia
 if a < 0
@@ -1295,12 +1295,12 @@ a >= 0 || println("Negative")
 ```
 This looks a little arcane. It works as follows:
 
-The `&&` operator is a logical `and`. For an `and` statement to be true, both criteria must be true, so if the first statement (before the `&&`) is false, Julia won't bother to evaluate the second statement (after the `&&`), since the whole cannot be true. This is called *short-circuit evaluation*. This means the `println()` is only executed if `a` is indeed less than zero.
+The `&&` operator is a logical `and`. For an `and` statement to be true, both criteria must be true, so if the first statement (before the `&&`) is false, Julia won't bother to evaluate the second statement (after the `&&`), since the whole cannot be true. This is called *short-circuiting evaluation*. This means the `println()` is only executed if `a` is indeed less than zero.
 
 The `||` operator is a logical `or`. For an `or` statement to be true, either of the two criteria must be true, so if the first statement is true, there is no need need to also evaluate the second - the whole is already true. The `println()` will therefore not be executed if `a` is larger than or equal to zero.
 
 ::: {.callout-tip}
-To help you remember how *short-circuit evaluations* work, try this:
+To help you remember how *short-circuiting evaluations* work, try this:
 
 `a < 0 && println("Negative")` reads as  `a < 0` AND then `println()`
 
@@ -1366,7 +1366,7 @@ end
 ```
 Here, there are a few things to pay attention to:
 
-- We are calling the higher level function `open()`, which takes another function as its first parameter. The `do` block **ALWAYS** passes the specified (anonymous) function to the first parameter of the calling function. The nominal syntax for `open()` is `open(f::Function, args...; kwargs...)`. The function, `f` is specified by the `do` block.
+- We are calling the higher-level function `open()`, which takes another function as its first parameter. The `do` block **ALWAYS** passes the specified (anonymous) function to the first parameter of the calling function. The nominal syntax for `open()` is `open(f::Function, args...; kwargs...)`. The function, `f` is specified by the `do` block.
 - We pass the parameter `io` to the function be specifying `io` next to the keyword `do`. This is similar to the `x -> ...` in an anonymous function, here we effectively have `io -> ...`
 
 ## Type Stability and Fast Code
@@ -1383,7 +1383,7 @@ julia> function myfunc(n)
 myfunc (generic function with 1 method)
 ```
 
-At first glance, there is nothing strange about this code. If you take a closer look however, you will see that `sum` is created as an integer via `sum = 0`, but then we assign floating point values to it.
+At first glance, there is nothing strange about this code. If you take a closer look however, you will see that `sum` is created as an integer via `sum = 0`, but then we assign floating-point values to it.
 
 Julia has a lot of code analyses tools. One of which is `@code_warntype`:
 

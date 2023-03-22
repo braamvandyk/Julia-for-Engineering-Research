@@ -2,7 +2,6 @@
 title: "Installing Julia"
 ---
 
-# Installing Julia
 To use Julia, you need two things:
 
 1. The Julia compiler
@@ -24,7 +23,7 @@ You can download and install Julia from the official [homepage](www.julialang.or
 ### Microsoft Store
 The recommended way of installing Julia, if this is an option for you, is via the Microsoft Store. Installing Julia this way actually installs JuliaUp, an installation manager for Julia.
 
-JuliaUp allows you to have multiple installations of Julia, e.g. the current release version as well as the current development (pre-release) version.
+JuliaUp allows you to have multiple installations of Julia, e.g., the current release version as well as the current development (pre-release) version.
 
 You can easily switch between them with a single command-line instruction. JuliaUp will also automatically keep your Julia installation updated when a new version is released.
 
@@ -36,14 +35,15 @@ VSCode will prompt you to install updates, so there is less reason to want to in
 ### The Julia Add-in for VSCode
 VSCode is a general-purpose code editor. To use it with Julia, you need to install the Julia add-in from within VSCode. You can also install Python, R, C, Fortran and many other add-ins.
 
-If you are adventurous, you can install the *insider version* of the Julia add-in, but this is not recommended for for typical end-users.
+If you are adventurous, you can install the *insider version* of the Julia add-in, but this is not recommended for for typical end-users. The insider version is the pre-release version with newer, but not yet fully tested features.
 
-The Julia add-in not only links Julia to VSCode seamlessly, it also provides a debugger and many other tools, like compiling system images for quicker start-up.
+The Julia add-in not only links Julia to VSCode seamlessly, but it also provides a debugger and many other tools, like compiling system images for quicker start-up.
 
 See the [documentation](https://www.julia-vscode.org/docs/stable/) for more information.
 
 ### Other Useful Add-ins
 Some add-ins recommended for everyday use are:
+
 - Edit CSV
 - Rainbow CSV
 - SandDance for VSCode
@@ -55,12 +55,12 @@ Rainbow CSV color-codes the columns in CSV files, making it much easier to work 
 
 SandDance generates plots of the data in a CSV for quick data exploration.
 
-SVG allows you to preview SVG (Scalable Vector Graphics) files inside VSCode. Most of the plotting packages can save plots as SVG files, which is recommended, since you can zoom in or out infinitly without loss of quality. Microsoft Office can include SVG files in, e.g. Word and PowerPoint.
+SVG allows you to preview SVG (Scalable Vector Graphics) files inside VSCode. Most of the plotting packages can save plots as SVG files, which is recommended, since you can zoom in or out infinitly without loss of quality. Microsoft Office can include SVG files in, e.g., Word and PowerPoint.
 
-For writing technical documents that include running code, e.g. to generate the plots, and to publish these to web pages, .PDF or DOCX documents, among others, consider Quarto (this will require the installation of the [Quarto](https://quarto.org/) program as well as the VSCode add-in)
+For writing technical documents that include running code, e.g., to generate the plots, and to publish these to web pages, .PDF or DOCX documents, among others, consider Quarto (this will require the installation of the [Quarto](https://quarto.org/) program as well as the VSCode add-in)
 
 ## Fonts
-Julia can make full use of Unicode fonts. This means you can use greek letters, emojis or anything else as variable names. Julia will also use common mathematical symbols, althoug there are alternatives for those who prefer to stick to ASCII. For examples:
+Julia can make full use of Unicode fonts. This means you can use greek letters, emojis or anything else as variable names. Julia will also use common mathematical symbols, although there are alternatives for those who prefer to stick to ASCII. For examples:
 
 ```julia
 mass = 1.23
@@ -73,7 +73,7 @@ if 0.1 <= ρ <= 1.0
     end
 end
 ```
-This reads a lot more like what you would normally write out by hand, e.g. using `ρ` instead of `rho`. In the place of `≈`, you can use the `isapprox()` function, which has a few more options.
+This reads a lot more like what you would normally write out by hand, e.g., using `ρ` instead of `rho`. In the place of `≈`, you can use the `isapprox()` function, which has a few more options.
 
 The use of `<=` is entirely optional as well. You simply type a `<` followed by `=`, and with the correct fonts installed, this will automatically be rendered as `<=`. If you don't like that, just change the option in VSCode that allows use of font ligatures.
 
@@ -84,7 +84,7 @@ To make use of the Unicode abilities in you need a font installed that can handl
 
 VSCode uses fall-back fonts, so if the first font specified in the settings does not include the character it should render, it will look in the next font until it finds the glyph, or runs out of fonts to look in. You can therefore install all three these fonts and then add them to the from of the list of specified fonts.
 
-You use Unicode characters my typing, e.g. `\rho` and pressing the `<tab>` key. If you find a character in someone's code that you don't know how to type, simply copy it and paste it next to the help prompt in Julia:
+You use Unicode characters by typing, e.g., `\rho` and pressing the `<tab>` key. If you find a character in someone's code that you don't know how to type, simply copy it and paste it next to the help prompt in Julia:
 
 ```julia
 help?> ℱ

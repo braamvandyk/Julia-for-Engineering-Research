@@ -7,13 +7,13 @@ There are a vast number of articles on the internet on the topic of why you woul
 
 Everyone who either programs seriously, or merely dabbles in code likely has a personal favourite programming language. It may be that they only know one language. Professional programmers often have more than one language they work in, and often prefer a certain tool for specific tasks. It is a simple fact that some languages are better for certain tasks than others for various reasons. 
 
-Julia was conceived with technical programming in mind. It has its origins in academia, being developed at MIT, and is still mostly used by researchers, in natural and engineering sciences, computer science, mathematics, machine learning and many other fields. Commercial software written in Julia is available, e.g. [Pumas](https://pumas.ai/) for pharmaceutical drug discovery, or [TIM](https://www.tangent.works/) for automatically building predictive models from time-series data. The bulk of work done in Julia, however, is in research and development, in academia, but also at approximately 10,000 companies and institutions world-wide, including AstraZeneca, BlackRock, Google, Intel, Microsoft, Moderna, Pfizer, NASA, the Federal Aviation Adminstration and the Federal Reserve Bank of New York to name a few. Julia is taught in over 1,500 universities, including MIT, Stanford and UC Berkley.
+Julia was conceived with technical programming in mind. It has its origins in academia, being developed at MIT, and is still mostly used by researchers, in natural and engineering sciences, computer science, mathematics, machine learning and many other fields. Commercial software written in Julia is available, e.g., [Pumas](https://pumas.ai/) for pharmaceutical drug discovery, or [TIM](https://www.tangent.works/) for automatically building predictive models from time-series data. The bulk of work done in Julia, however, is in research and development, in academia, but also at approximately 10,000 companies and institutions world-wide, including AstraZeneca, BlackRock, Google, Intel, Microsoft, Moderna, Pfizer, NASA, the Federal Aviation Adminstration and the Federal Reserve Bank of New York to name a few. Julia is taught in over 1,500 universities, including MIT, Stanford and UC Berkley.
 
-Julia was designed to solve the so-called *two language problem*. This is where a researcher develops algorithms in a dynamic language, such as Python or R, where it is easy to interact with the code and change things around with little effort. At some point however, they find the need to speed up the code as it becomes more complex. This often results in a rewrite of the program in a fast language, such as C or Fortran. Julia is a dynamic language, but generates code as fast as anything you can do in C, without the arcane syntax and multiple built-in ways to shoot yourself in the foot. This doesn't imply that your Julia code is always fast. It is possible to write slow code in any language. It is just a whole lot easier to write fast code in Julia. When you run into speed problems in Python or R, the only solution is to call libraries written in C, with Python or R wrappers. In Julia, your fast code is usually 100% Julia code - you don't need to know a second, fast language. In addition, Julia plays well with C, Python and R and you can call code written in any of these directly from Julia and vice versa.
+Julia was designed to solve the so-called *two language problem*. This is where a researcher develops algorithms in a dynamic language, such as Python or R, where it is easy to interact with the code and change things around with little effort. At some point however, they find the need to speed up the code as it becomes more complex. This often results in a rewrite of the program in a fast language, such as C or Fortran. Julia is a dynamic language but generates code as fast as anything you can do in C, without the arcane syntax and multiple built-in ways to shoot yourself in the foot. This doesn't imply that your Julia code is always fast. It is possible to write slow code in any language. It is just a whole lot easier to write fast code in Julia. When you run into speed problems in Python or R, the only solution is to call libraries written in C, with Python or R wrappers. In Julia, your fast code is usually 100% Julia code - you don't need to know a second, fast language. In addition, Julia plays well with C, Python and R and you can call code written in any of these directly from Julia and vice versa.
 
 Julia is open-source and free. There are thousands of packages available in Julia - also open-sourced and free. Since Julia was developed for technical programming, most of these packages similarly are for solving technical problems. There are however also many others, from web development to animation and just about anything in between. Linear algebra is baked right into the language, including working with sparse matrices, so is parallel programming - multithreading and multiprocessing. There are very powerful differential equation solvers, non-linear equation solvers, optimisers, machine learning libraries, and even thermodynamic property libraries readily and freely available.
 
-Julia's syntax is borrows the best parts from Matlab, Python and Lisp. A lot of effort has gone into making it easier to learn the syntax. That said, there is always some learning curve when venturing into a new programming language. Like you can only learn to ride a bicycle by climbing on one and starting to pedal, the only way to learn programming and programming languages is to write code.
+Julia's syntax borrows the best parts from Matlab, Python and Lisp. A lot of effort has gone into making it easier to learn the syntax. That said, there is always some learning curve when venturing into a new programming language. Like you can only learn to ride a bicycle by climbing on one and starting to pedal, the only way to learn programming and programming languages is to write code.
 
 ## Why Julia code is fast
 The defining paradigm in Julia is *multiple dispatch*. Unless you are a computer scientist, that probably doesn't mean much to you. I'll try to explain simply with some examples.
@@ -41,7 +41,7 @@ julia> myfunc(1, 2)
 julia> myfunc(1.0, 2.0)
 5.0
 ```
-The first thing to notice is that unlike in languages like C, Basic, Pascal or Fortran, we never specified the types of the variable, i.e. whether they are integers or floating point values (numbers with fractional parts). There are times when you want to do this, but generally you would not. However, when we called the function with two integers, the answer was returned as an integer. When we called the code with two floating point values, the answer was returned as a floating point value.
+The first thing to notice is that unlike in languages like C, Basic, Pascal or Fortran, we never specified the types of the variable, i.e., whether they are integers or floating-point values (numbers with fractional parts). There are times when you want to do this, but generally you would not. However, when we called the function with two integers, the answer was returned as an integer. When we called the code with two floating-point values, the answer was returned as a floating-point value.
 
 What happened behind the scenes? Julia infers the types of all of the inputs and generates the optimal code for that collection of input types. We can see this in action by asking Julia to show us the code it generated^[Julia generates LLVM code and then uses LLVM to generate code optimised for your specific CPU. LLVM is somewhat similar to an assembler, for those familiar with the term.]:
 
@@ -120,14 +120,14 @@ The next line:
 %2 = fmul double %1, 2.000000e+00
 ```
 
-Since we can't simply shift a floating point value left by one bit to multiply it by two, the `fmul` instruction, floating point multiplication, is used to multiply the value in `%1` by 2.0. Then, in the next line, the `fadd` (floating point addition) instruction adds the result from the multiplcation to `%0`:
+Since we can't simply shift a floating-point value left by one bit to multiply it by two, the `fmul` instruction, floating-point multiplication, is used to multiply the value in `%1` by 2.0. Then, in the next line, the `fadd` (floating-point addition) instruction adds the result from the multiplcation to `%0`:
 
 ```
 %3 = fadd double %2, %0
 ```
 
 ::: {.callout-note}
-The important thing to learn from this is that **Julia built optimised versions of the function for each case**. Similarly, is we pass an integer and a floating point value, or vice versa, or any two other appropriate types of values, new versions of the functon will be constructed and each will be optimised for that combination of types passed.
+The important thing to learn from this is that **Julia built optimised versions of the function for each case**. Similarly, is we pass an integer and a floating-point value, or vice versa, or any two other appropriate types of values, new versions of the functon will be constructed and each will be optimised for that combination of types passed.
 :::
 
 It goes evern further.
@@ -167,7 +167,7 @@ julia> @time scatter(randn(10), randn(10))
 julia> @time scatter(randn(10), randn(10))
   0.000392 seconds (414 allocations: 43.344 KiB)
 ```
-It takes 6.4 seconds to import the Plots package. The first time we call `scatter` to generate a scatter plot, the code is compiled, which takes 1.15 seconds. The next time however, the compiled code is already available and it takes 0.4 milliseconds to generate the plot. Every subsequent call to `scatter` with the same types of values passed to it, will also be fast.
+It takes 6.4 seconds to import the Plots package. The first time we call `scatter` to generate a scatter plot, the code is compiled, which takes 1.15 seconds. The next time however, the compiled code is already available, and it takes 0.4 milliseconds to generate the plot. Every subsequent call to `scatter` with the same types of values passed to it, will also be fast.
 
 In every new version of the Julia compiler, some work is included to reduce he latency of TTFX. The next version of Julia at the time of writing, v1.9, will include several new features to significantly reduce the problem. This is not magic though, merely a toolset that allows package authors to increase the amount of code that is precompiled when the package is first installed. This will only help of the tools are used. Since the Julia community is generally very enshusiastic about speed, it is reasonable to expect most, if not all of them will indeed do so.
 
@@ -175,9 +175,9 @@ In every new version of the Julia compiler, some work is included to reduce he l
 
 Some of the people reading this document will be experienced programmers and some will be masters of numerical methods. Most of you won't be either, but still want to solve a technical problem. Here Julia is your friend.
 
-Any commonly-used numerical methods you are likely to want to use is already available in a package, generally written by people with PhDs in the relevant field and optimised to the nth degree by researchers who needed this before you did and contributed to the openly available source code. Sometimes, the methods are already built into Julia, as is the case for linear algebra.
+Any commonly used numerical methods you are likely to want to use is already available in a package, generally written by people with PhDs in the relevant field and optimised to the nth degree by researchers who needed this before you did and contributed to the openly available source code. Sometimes, the methods are already built into Julia, as is the case for linear algebra.
 
-Let's say you want to factorise a matrix. You *could* pull your linear algebra text book and your numerical methods notes off the shelf and remind yourself which factorisation methods are best-suited to your type of matrix and how that methods works, then code your own copy. Or you could just let Julia take care of it for you:
+Let's say you want to factorise a matrix. You *could* pull your linear algebra textbook and your numerical methods notes off the shelf and remind yourself which factorisation methods are best suited to your type of matrix and how those methods work, then code your own copy. Or you could just let Julia take care of it for you:
 
 ```julia
 julia> A = rand(5, 5) #create a random matrix
@@ -229,9 +229,9 @@ For the square, random matrix, LU decomposition is the most appropriate method a
 
 Also note that the Cholesky factorisation returns a specialised type of matrix, `UpperTriangular{Float64, Matrix{Float64}}`, which also has specialised calculations methods that take advantage of knowledge of the structure of the matrix.
 
-In a similar fashion, when solving differential equations, the `DifferentialEquations.jl` package can automatically select algorithms. You can help it along by supplying a hint that the problem is stiff, or you can specify which methods you want to use. For stiff problems, implicit methods are available and the package will use automatic differentiation to generate the higher level derivaties needed for these with low overheads.
+In a similar fashion, when solving differential equations, the `DifferentialEquations.jl` package can automatically select algorithms. You can help it along by supplying a hint that the problem is stiff, or you can specify which methods you want to use. For stiff problems, implicit methods are available, and the package will use automatic differentiation to generate the higher level derivaties needed for these with low overheads.
 
-These things don't happen through magic, although it may look like it. The code, either in the Julia standard library or an a user-supplied package, was simply written by experts in the field. This means you can get away with knowing a little less about the intracacies of the mathematics than you would be able to if you had to write everything yourself. This by no means implies you shouldn't learn more about the mathematics and numerical methods! More knowledge will always give better results.
+These things don't happen through magic, although it may look like it. The code, either in the Julia standard library or in a user-supplied package, was simply written by experts in the field. This means you can get away with knowing a little less about the intracacies of the mathematics than you would be able to if you had to write everything yourself. This by no means implies you shouldn't learn more about the mathematics and numerical methods! More knowledge will always give better results.
 
 ## Powerful plotting and data processing
 
@@ -253,7 +253,7 @@ Writing generic code is encouraged in the Julia ecosystem specifically to enable
 ## When NOT to use Julia
 There are of course instances where Julia is not the optimal choice.
 
-If you want to compile a model to a binary file, Julia is likely not the best tool. While it is perfectly possible to compile Julia code to, e.g. a *DLL* file, the dynamic nature of Julia means that the entire Julia run-time is included in the file. This means a VERY large file is produced. This is an area of active development, and it is possible in some cases to compile small files, but at this time, there are better tools.
+If you want to compile a model to a binary file, Julia is likely not the best tool. While it is perfectly possible to compile Julia code to, e.g., a *DLL* file, the dynamic nature of Julia means that the entire Julia run-time is included in the file. This means a VERY large file is produced. This is an area of active development, and it is possible in some cases to compile small files, but at this time, there are better tools.
 
 If you want to distribute your code to other people, but do not want to give them access to the source code, Julia may not be your first choice. It is again possible, and one way of doing this is by running your code on a server and giving the users access via a web page or Excel front-end, but it is not as simple as just compiling a *DLL* or *EXE* file in C or Visual Basic.
 

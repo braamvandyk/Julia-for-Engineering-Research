@@ -1,5 +1,6 @@
 ---
 title: "Julia for Engineering Research"
+author: "Braam van Dyk"
 ---
 
 This is an introductory course to using the [Julia programming language](www.julialang.org) for technical programming.
