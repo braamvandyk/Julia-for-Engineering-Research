@@ -91,7 +91,7 @@ title!("Two series in a plot")
 xlabel!("Sample number")
 ylabel!("Sample size")
 
-savefig("plotsexample2.svg"
+savefig("plotsexample2.svg")
 ```
 ![Another plot generated with Plots.jl](./img/plotsexample2.svg)
 
@@ -114,4 +114,6 @@ savefig("img/plotssurface.svg")
 
 The `Plots.jl` package has a LOT more features than is shown here. This includes histograms, heatmaps and many more. See the [Plots.jl](https://docs.juliaplots.org/stable/) manual for details.
 
+### Statistics Plots
 
+The `StatsPlots.jl` package is an extension of `Plots.jl` that adds typical statistics plots, like box plots, violin plots, kernel density plots etc. Refer to its [manual](https://docs.juliaplots.org/latest/generated/statsplots/) for more information.
