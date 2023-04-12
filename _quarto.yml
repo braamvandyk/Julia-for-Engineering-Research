@@ -17,6 +17,7 @@ website:
       - 08_Solving_Differential_Equations.qmd
       - 09_Optimisation.qmd
       - 10_Working_with_Data.qmd
+      - 11_Automatic_Differentiation.qmd
 
 format:
   html:

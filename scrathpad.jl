@@ -1,49 +1,36 @@
-using Plots
+using NonlinearSolve
 
-data1 = rand(5)
-x = randn(10)
-y = randn(10)
+"""
+    Calculate the difference between the vapour pressure and 1atm
+"""
+function f(u, p)
+    A, B, C = p
+    return 10^(A - B/(u + C)) - 1.01325
+end
 
-plot(
-    plot(
-        data1,
-        label = "some data",
-        title="Line plot",
-        xlabel="sample",
-        ylabel="value",
-        linecolor = :red,
-        linewidth = 3
-        ),
-    scatter(
-        x, y, 
-        title = "Scatter plot",
-        label = "samples",
-        xlabel="x",
-        ylabel="y",
-        markercolor = :blue,
-        markershape = :diamond
-        )
-)
+# Antoine parameters from NIST
+# 1. Liu and Lindsay, 1970
+pLL = (3.55959, 643.748, -198.043)
+# 2. Stull, 1947
+pS = (4.6543, 1435.264, -64.848)
 
-savefig("plotsexample1.svg")
+# Initial guess
+u0 = 373.15
 
+probLL = NonlinearProblem(f, u0, pLL)
+solLL = solve(probLL, NewtonRaphson())
+f(solLL.u, pLL)
 
-data2 = rand(7)
-data3 = rand(6)
-plot(data2, label="Experiment 2", linestyle=:dashdotdot)
-plot!(data3, label= "Experiment 3", linewidth = 2)
-title!("Two series in a plot")
-xlabel!("Sample number")
-ylabel!("Sample size")
+probS = NonlinearProblem(f, u0, pS)
+solS = solve(probS, NewtonRaphson())
+f(solS.u, pS)
 
-savefig("plotsexample2.svg")
+uspan = (370.0, 380.0)
 
+probLL2 = IntervalNonlinearProblem(f, uspan, pLL)
+solLL2 = solve(probLL2, Falsi())
+f(solLL2.u, pLL)
 
-f(x, y) = x*sin(x) - y^2 * cos(y)
-x = range(0, 5, length=100)
-y = range(0, 3, length=50)
-z = @. f(x', y)
-contour(z)
-savefig("img/plotscontour.svg")
-surface(x, y, z)
-savefig("img/plotssurface.svg")
+probS2 = IntervalNonlinearProblem(f, uspan, pS)
+solS2 = solve(probS2, Falsi())
+f(solS2.u, pS)

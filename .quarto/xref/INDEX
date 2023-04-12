@@ -53,5 +53,8 @@
   },
   "10_Working_with_Data.qmd": {
     "10_Working_with_Data.html": "2d9203cc"
+  },
+  "11_Automatic_Differentiation.qmd": {
+    "11_Automatic_Differentiation.html": "cef3d579"
   }
 }

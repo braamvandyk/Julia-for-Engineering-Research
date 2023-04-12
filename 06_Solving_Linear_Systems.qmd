@@ -2,7 +2,7 @@
 title: "Solving Linear Systems"
 ---
 
-For smaller, dense matrices, you could use Julia's LinearAlgebra standard library. You can also use the SparseArrays standard library for larger sparse systems. In addition, there are several iterative methods available, such as `IterativeSolver.jl` for very large, sparse systems. Rather than learn how several packages work, however, you can use the SciML [`LinearSolve.jl`](https://docs.sciml.ai/LinearSolve/stable/) package that provides a uniform front-end for all the main linear system packages. You can change the solver algorithm by changing a single line of code, which is very convenient when trying to find the most optimal approach for your system.
+For solving systems with smaller, dense matrices, you could use Julia's LinearAlgebra standard library. You can also use the SparseArrays standard library for larger sparse systems. In addition, there are several iterative methods available, such as `IterativeSolver.jl` for solving very large, sparse systems. Rather than learn how several packages work, however, you can use the SciML [`LinearSolve.jl`](https://docs.sciml.ai/LinearSolve/stable/) package that provides a uniform front-end for all the main linear system packages. You can change the solver algorithm by changing a single line of code, which is very convenient when trying to find the most optimal approach for your system.
 
 ## Built-in Methods
 We shall start by looking at the methods provided by Julia directly. While it may be more convenient to use `LinearSolve.jl` for larger problems, using the Julia base methods is still very useful for quick calculations.
@@ -34,13 +34,13 @@ julia> b = A*x
  1
  5
 
-julia> x̂=A\b
+julia> x̂=A\b # Note that the results are not integers
 3-element Vector{Float64}:
  1.0
  2.0
  1.0
 
-julia> x ≈ x̂
+julia> x ≈ x̂ # Use approximate check with floats
 true
 ```
 ::: {.callout-tip}
@@ -119,6 +119,11 @@ julia> A\b # Solve without needing to repeat the factorisation
   3.75
  -0.25000000000000006
  ```
+::: {.callout-important}
+You could of course solve a linear system by multiplying with the inverse of the martrix, and this is fairly stright-forward to do, with `inv(A)`. This is however, **almost never a good choice**, especially with large, sparse matrices, where the inverse is generally dense and may not fit into your computer's memory.
+
+Factorisisation is always a better choice, and iterative methods often the best choice for large, sparse matrices.
+:::
 
 #### Specialised Matrix Types
 Julia offers several specialised types for matrices with optimised algorithms. These include:
@@ -191,7 +196,9 @@ u: 3-element Vector{Float64}:
  2.0
  1.0
 ```
-Since LinearSolve has to allow for automatic differentiation, it will implicitly use the type of the variables as specified in `A` in `b`. This will result in an error the inputs are arrays of integers and the if the solution contains fractions. To avoid this, we explicitly define the inputs as `Float64`.
+Since LinearSolve has to allow for automatic differentiation[^1], which may require passing *dual variables* to the function, it will implicitly use the type of the variables as specified in `A` in `b`. This will result in an error the inputs are arrays of integers and the if the solution contains fractions. To avoid this, we explicitly define the inputs as `Float64`.
+
+[^1]: Specifically *forward mode* automatic diffirentiation. See the relevant section for more detail.
 
 You can also specify which algorithm to use. See the full list and recommendations in the [documentation](https://docs.sciml.ai/LinearSolve/stable/solvers/solvers/).
 

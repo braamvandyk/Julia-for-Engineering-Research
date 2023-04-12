@@ -1,0 +1,20 @@
+---
+title: "Automatic Differentiation"
+---
+
+## Dual Numbers - Forward Mode AD
+
+## Reverse Mode AD
+
+## Available packages
+
+### ForwardDiff.jl
+
+### ReverseDiff.jl
+
+### Zygote.jl
+
+### Enzyme.jl 
+
+
+
