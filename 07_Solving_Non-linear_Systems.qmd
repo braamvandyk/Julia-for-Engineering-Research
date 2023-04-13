@@ -88,4 +88,4 @@ probss = SteadyStateProblem(ssode, u0, nothing)
 solss = solve(probss, DynamicSS(Vern6()))
 ```
 
-While this is a simple demonstration of how to solve for an ODE's steady-state, it would have been a lot more efficient to convert the problem to a non-linear equation, rather than the ODE problem.
+While this is a simple demonstration of how to solve for an ODE's steady-state, it would have been a lot more efficient to convert the problem to a non-linear equation, rather than using the approach of solving the dynamic ODE problem and running to steady-state.

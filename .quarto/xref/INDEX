@@ -56,5 +56,14 @@
   },
   "11_Automatic_Differentiation.qmd": {
     "11_Automatic_Differentiation.html": "cef3d579"
+  },
+  "10_Automatic_Differentiation.qmd": {
+    "10_Automatic_Differentiation.html": "4e0c788f"
+  },
+  "11_Modelling_Toolkit_and_Symbolics.qmd": {
+    "11_Modelling_Toolkit_and_Symbolics.html": "52313902"
+  },
+  "12_Working_with_Data.qmd": {
+    "12_Working_with_Data.html": "0d90f1bb"
   }
 }

@@ -1,0 +1,62 @@
+---
+title: "Automatic Differentiation"
+---
+
+## Dual Numbers - Forward Mode AD
+Any reader of this document will be familiar with complex numbers:
+
+$$z = x + iy$$
+where $i^2 = -1$
+
+The concept of [dual numbers](https://en.wikipedia.org/wiki/Dual_number), proposed by Clifford, in 1873 numbers is closely related:
+
+$$z = a + {\epsilon}b$$
+where ${\epsilon}^2 = 0, \epsilon \ne 0$
+
+It can be proven that for any analytic^[Any function that is locally given by a convergent power series, such as a Taylor series] function, 
+
+$$f(a + {\epsilon}b) = f(a) + bf'(a){\epsilon}$$
+
+Therefore, passing a dual number into our generic function, with $b = 1$, will return, with minimal overhead, both the function value and the derivative at $a$. This is the basis of forward model automatic differentiation. 
+
+It is important to note that this is **not** an approximation of the derivative by finite differencing. Finite differencing, will estimate the derivative with two function calls:
+
+$$f'(a) \approxeq \frac{f(a + h) - f(a)}{h}$$
+
+The problem with this approach is that using too large a value for $h$, give inaccuracies in the estimation, but using too small a value of $h$ give inaccuracies through floating point rounding errors. There is therefore an optimal value of $h$, which will depend on the value of the function at the point of evaluation. Automatic differentiation does not have this problem and also has fewer function calls, so is more efficient.
+
+We can also easily expand the method to multiple dimensions by simply expanding the idea of a dual number:
+
+$$z = a + {\epsilon}_1v_1 + {\epsilon}_2v_2 + {\epsilon}_3v_3 + ...$$
+
+where each $v$ is a basis vector in which direction we wish to calcualte a derivative.
+
+$$f(z) = f(a) + f'(a)v_1{\epsilon}_1+ f'(a)v_1{\epsilon}_1+ f'(a)v_1{\epsilon}_1$$
+
+
+## Reverse Mode AD
+When fitting models to data, we usualy do not care about the derivative in terms of the input, but rather in terms of the parameters of the model. We can apply automatic differentiation here as well, by passing the parameters as dual numbers. For $k$ parameters, we have a $k+1$ dimensional "dual" number.
+
+When there are many parameters, however, it is possible to use a more efficient method than forward mode automatic differentiation.
+
+Consider fitting a model: $f(x, y)$, where $x$ and $y$ are in turn functions of a parameter $t$, which we want to fit to data.
+
+$$f(x(t), y(t))$$
+
+To do the regression, we want the derivaive of $f$ in terms of $t$.
+
+$$\frac{{\partial}f}{{\partial}t} = \frac{{\partial}f}{{\partial}x} \frac{{\partial}x}{{\partial}t} + \frac{{\partial}f}{{\partial}y} \frac{{\partial}y}{{\partial}t}$$
+
+
+## Available packages
+
+### ForwardDiff.jl
+
+### ReverseDiff.jl
+
+### Zygote.jl
+
+### Enzyme.jl 
+
+
+

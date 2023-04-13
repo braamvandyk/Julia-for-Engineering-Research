@@ -16,8 +16,9 @@ website:
       - 07_Solving_Non-linear_Systems.qmd
       - 08_Solving_Differential_Equations.qmd
       - 09_Optimisation.qmd
-      - 10_Working_with_Data.qmd
-      - 11_Automatic_Differentiation.qmd
+      - 10_Automatic_Differentiation.qmd
+      - 11_Modelling_Toolkit_and_Symbolics
+      - 12_Working_with_Data.qmd
 
 format:
   html:
