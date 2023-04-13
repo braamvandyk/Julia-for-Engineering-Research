@@ -1,38 +1,38 @@
-using NonlinearSolve
+# Import the Base functions we are going to extend
+import Base: +, /, convert, promote_rule
 
-"""
-    Calculate the difference between the vapour pressure and 1atm
-"""
-function f(u, p)
-    A, B, C = p
-    return 10^(A - B/(u + C)) - 1.01325
+# Define our Dual number type as a sub-type of Number
+struct Dual <: Number
+    f::Tuple{Float64, Float64}
 end
 
-# Antoine parameters from NIST
-# 1. Liu and Lindsay, 1970
-pLL = (3.55959, 643.748, -198.043)
-# 2. Stull, 1947
-pS = (4.6543, 1435.264, -64.848)
+# Tell Julia how to add and divide with Dual
++(x::Dual, y::Dual) = Dual(x.f .+ y.f)
+/(x::Dual, y::Dual) = Dual((x.f[1]/y.f[1], (y.f[1]*x.f[2] - x.f[1]*y.f[2])/y.f[1]^2))
 
-# Initial guess
-u0 = 373.15
+# Tell Julia how to deal with type conversions
+convert(::Type{Dual}, x::Real) = Dual((float(x), 0.0))
+promote_rule(::Type{Dual}, ::Type{<:Number}) = Dual
 
-probLL = NonlinearProblem(f, u0, pLL)
-solLL = solve(probLL, NewtonRaphson())
-f(solLL.u, pLL)
+# The Babylonian algorithm for square roots
+function babylonian(x, n = 10)
+    a = (x + 1)/2
+    for i in 2:n
+        a = (a + x/a)/2
+    end
+    return a
+end
 
-probS = NonlinearProblem(f, u0, pS)
-solS = solve(probS, NewtonRaphson())
-f(solS.u, pS)
+# Test our algorithm
+babylonian(2)
+err = babylonian(2) - √2
 
-uspan = (370.0, 380.0)
+# Create a dual number, with the epsilon part set to 1, to "seed" the derivative for the first variable
+d = Dual((2., 1.))
 
-probLL2 = IntervalNonlinearProblem(f, uspan, pLL)
-solLL2 = solve(probLL2, Falsi())
-f(solLL2.u, pLL)
+# Run the same code we just used for real numbers
+res = babylonian(d)
 
-probS2 = IntervalNonlinearProblem(f, uspan, pS)
-solS2 = solve(probS2, Falsi())
-f(solS2.u, pS)
-
-\epsilon
+# Check the results
+res.f[1] - √2
+res.f[2] - 0.5/√2

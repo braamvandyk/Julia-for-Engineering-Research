@@ -8,7 +8,7 @@ Any reader of this document will be familiar with complex numbers:
 $$z = x + iy$$
 where $i^2 = -1$
 
-The concept of [dual numbers](https://en.wikipedia.org/wiki/Dual_number), proposed by Clifford, in 1873 numbers is closely related:
+The concept of [dual numbers](https://en.wikipedia.org/wiki/Dual_number), proposed by Clifford, in 1873, is closely related:
 
 $$z = a + {\epsilon}b$$
 where ${\epsilon}^2 = 0, \epsilon \ne 0$
@@ -29,32 +29,174 @@ We can also easily expand the method to multiple dimensions by simply expanding 
 
 $$z = a + {\epsilon}_1v_1 + {\epsilon}_2v_2 + {\epsilon}_3v_3 + ...$$
 
-where each $v$ is a basis vector in which direction we wish to calcualte a derivative.
+where each $v$ is a basis vector in which direction we wish to calculate a derivative.
 
 $$f(z) = f(a) + f'(a)v_1{\epsilon}_1+ f'(a)v_1{\epsilon}_1+ f'(a)v_1{\epsilon}_1$$
 
+This works perfectly well for a simple analytic function. To extend this to more complicated functions, we simply apply the rules for differentiation:
+
+
+$$c = a + b   =>  dc = da + db$$
+$$c = a - b   =>  dc = da - db$$
+$$c = a * b   =>  dc = b*da + a*db$$
+$$dc = a / b    =>  dc = (da*b - a*db)/b^2$$
+$$c = sin(a)    =>  dc = cos(a)*da$$
+$$\text{etc.}$$
+
+This is implemented by providing Julia with operator overloading for the dual numbers, i.e. telling Julia how to add, subtract etc. with dual numbers.
+
+As a simple example, we define a dual number type and tell Julia how to add and divide dual numbers, so we can test it with the Babylonian algorithm for calculating square roots. This is an example given by Prof Alan Edelman, one of the designers of the Julia language in a [YouTube](https://www.youtube.com/watch?v=vAp6nUMrKYg) video, that is well worth watching.
+
+
+```julia
+# Import the Base functions we are going to extend
+import Base: +, /, convert, promote_rule
+
+# Define our Dual number type as a sub-type of Number
+struct Dual <: Number
+    f::Tuple{Float64, Float64}
+end
+
+# Tell Julia how to add and divide with Dual
++(x::Dual, y::Dual) = Dual(x.f .+ y.f)
+/(x::Dual, y::Dual) = Dual((x.f[1]/y.f[1], (y.f[1]*x.f[2] - x.f[1]*y.f[2])/y.f[1]^2))
+
+# Tell Julia how to deal with type conversions
+convert(::Type{Dual}, x::Real) = Dual((float(x), 0.0))
+promote_rule(::Type{Dual}, ::Type{<:Number}) = Dual
+
+"""
+The Babylonian algorithm for square roots
+-----------------------------------------
+Initial guess is 1, then for each iteration, take the average of the current estimate, a,
+and x/a. If the current estimate is too large, x/a will be too small and vice versa. 
+Taking the average of the two brings us closer with each step. Usually, ten iterations is
+more than enough.
+"""
+function babylonian(x, n = 10)
+    a = (x + 1)/2
+    for i in 2:n
+        a = (a + x/a)/2
+    end
+    return a
+end
+
+# Test our algorithm
+babylonian(2) # 1.414213562373095
+err = babylonian(2) - √2 # -2.220446049250313e-16
+
+# Create a dual number, with the epsilon part set to 1, to "seed" the derivative for the first variable
+d = Dual((2., 1.)) # Dual((2.0, 1.0))
+
+# Run the same code we just used for real numbers
+res = babylonian(d) # Dual((1.414213562373095, 0.35355339059327373))
+
+# Check the results
+res.f[1] - √2 # -2.220446049250313e-16
+res.f[2] - 0.5/√2 # 0.0
+```
+Here, we have defined the conversion of a constant to a `Dual` by setting the derivative part to zero, since the derivative of a constant is zero.
+
+When we call the function, however, we set the $b$ (from $z = a + {\epsilon}b$) to *one*, since we want to calculate the derivative with regards to this variable. If this was a multivariate function, we would pick which derivative we wanted by which of the $b$ values we set to one, with the others set to zero.
+
 
 ## Reverse Mode AD
-When fitting models to data, we usualy do not care about the derivative in terms of the input, but rather in terms of the parameters of the model. We can apply automatic differentiation here as well, by passing the parameters as dual numbers. For $k$ parameters, we have a $k+1$ dimensional "dual" number.
+Forward mode AD is fairly easy to understand and implement, but it comes with a disadvantage. If we had $n$ input variables, we would need $n$ function calls to calculate the full gradient.
 
-When there are many parameters, however, it is possible to use a more efficient method than forward mode automatic differentiation.
+When fitting models to data, we usualy do not care about the derivative in terms of the input, but rather in terms of the parameters of the model, of which there can be many. We can apply automatic differentiation here as well, by passing the parameters as dual numbers. For $k$ parameters, we have a $k+1$ dimensional "dual" number and $k$ function calls.
 
-Consider fitting a model: $f(x, y)$, where $x$ and $y$ are in turn functions of a parameter $t$, which we want to fit to data.
+When there are many parameters, it is possible to use a more efficient method than forward mode automatic differentiation.
 
-$$f(x(t), y(t))$$
+Consider fitting a model. Our model has some outputs, $w_i$, and some inputs, $u_i$. We can use the chain rule to write the derivative of output $w$ in terms of some yet-to-be-chosen variable, $t$:
 
-To do the regression, we want the derivaive of $f$ in terms of $t$.
+$$\frac{{\partial}w}{{\partial}t} = \sum_i{\frac{{\partial}w}{{\partial}u_i} \frac{{\partial}u_i}{{\partial}t}}$$
 
-$$\frac{{\partial}f}{{\partial}t} = \frac{{\partial}f}{{\partial}x} \frac{{\partial}x}{{\partial}t} + \frac{{\partial}f}{{\partial}y} \frac{{\partial}y}{{\partial}t}$$
+To get the derivative in terms of variable $x$, we simply set $t = x$.
 
+The chain rule is symmetric - we can change the numerators and denominators around:
+
+$$\frac{{\partial}s}{{\partial}u} = \sum_i{\frac{{\partial}w_i}{{\partial}u} \frac{{\partial}s}{{\partial}w_i}}$$
+
+Where $u$ is still an input, $w$ an output, and $s$ some yet-to-be-chosen variable. This time, however, we are calculating the derivative of $s$ with regards to the input, $u$. We have now reversed the positions: we are calculating the derivative of $s$ with regards to input $u$.
+
+Let's look at a simple example:
+
+$$z = xy + sin(x)$$
+
+We can define intermediate variables:
+
+$$a = xy$$
+$$b = sin(x)$$
+$$z = a + b$$
+
+Using the reverse chain-rule from above:
+
+$$\frac{\partial s}{\partial b} = \frac{\partial z}{\partial b} \frac{\partial s}{\partial z} = \frac{\partial s}{\partial z}$$
+
+$$\frac{\partial s}{\partial a} = \frac{\partial z}{\partial a} \frac{\partial s}{\partial z} = \frac{\partial s}{\partial z}$$
+
+$$\frac{\partial s}{\partial y} = \frac{\partial a}{\partial y} \frac{\partial s}{\partial a} = x \frac{\partial s}{\partial a}$$
+
+$$\frac{\partial s}{\partial x} = \frac{\partial a}{\partial x} \frac{\partial s}{\partial a} + \frac{\partial b}{\partial x} \frac{\partial s}{\partial b} = y \frac{\partial s}{\partial a} + cos(x) \frac{\partial s}{\partial b}$$
+
+If we now substitute $s = z$, we get:
+
+$$\frac{\partial z}{\partial b} = \frac{\partial z}{\partial z} = 1$$
+
+$$\frac{\partial z}{\partial a} = \frac{\partial z}{\partial z} = 1$$
+
+$$\frac{\partial z}{\partial y} = x \frac{\partial z}{\partial a} = x$$
+
+$$\frac{\partial z}{\partial x} = y \frac{\partial z}{\partial a} + cos(x) \frac{\partial z}{\partial b} = y + cos(x)$$
+
+We have now managed to calculate both derivatives in a single pass! When fitting a neural network, that can have hundreds to billions of parameters, being able to get the full gradient of the model output with regards to all of the model parameters in a single pass is a dramatic improvement in efficiency.
+
+In general, when a model has many more outputs than inputs, forward mode automatic differentiation will be the more efficient method and when there are many more inputs than outputs, such as in machine learning, reverse mode will be more efficient. If your model is not large, or not called many times (such as when fitting parameters), you may not notice the difference.
 
 ## Available packages
 
 ### ForwardDiff.jl
+One of the most used automatic differentiation packages in Julia is [ForwardDiff.jl](https://github.com/JuliaDiff/ForwardDiff.jl). It has a few limitations to its use:
 
-### ReverseDiff.jl
+1. It only works on Julia code - you cannot use it on C, Python or R code being called from Julia
+2. Target functions must take only one input, which may be a vector and return either a scalar or vector
+4. The function must be written generically, i.e. no types must be specified.
+   This is something that can quickly trip you up, when you for example, initialise a variable to 0.0 or 1.0, both of which are `Float64`. Rather use `zero(x)` and `one(x)`, which will return a zero or one in the same type as `x`.
+5. Input vectors must be a sub-type of `AbstractArray`, so some custom types may not be supported. Julia built-in arrays and `StaticArrays` are supported.
+
+The package provides several functions, including:
+
+`ForwardDiff.derivative(f, x::Real)`: Calculate the derivative of `f(x)` in variable `x` at the current value of `x`
+
+`ForwardDiff.gradient(f, x::AbstractArray)`: Calculate the gradient of `f(x)` in each of the variables contained in vector `x` at the current value of `x`
+
+`ForwardDiff.jacobian(f, x::AbstractArray)`: Calculate the Jacobian matrix, where `f()` returns a vector of function values calculated from input vector `x`.
+
+`ForwardDiff.hessian(f, x::AbstractArray)`: Calculate the Hessian matrix, where f returns a scalar value, calculated from input vector `x`.
+
+A simple example:
+
+```julia
+julia> f(x) = 2x^2 - x
+f (generic function with 1 method)
+
+julia> df(x) = ForwardDiff.derivative(f, x)
+df (generic function with 1 method)
+
+julia> f(2)
+6
+
+julia> df(2)
+7
+```
+ForwardDiff does have the option to handle mutating functions, where the array result is return in the first parameter.
 
 ### Zygote.jl
+The Zygote package was developed as part of [Flux.j](http://fluxml.ai/) - a deep learning package in Julia.
+
+Zygote cannot handle mutating functions, try/catch statements for exception handling or calls to "foreign" code, like a C library. It works during the compilation phase, so generates very efficient code, using reverse mode automatic differentiation.
+
+
 
 ### Enzyme.jl 
 
