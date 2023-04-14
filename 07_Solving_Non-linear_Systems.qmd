@@ -2,9 +2,10 @@
 title: "Solving Non-linear Systems"
 ---
 
-It is often required to solve systems of non-linear equations in engineering. As for the the case of systems of linear equations, there are multiple options in Julia. 
+It is often required to solve systems of non-linear equations in engineering. As for the the case of systems of linear equations, there are multiple options in Julia.
 
 ## Available packages
+
 A popular package is [`NLsolve.jl`](https://github.com/JuliaNLSolvers/NLsolve.jl). This package provides three methods: Trust region, Newton's method with optional line search, and Anderson acceleration. It can also solve fixed-point problems.
 
 Alternatively, you could use [`JuMP`](https://jump.dev/) - a **very** powerful mathematical programming modeling language, built on top of Julia, that can call several free and commercial solvers. In this case, set up a problem with non-linear constraints matching your system and a constant value objective function.
@@ -19,14 +20,14 @@ This package uses the same interface as [`LinearSolve.jl`](https://docs.sciml.ai
 
 The `NonlinearSolve.jl` package can be used to solve three types of problem:
 
-1. Interval root-finding (bracketing) problems, where a scalar root is found within a specified interval: find $t ∈ [tₗ, tₕ]$ such that $f(t) = 0$  
-2. Solving a system of non-linear equations, i.e. find $\mathbf{u}$ such that $f(\mathbf{u}) = \mathbf{0}$
-3. Solving stead-state problems, i.e. solve $u' = f(u, t) = f(u, \infty) = 0$
+1.  Interval root-finding (bracketing) problems, where a scalar root is found within a specified interval: find $t ∈ [tₗ, tₕ]$ such that $f(t) = 0$\
+2.  Solving a system of non-linear equations, i.e. find $\mathbf{u}$ such that $f(\mathbf{u}) = \mathbf{0}$
+3.  Solving stead-state problems, i.e. solve $u' = f(u, t) = f(u, \infty) = 0$
 
 To solve a problem, you need to provide a function that defines the system of equations. This can take one of two forms:
 
-- A non-mutating function, `f(t, p)`, which returns `u`
-- A mutating function, `f!(u, t, p)`, which mutates the parameter `u`
+-   A non-mutating function, `f(t, p)`, which returns `u`
+-   A mutating function, `f!(u, t, p)`, which mutates the parameter `u`
 
 You then define either an `IntervalNonlinearProblem`, `NonlinearProblem` or `SteadyStateProblem`, depending on which of the three types of problems above you want to solve.
 
@@ -55,17 +56,21 @@ u0 = 373.15
 # Specified span for Falsi
 uspan = (370.0, 380.0);
 ```
+
 ```{julia}
 prob = NonlinearProblem(f, u0, p)
 sol = solve(prob, NewtonRaphson())
 ```
+
 ```{julia}
 f(sol.u, p)
 ```
+
 ```{julia}
 prob2 = IntervalNonlinearProblem(f, uspan, p)
 sol2 = solve(prob2, Falsi())
 ```
+
 ```{julia}
 f(sol2.u, p)
 ```
