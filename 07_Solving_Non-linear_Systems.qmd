@@ -35,7 +35,7 @@ Finally, you call `solve()` to get the result.
 
 As a simple demonstration, we shall calculate the boiling point of water, using the Antoine correlation with parameters from NIST. We calculate the boiling point by finding the root of a function that is the difference between the vapour pressure at a specified temperature and 1 atm. We do this in two ways, using the Newton-Raphson method from a starting guess and using the regula falsi method to find roots in a specified interval.
 
-```{julia}
+```
 using NonlinearSolve
 
 """
@@ -55,24 +55,16 @@ u0 = 373.15
 
 # Specified span for Falsi
 uspan = (370.0, 380.0);
-```
 
-```{julia}
 prob = NonlinearProblem(f, u0, p)
-sol = solve(prob, NewtonRaphson())
-```
+sol = solve(prob, NewtonRaphson()) # u: 373.6009857758806
 
-```{julia}
-f(sol.u, p)
-```
+f(sol.u, p) # 4.121456953498637e-9
 
-```{julia}
 prob2 = IntervalNonlinearProblem(f, uspan, p)
-sol2 = solve(prob2, Falsi())
-```
+sol2 = solve(prob2, Falsi()) # u: 373.60098565855054
 
-```{julia}
-f(sol2.u, p)
+f(sol2.u, p) # -1.5543122344752192e-15
 ```
 
 We can also solve for the steady-state solution of a differential equation:
@@ -81,7 +73,7 @@ $$u'(t) = u(t) - u^2(t)$$
 
 with $u(0) = 1.5$. This ODE will have a steady-state at $u = 0$.
 
-```{julia}
+```
 using NonlinearSolve, DifferentialEquations
 
 function ssode(u, p, t)
@@ -90,7 +82,7 @@ end
 
 u0 = 1.5
 probss = SteadyStateProblem(ssode, u0, nothing)
-solss = solve(probss, DynamicSS(Vern6()))
+solss = solve(probss, DynamicSS(Vern6())) # u: 1.0000007379583993
 ```
 
 While this is a simple demonstration of how to solve for an ODE's steady-state, it would have been a lot more efficient to convert the problem to a non-linear equation, rather than using the approach of solving the dynamic ODE problem and running to steady-state.

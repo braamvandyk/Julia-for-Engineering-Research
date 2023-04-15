@@ -3,6 +3,7 @@ project:
 
 website:
   title: "Julia for Engineering Research"
+  back-to-top-navigation: true
   navbar:
     left:
       - href: index.qmd
@@ -17,7 +18,7 @@ website:
       - 08_Solving_Differential_Equations.qmd
       - 09_Optimisation.qmd
       - 10_Automatic_Differentiation.qmd
-      - 11_Modelling_Toolkit_and_Symbolics
+      - 11_Modelling_Toolkit_and_Symbolics.qmd
       - 12_Working_with_Data.qmd
 
 format:
