@@ -28,7 +28,7 @@ with $a = 1$ and $b = 100$
 
 ![Rosenbrock's function in two dimensions](/img/rosebrock.svg)
 
-In this example, we use two optimisers, Nelder-Mead from Optim and an Adaptive Differential Evolution method from BlackBoxOptim. We also time both of these solvers using `@btime` from BenchmarkTools.
+In this example (taken from the introductory tutorials of Optimization.jl), we use two optimisers, Nelder-Mead from Optim and an Adaptive Differential Evolution method from BlackBoxOptim. We also time both of these solvers using `@btime` from BenchmarkTools.
 
 ```julia
 using Optimization, OptimizationOptimJL, OptimizationBBO, BenchmarkTools
