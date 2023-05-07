@@ -16,8 +16,9 @@ function rates!(du, u, p, t)
     y = u ./ sum(u)
 
     # Unpack the tuple to get pressure and temperature
-    P, ΔP, T = p
+    P₀, ΔP, T, tmax = p
 
+    P = P₀ - t/tmax*ΔP
     k = k₀ * exp(-Eₐ/R * (1/T - 1/T₀))
     rA = -k * y[1] * y[2] * P^2
     rB = rA
@@ -32,13 +33,14 @@ end
 T = 510.0
 P = 10.0
 ΔP = 1.0
-p = (P, ΔP, T)
+tmax = 20.0
+p = (P, ΔP, T, tmax)
 
 # The starting values for the initial value problem
 u₀ = [60.0, 40.0, 0.0]
 
 # The span over which to integrate - here the mass of catalyst
-tspan = (0.0, 20.0)
+tspan = (0.0, tmax)
 
 # Create the ODEProblem object
 prob = ODEProblem(rates!, u₀, tspan, p)
