@@ -47,7 +47,7 @@ true
 It may help to read  `A\b` as "A divides into b"
 :::
 
-This is a fairly straigforward way of solving a linear system. For dense systems, it is also quite efficient, if your matrix is well-behaved.
+This is a fairly straightforward way of solving a linear system. For dense systems, it is also quite efficient, if your matrix is well-behaved.
 
 Internally, there is quite a bit going on. Julia analyses the matrix, `A`. It then selects an appropriate factorisation methods and uses that to solve the linear system.
 
@@ -55,7 +55,7 @@ Upper and lower triangular and diagonal systems are solved directly via forward 
 
 For rectangular matrices, a minimum norm, least squares solution is calculated using pivoted QR factorisation. 
 
-Similar approaches are used for sparse matrices, including use of LDLt factorisation for indefiite matrices etc. See the manual section on [factorisation](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/#LinearAlgebra.factorize) for more detail.
+Similar approaches are used for sparse matrices, including use of LDLt factorisation for indefinite matrices etc. See the manual section on [factorisation](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/#LinearAlgebra.factorize) for more detail.
 
 If you are going to perform more than one calculation with the same matrix, it will be more efficient to store the factorisation result:
 
@@ -101,7 +101,7 @@ julia> b = [4, 1, 5] # Our first b vector
  1
  5
 
-julia> A\b # Solve using specialised methods for LU factorisised martrices
+julia> A\b # Solve using specialised methods for LU factorised matrices
 3-element Vector{Float64}:
  1.0
  2.0
@@ -120,9 +120,9 @@ julia> A\b # Solve without needing to repeat the factorisation
  -0.25000000000000006
  ```
 ::: {.callout-important}
-You could of course solve a linear system by multiplying with the inverse of the martrix, and this is fairly stright-forward to do, with `inv(A)`. This is however, **almost never a good choice**, especially with large, sparse matrices, where the inverse is generally dense and may not fit into your computer's memory.
+You could of course solve a linear system by multiplying with the inverse of the matrix, and this is fairly straightforward to do, with `inv(A)`. This is however, **almost never a good choice**, especially with large, sparse matrices, where the inverse is generally dense and may not fit into your computer's memory.
 
-Factorisisation is always a better choice, and iterative methods often the best choice for large, sparse matrices.
+Factorisation is always a better choice, and iterative methods often the best choice for large, sparse matrices.
 :::
 
 #### Specialised Matrix Types
@@ -149,7 +149,7 @@ Some useful functions for working with sparse matrices include:
 - `nnz()` returns the number of entries in the array. This could include values that have been set to zero.
 - `count(!iszero, x)` will check each entry and count only non-zero values
 - `dropzeros()` will drop entries that have been set to zero from the list of stored entries. It returns a new sparse array
-- `dropzero!()` is simlilar to `dropzero()`, but modifies the array directly.
+- `dropzero!()` is similar to `dropzero()`, but modifies the array directly.
 - `spzeros(m,n)` is similar to `zeros()`. It creates a `m`x`n` sparse array with all elements set to zero.
 - `sparse(I, J, V)` creates a sparse array from thee vectors. `I` is a vector of the row indices, `J` of column indices and `V` holds the values of the entries.
 - `sparsevec(I, V)` is the vector equivalent of `sparse()`

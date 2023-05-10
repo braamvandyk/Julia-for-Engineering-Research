@@ -33,7 +33,7 @@ You then define either an `IntervalNonlinearProblem`, `NonlinearProblem` or `Ste
 
 Finally, you call `solve()` to get the result.
 
-As a simple demonstration, we shall calculate the boiling point of water, using the Antoine correlation with parameters from NIST. We calculate the boiling point by finding the root of a function that is the difference between the vapour pressure at a specified temperature and 1 atm. We do this in two ways, using the Newton-Raphson method from a starting guess and using the regula falsi method to find roots in a specified interval.
+As a simple demonstration, we shall calculate the boiling point of water, using the Antoine correlation with parameters from NIST. We calculate the boiling point by finding the root of a function that is the difference between the vapour pressure at a specified temperature and 1 atm. We do this in two ways, using the Newton-Raphson method from a starting guess and using the *regula falsi* method to find roots in a specified interval.
 
 ```
 using NonlinearSolve

@@ -14,7 +14,7 @@ Other popular plotting packages include [Makie](https://docs.makie.org/stable/) 
 The following backends are supported:
 
 1. GR (default). Supports all features. Best choice for speed.
-2. Plotly / PlotlyJS. Best coice for interactivity. The plot is generated in a browser. Plotly requires an internet connection, while PlotlyJS runs locally.
+2. Plotly / PlotlyJS. Best choice for interactivity. The plot is generated in a browser. Plotly requires an internet connection, while PlotlyJS runs locally.
 3. PythonPlot. Julia front-end for PyPlot, the Python front-end for Matplotlib. When installing, this will also install a private Python installation (will use the same installation as Jupyter).
 4. UnicodePlots. Plots generated with Unicode (text) characters.
 5. Gaston. A Julia front-end for the GnuPlot backend.
@@ -37,7 +37,7 @@ Plots.GRBackend()
 
 For detailed documentation on all the features of Plots.jl, see the [manual](https://docs.juliaplots.org/stable/). 
 
-A simple plot is generated with the `plot()` function. An existing plot can be added to with the `plot!()` function. If no plot variable is specified, this will add to the last generated plot. There are also mutating functions to add/modify the axis lables, plot title etc:
+A simple plot is generated with the `plot()` function. An existing plot can be added to with the `plot!()` function. If no plot variable is specified, this will add to the last generated plot. There are also mutating functions to add/modify the axis labels, plot title etc:
 
 - title!()
 - xlabel!()
@@ -46,7 +46,7 @@ A simple plot is generated with the `plot()` function. An existing plot can be a
 
 You can combine multiple plots in one. By default, the layout is a simple grid, but there is the option to specify complex layouts. 
 
-You can save the plot to file. Both `*.png` and `*.svg` formats are available and selected simply by specifying the extention in the filename.
+You can save the plot to file. Both `*.png` and `*.svg` formats are available and selected simply by specifying the extension in the filename.
 
 Two examples:
 

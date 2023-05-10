@@ -39,18 +39,18 @@ julia> include("myscript.jl")
      └                                        ┘
 ```
 
-You can also run the script from the commandline with:
+You can also run the script from the command line with:
 
 ```julia myscript.jl```
 
 The REPL has a few modes. You can access the package manager by pressing `]` at the `julia>` prompt. To access the help mode, use `?` (also inside the package manager). You can also access the underlying shell with `;`, but unless you are running Julia inside Windows Terminal, very little will work in Shell Mode.
 
-While it is good to be familiar with the REPL, realisitically speaking, the only thing the average user will every do in the REPL is to access the package manager. This is where to install or remove packages and update installed packages.
+While it is good to be familiar with the REPL, realistically speaking, the only thing the average user will every do in the REPL is to access the package manager. This is where to install or remove packages and update installed packages.
 
 You can use Unicode characters in the REPL, but unless you are using Windows Terminal, most non-ASCII characters won't display properly.
 
 ### Keyboard Shortcuts
-The REPL has commandline completion. For example, if you typed:
+The REPL has command line completion. For example, if you typed:
 
 ```julia
 include("myscript.jl")
@@ -80,7 +80,7 @@ Now you can enter code.
 
 To execute the code, either click the run button to execute the whole file, or click on a line you want to execute and hit `Shift-Enter` to execute the code block. A code block is intelligently identified, so if the line you are on is inside a function definition, for example, the function will be compiled.
 
-Once you are executing code, a Julia REPL will be open in the Terminal inside VSCode. Anything you can do in the REPL can be done here. The Julia add-in also provides more features, like listing all exising variables in the current scope and their values, as well as a plot pane and many other useful tools.
+Once you are executing code, a Julia REPL will be open in the Terminal inside VSCode. Anything you can do in the REPL can be done here. The Julia add-in also provides more features, like listing all existing variables in the current scope and their values, as well as a plot pane and many other useful tools.
 
 ## Jupyter and Pluto
 There are two more useful tools for running Julia.

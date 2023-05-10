@@ -27,6 +27,29 @@ JuliaUp allows you to have multiple installations of Julia, e.g., the current re
 
 You can easily switch between them with a single command-line instruction. JuliaUp will also automatically keep your Julia installation updated when a new version is released.
 
+You can install from the Microsoft Store application, or from the command-line with:
+
+```
+winget install julia -s msstore
+```
+
+You can then add and manage various Julia installations using the JuliaUp tool, e.g.
+
+```
+juliaup add release         # add the current release channel
+juliaup add rc              # add current release candidate channel
+juliaup add beta            # add current beta channel
+juliaup st                  # get status of installed versions
+juliaup default release     # set the version to use
+julia --help                # see the help options
+```
+
+You can also directly launch a specific installed channel, e.g. 
+
+```
+julia +rc
+```
+
 ## Visual Studio Code
 The recommended code editor for Julia is Visual Studio Code (VSCode). This is a Microsoft project that is free and partially open-sourced. You can download and install it from the official [homepage](code.visualstudio.com) or via the Microsoft Store.
 
@@ -49,13 +72,13 @@ Some add-ins recommended for everyday use are:
 - SandDance for VSCode
 - SVG
 
-Edit CSV allows for easy editing CSV (Comma-Separated Values) files rigth within VSCode, so you don't need to go back to Excel for small edits.
+Edit CSV allows for easy editing CSV (Comma-Separated Values) files right within VSCode, so you don't need to go back to Excel for small edits.
 
 Rainbow CSV color-codes the columns in CSV files, making it much easier to work with them.
 
 SandDance generates plots of the data in a CSV for quick data exploration.
 
-SVG allows you to preview SVG (Scalable Vector Graphics) files inside VSCode. Most of the plotting packages can save plots as SVG files, which is recommended, since you can zoom in or out infinitly without loss of quality. Microsoft Office can include SVG files in, e.g., Word and PowerPoint.
+SVG allows you to preview SVG (Scalable Vector Graphics) files inside VSCode. Most of the plotting packages can save plots as SVG files, which is recommended, since you can zoom in or out infinitely without loss of quality. Microsoft Office can include SVG files in, e.g., Word and PowerPoint.
 
 For writing technical documents that include running code, e.g., to generate the plots, and to publish these to web pages, .PDF or DOCX documents, among others, consider Quarto (this will require the installation of the [Quarto](https://quarto.org/) program as well as the VSCode add-in)
 
@@ -95,3 +118,5 @@ help?> ℱ
 Git is a version control software. No, more accurately, Git is THE version control software. You do not need to use Git, but it will most certainly make your life a lot easier if you are either working in a team or working on large projects. 
 
 Git is integrated into VSCode, but it is often handy to have the command-line version. You can get it from the Git [homepage](https://git-scm.com/). Like Julia and VSCode, Git is free and open-sourced.
+
+It is worth your time to learn at least the basics of Git. There is a free book, available on-line, to assist you: [Pro Git](https://git-scm.com/book/en/v2)

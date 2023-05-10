@@ -246,13 +246,13 @@ For floating-point values, there is Float16, Float32 and Float64.
 The default integer, `Int` is Int64 for 64-bit Julia and `Int32` for 32-bit Julia. Generally, you would want to use `Float64` for floating-point numbers, unless there is a specific reason not to. Calculations on a GPU (via e.g., `CUDA.jl`) should be done using `Float32`.
 
 #### A Word on Floating-Point Values
-Floating-point values are stored in a limited number of bits (typically 64 bits - a.k.a. double precision) and hence have a limited precision. The result is that most values cannot be precisley stored in a `Float64` variable. As a simple example, 1/10, which is clearly precisely equal to 0.1, is actually calculated as 0.1000000000000000055511151231257827021181583404541015625 with 256-bit precision.
+Floating-point values are stored in a limited number of bits (typically 64 bits - a.k.a. double precision) and hence have a limited precision. The result is that most values cannot be precisely stored in a `Float64` variable. As a simple example, 1/10, which is clearly precisely equal to 0.1, is actually calculated as 0.1000000000000000055511151231257827021181583404541015625 with 256-bit precision.
 
 The smallest positive value that can be stored in a `Float64`, is 2.220446049250313e-16. You can calculate this in Julia using the `eps()` function e.g., `eps(Float64)`. The value epsilon is an indication of the precision you can expect. It is the smallest value you can add to the floating-point value that will cause it to result in a new value. Anything smaller may as well be zero. Obviously, epsilon depends on the magnitude of the values you are working with, and you can again use the `eps()` function: `eps(100) = 1.4210854715202004e-14`, so adding a smaller amount to 100 will not change the value.
 
 While you can safely ignore this for many, if not most engineering calculations, it can sometimes become an issue when you least expect it. Consider adding up a very large number of small values. The larger the difference between the running total and the next value you are adding, the larger the rounding error will become. At some point in this exercise, the value you are adding to the running total will be in the order of the relative epsilon and the running total will stop increasing, no matter how many more values you add. The solution to this is actually fairly simple and implemented in the Julia `sum()` function.
 
-The list of values is split into pairs and the pairs are added to each other, then this is repeated over and over until there is only one value left - the answer. The algorithm works under the inherent assumption that the values are fairly equally sized and so adding similar values results in minimal rounding error. Once the pairs have been summed, the new values should also be simialrly sized and so the process repeats, with a minimum rounding error at each step.
+The list of values is split into pairs and the pairs are added to each other, then this is repeated over and over until there is only one value left - the answer. The algorithm works under the inherent assumption that the values are fairly equally sized and so adding similar values results in minimal rounding error. Once the pairs have been summed, the new values should also be similarly sized and so the process repeats, with a minimum rounding error at each step.
 
 Something else to consider, which much more often trips up new programmers, is that you will very rarely find two identical floating-point values through calculations. Directly comparing values that are realistically speaking equal, will very often result in the wrong part of an `if` statement executing. When comparing floating-point values, always use a check for approximate equality. This is done either via the `≈` operator (`\approx<tab>`), or the `isapprox()` function, which allows you to specify absolute and relative tolerances. The `≈` operator calls `isapprox()` with default tolerances.
 
@@ -261,7 +261,7 @@ The internal storage of floating-point values is standardised by the [IEEE 754](
 ### BigInt and BigFloat
 Sometimes, you may find a need for additional precision. Arbitrary-precision integer and floating-point types are available as BigInt and BigFloat. 
 
-There are several ways to specifiy that you are using `big` numbers, but the simplest is via the `big()` function:
+There are several ways to specify that you are using `big` numbers, but the simplest is via the `big()` function:
 
 ```julia
 julia> x = big(10.0)
@@ -424,13 +424,13 @@ We can again ignore any line starting with a semi-colon. The one line that matte
 
 The Julia compiler could analyse the code well enough to see that the answer to our function is sumply 50005000 times the input value and that is exactly what it returned!
 
-With floating-point and rational values, there were type conversions required before multiplying the integer value of the loop counter with the input value. This "hid" the true nature of the calculation enough that the compiler could not see the short-cut. There is however continuous development in the compiler, and we can reasonbly expect this to also be optimised in a future version of Julia.
+With floating-point and rational values, there were type conversions required before multiplying the integer value of the loop counter with the input value. This "hid" the true nature of the calculation enough that the compiler could not see the short-cut. There is however continuous development in the compiler, and we can reasonably expect this to also be optimised in a future version of Julia.
 
 ### Arrays, Tuples and Ranges
 #### Arrays
 In most code, you will find it convenient to deal with a collection of values at the same time. There are several ways of doing this.
 
-The most common collection of values is an Array. In mathematics, you will be familar with vectors and matrices. These are simply one- and two-dimensional arrays. You can have arrays with any number of dimensions (*tensors*). The keywords `Vector` and `Matrix` are also available as synonyms for `Array` in the special cases of one and two dimensions.
+The most common collection of values is an Array. In mathematics, you will be familiar with vectors and matrices. These are simply one- and two-dimensional arrays. You can have arrays with any number of dimensions (*tensors*). The keywords `Vector` and `Matrix` are also available as synonyms for `Array` in the special cases of one and two dimensions.
 
 ::: {.callout-note}
 Simple one-dimensional arrays are treated as column vectors for use in linear algebra calculations.
@@ -651,12 +651,12 @@ julia> y
 1
 ```
 
-Here we defined a tuple `(x, y)` and then unpacked it into the variables `y` and `x`, swopping their values.
+Here we defined a tuple `(x, y)` and then unpacked it into the variables `y` and `x`, swapping their values.
 
 Since tuples have superior performance to arrays, there exists a package that builds small arrays-like structures from tuples - [`StaticArrays.jl`](https://github.com/JuliaArrays/StaticArrays.jl). This is commonly used for maximum performance, but only for smallish arrays, typically less than 200-300 entries. More than that and you run out of space on the stack, which has a limited size.
 
 #### Named Tuples
-You can also name the entries in a tuple and access them via the names instead or indeces:
+You can also name the entries in a tuple and access them via the names instead or indexes:
 
 ```julia
 julia> nt = (a = 1, b = 2, c = "Bob")
@@ -820,7 +820,7 @@ In the examples above, we used one-dimensional arrays and there was really no ch
 
 In the case if multi-dimensional arrays, the entries are still sequential in memory - that is how RAM works! Here, however, there are better and worse options for accessing a given entry in the array.
 
-This is because of how the values are stored in memory. It is faster to sequencially access values that are stored next to each other than to jump around in memory. Julia is *column major*, meaning that the values in the first column of a matrix are stored next to each other in memory, followed by the values of the second column etc. For higher dimenstions, the sequence is similar: each subsequent index follows the next. This is then the fastest way of iterating through the whole array.
+This is because of how the values are stored in memory. It is faster to sequentially access values that are stored next to each other than to jump around in memory. Julia is *column major*, meaning that the values in the first column of a matrix are stored next to each other in memory, followed by the values of the second column etc. For higher dimensions, the sequence is similar: each subsequent index follows the next. This is then the fastest way of iterating through the whole array.
 
 
 ```julia
@@ -874,9 +874,9 @@ julia> @btime myfunc3(A)
 5.000090241950418e7
 ```
 
-`eachindex()` returns a linear index, no matter what the dimensionality of the array is and sequences it for the fastest sequencial access.
+`eachindex()` returns a linear index, no matter what the dimensionality of the array is and sequences it for the fastest sequential access.
 
-Another useful indexing function is `enumerate()`. It returns an iterator of tuples, each containing an index and value pair. The indeces are linear, not cartesian.
+Another useful indexing function is `enumerate()`. It returns an iterator of tuples, each containing an index and value pair. The indexes are linear, not cartesian.
 
 ```julia
 julia> A = rand(2,2)
@@ -1089,11 +1089,11 @@ julia> e = sqrt.(d) # works for any function (note the . is between the name and
 ```
 
 ### The Type Hierarchy
-The built-in types have a hieracrchy:
+The built-in types have a hierarchy:
 
 ![The type hierarchy - Image from https://thautwarm.github.io/](https://thautwarm.github.io/Site-32/_images/julia-type-hierarchy.png)
 
-This consists of abstract and concrete types. You can only instansiate a variable of a concrete type, but the abstract types are useful to specificy groups of types that would behave similarly, e.g., `Float64` and `Int64` could both the added and multiplied. This is true for all the `Number` types, be they `Real` or `Complex`. We could specify allowed groups of types, via the `<:` operator, or specific types, via `::`, e.g.
+This consists of abstract and concrete types. You can only instantiate a variable of a concrete type, but the abstract types are useful to specify groups of types that would behave similarly, e.g., `Float64` and `Int64` could both the added and multiplied. This is true for all the `Number` types, be they `Real` or `Complex`. We could specify allowed groups of types, via the `<:` operator, or specific types, via `::`, e.g.
 
 ```julia
 function f(x::T) where T <: Number
@@ -1129,7 +1129,7 @@ julia> push!(customers, bob) # push an entry into the array - will increase the 
 julia> customers[1]
 PersonData("Robert Smith", "2 Cypress Lane", 123456)
 
-julia> bob.name # access the values via the fieldnames
+julia> bob.name # access the values via the field names
 "Robert Smith"
 
 julia> customers[1].name
@@ -1173,14 +1173,14 @@ PersonData2("Joe Bloggs", "2 Cypress Lane", 123456)
 The `struct` is immutable by default to allow additional compiler optimisations. Mutable structs will therefore have worse performance, but more flexibility.
 
 #### Constructors
-Julia automatically creates a *contructor* for each struct you define. This is a function that takes the values of the fields, creates a new structure in memory and assigns the specified values to the fields.
+Julia automatically creates a *constructor* for each struct you define. This is a function that takes the values of the fields, creates a new structure in memory and assigns the specified values to the fields.
 
 You can also create additional constructors. There are two types:
 
 - Outer constructors and
 - Inner constructors
 
-The default constructor is an outer constructor. You can also speficy additional outer constructors that e.g., have default values for some fields, or calculate some values from others:
+The default constructor is an outer constructor. You can also specify additional outer constructors that e.g., have default values for some fields, or calculate some values from others:
 
 ```julia
 julia> struct PersonData
@@ -1240,7 +1240,7 @@ If you define an inner constructor, NO default constructors are created. You nee
 ## Loops
 Julia provides two types of loops:
 
-1. `for` loops for iterating over an iterable contruct, like a range or array with a known length
+1. `for` loops for iterating over an iterable construct, like a range or array with a known length
 2. `while` loops for iterating until a logical criterium is met, with an initially unknown number of iterations
 
 ```julia
@@ -1271,7 +1271,7 @@ julia> while a[i] <= 10
 1       2.0
 2       8.0
 ```
-In a `while` loop, it is critical to manually implement a step (`i += 1` in the example), or the loop will execute indefintely!
+In a `while` loop, it is critical to manually implement a step (`i += 1` in the example), or the loop will execute indefinitely!
 
 ## Logic and Flow Control
 At some point in your code, you will want to execute different instructions depending on some criteria. The most basic form of flow control is the `if` statement:
@@ -1339,7 +1339,7 @@ function myfunc(a, b)
     return a + b
 end
 ```
-The keyword `return` is optional, but it significantly improves readability. In the absense of a `return` statement, Julia will return the last calculated result. You can also have multiple `return` statements in an `if` block. When a `return` is executed (evaluated in Julia parlance), the function will return the specified value and exit.
+The keyword `return` is optional, but it significantly improves readability. In the absence of a `return` statement, Julia will return the last calculated result. You can also have multiple `return` statements in an `if` block. When a `return` is executed (evaluated in Julia parlance), the function will return the specified value and exit.
 
 
 2. Short-cut for single line functions
@@ -1353,11 +1353,11 @@ mysum = sum(x -> x^2 + √x, somearray)
 ```
 Here Julia will apply the function `x -> x^2 + √x` to each entry in the array `somearray` and then adds up the results.
 
-You technically can pass only one parameter to an anonynous function, but since that parameter can be a tuple (and tuples can contain arrays or other tuples), there is practically no limit to the number of parameters passed, e.g.
+You technically can pass only one parameter to an anonymous function, but since that parameter can be a tuple (and tuples can contain arrays or other tuples), there is practically no limit to the number of parameters passed, e.g.
 ```julia
 f = x(x, y) -> 2x/y^2
 ```
-Here we alo asign the result of the function definition to a variable, `f`, which means we can later call `f(x, y)`. There is really no reason to do this. Rather use the short-cut function definition above.
+Here we alo assign the result of the function definition to a variable, `f`, which means we can later call `f(x, y)`. There is really no reason to do this. Rather use the short-cut function definition above.
 
 4. Do blocks (similar to anonymous functions, but for multi-line functions)
 ```julia
@@ -1442,4 +1442,4 @@ The main things to consider, if you want fast code are:
 2. Avoid type instability in your code.
 3. Avoid unnecessary memory allocation by re-using arrays where possible.
 
-Once you have these issues under control, learning to properly benchmark your code (using [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl)) will allow you to finetune the performance of your code. Writing gast code is mostly about *not writing slow code*.
+Once you have these issues under control, learning to properly benchmark your code (using [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl)) will allow you to fine tune the performance of your code. Writing fast code is mostly about *not writing slow code*.

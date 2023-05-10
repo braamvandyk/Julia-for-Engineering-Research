@@ -103,7 +103,7 @@ When we call the function, however, we set the $b$ (from $z = a + {\epsilon}b$) 
 ## Reverse Mode AD
 Forward mode AD is fairly easy to understand and implement, but it comes with a disadvantage. If we had $n$ input variables, we would need $n$ function calls to calculate the full gradient.
 
-When fitting models to data, we usualy do not care about the derivative in terms of the input, but rather in terms of the parameters of the model, of which there can be many. We can apply automatic differentiation here as well, by passing the parameters as dual numbers. For $k$ parameters, we have a $k+1$ dimensional "dual" number and $k$ function calls.
+When fitting models to data, we usually do not care about the derivative in terms of the input, but rather in terms of the parameters of the model, of which there can be many. We can apply automatic differentiation here as well, by passing the parameters as dual numbers. For $k$ parameters, we have a $k+1$ dimensional "dual" number and $k$ function calls.
 
 When there are many parameters, it is possible to use a more efficient method than forward mode automatic differentiation.
 
@@ -200,7 +200,7 @@ Using Zygote is fairly similar to using ForwardDiff.
 
 `gradient()` - calculates the derivative of a function, with either scalar or vector inputs
 
-`jacobian()` - calculates the Jacobian matrix for a system of equations, as well as hession
+`jacobian()` - calculates the Jacobian matrix for a system of equations, as well as hessian
 
 `hessian()` - calculates the Hessian matrix for an equation with vector of inputs
 
