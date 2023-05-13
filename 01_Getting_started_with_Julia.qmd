@@ -2,7 +2,7 @@
 title: "Getting Started with Julia"
 ---
 
-# Why Julia?
+## Why Julia?
 There are a vast number of articles on the internet on the topic of why you would want to use Julia. I'll briefly explain why I prefer programming in Julia and think you may too.
 
 Everyone who either programs seriously, or merely dabbles in code likely has a personal favourite programming language. It may be that they only know one language. Professional programmers often have more than one language they work in, and often prefer a certain tool for specific tasks. It is a simple fact that some languages are better for certain tasks than others for various reasons. 
