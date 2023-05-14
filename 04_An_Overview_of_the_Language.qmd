@@ -149,6 +149,7 @@ julia> x = "Hello, World"
 julia> typeof(x)
 String
 ```
+
 When assigning a value to the variable `x`, Julia infers the type of the value, e.g., `Int64` and then associates the name, `x`, with that value.
 
 As illustrated, the function `typeof()` will return the type of the variable or value. While you don't have to specify the types of variables, Julia is a *strongly typed* language, just like C or Fortran. The type of a variable is just automatically inferred whenever possible.
@@ -194,9 +195,11 @@ julia> s[5]
 julia> s[5:10]
 " is my"
 ```
+
 Note how new lines are indicated with `'\n'`, which is itself a character.
 
 Numerical values can be converted to strings using the `string()` function:
+
 ```julia
 julia> string(123)
 "123"
@@ -270,6 +273,7 @@ julia> x = big(10.0)
 julia> typeof(x)
 BigFloat
 ```
+
 The precision again comes at the cost of performance. See the [manual](https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts) for more details.
 
 ### Complex Numbers
@@ -333,6 +337,7 @@ julia> √z
 julia> sqrt(z)
 1.09868411346781 + 0.45508986056222733im
 ```
+
 ### Rational Numbers
 You can also work with rational numbers. 
 
@@ -401,6 +406,7 @@ BenchmarkTools.Trial: 10000 samples with 1000 evaluations.
 
  Memory estimate: 0 bytes, allocs estimate: 0.
 ```
+
 1.9 nanoseconds?!? That sounds too good to be true, doesn't it? Let's see what type of code Julia generated to make that possible.
 
 ```julia
@@ -499,10 +505,12 @@ Float64[]
 ```
 
 The individual entries of an array are accessed via `[]`, e.g., 
+
 ```julia
 julia> A[2, 3]
 6
 ```
+
 In the background, `[]` calls  `getindex()` and `setindex()` to retrieve or modify the entries of the array. If you define your own array-like type, you will need to supply the appropriate `getindex()` and `setindex()` functions.
 
 You can concatenate arrays horizontally and vertically with `hcat()` and `vcat()`, or using the syntax above with spaces or semi-colons:
@@ -632,7 +640,6 @@ julia> z
 ```
 
 And since the parentheses are optional in the direct specification of tuples, we can do this:
-
 
 ```julia
 julia> x = 1
@@ -813,6 +820,7 @@ true
 julia> mycomp(r)
 true
 ```
+
 For each case, the Julia compiler will generate optimised code depending on the type of the variable passed.
 
 #### Indexing
@@ -856,6 +864,7 @@ julia> @btime myfunc2(A)
   94.296 ms (1 allocation: 16 bytes)
 4.999593693838226e7
 ```
+
 So, in our 10,000 x 10,000 random matrix, summing up the values row-wise takes 644.754ms, while column-wise it takes only 96.449ms. Quite the improvement! If you are worried you won't remember the correct way of iterating through a structure, Julia has you covered. Use `eachindex()` to get the optimal sequence:
 
 ```julia
@@ -892,6 +901,7 @@ julia> for (index, value) in enumerate(A)
 3 0.17781317540395236
 4 0.5592126504604934
 ```
+
 For more information, see the [manual](https://docs.julialang.org/en/v1/base/iterators/#Base.Iterators.enumerate).
 
 
@@ -911,6 +921,7 @@ julia> a[end]
 julia> a[end-1] # second last entry
 2
 ```
+
 :::
 
 #### Array Assignments
@@ -996,6 +1007,7 @@ julia> b
   4
   5
 ```
+
 #### Array Comprehensions
 This is a quick, flexible way of creating arrays with specific values, best illustrated by example:
 
@@ -1033,6 +1045,7 @@ julia> [1/(x+y) for x in 1:3 for y in 1:3]
  0.2
  0.16666666666666666 
 ```
+
 Take note of the subtle difference between the second and third examples. This is not terribly intuitive! 
 
 #### Broadcasting

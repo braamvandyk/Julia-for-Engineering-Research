@@ -167,6 +167,7 @@ julia> @time scatter(randn(10), randn(10))
 julia> @time scatter(randn(10), randn(10))
   0.000392 seconds (414 allocations: 43.344 KiB)
 ```
+
 It takes 6.4 seconds to import the Plots package. The first time we call `scatter` to generate a scatter plot, the code is compiled, which takes 1.15 seconds. The next time however, the compiled code is already available, and it takes 0.4 milliseconds to generate the plot. Every subsequent call to `scatter` with the same types of values passed to it, will also be fast.
 
 In every new version of the Julia compiler, some work is included to reduce he latency of TTFX. The next version of Julia at the time of writing, v1.9, will include several new features to significantly reduce the problem. This is not magic though, merely a toolset that allows package authors to increase the amount of code that is precompiled when the package is first installed. This will only help of the tools are used. Since the Julia community is generally very enthusiastic about speed, it is reasonable to expect most, if not all of them will indeed do so.
@@ -223,6 +224,7 @@ U factor:
   ⋅        ⋅         ⋅        0.53026   0.0671023
   ⋅        ⋅         ⋅         ⋅        0.420928
 ```
+
 For the sake of examples, we create a random 5x5 matrix, `A` and then multiply it by its transpose to create a symmetric matrix, B. We then ask Julia to factorise both, by calling the `factorize()`  function (note the American spelling!).
 
 For the square, random matrix, LU decomposition is the most appropriate method and that is what we get. For the symmetric matrix, Cholesky's methods is the most efficient and hence that is what Julia uses. It will also use other specialised methods for other specific matrix types. See the [manual](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/#LinearAlgebra.factorize) for details. When you use the factorised matrix in computations, further specialised, optimised methods will be used, depending on the factorisation that was used. You can of course just call specific factorisation methods, such as `lu()` or `qr()` as well.

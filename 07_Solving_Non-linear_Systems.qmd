@@ -35,7 +35,7 @@ Finally, you call `solve()` to get the result.
 
 As a simple demonstration, we shall calculate the boiling point of water, using the Antoine correlation with parameters from NIST. We calculate the boiling point by finding the root of a function that is the difference between the vapour pressure at a specified temperature and 1 atm. We do this in two ways, using the Newton-Raphson method from a starting guess and using the *regula falsi* method to find roots in a specified interval.
 
-```
+```julia
 using NonlinearSolve
 
 """
@@ -73,7 +73,7 @@ $$u'(t) = u(t) - u^2(t)$$
 
 with $u(0) = 1.5$. This ODE will have a steady-state at $u = 0$.
 
-```
+```julia
 using NonlinearSolve, DifferentialEquations
 
 function ssode(u, p, t)

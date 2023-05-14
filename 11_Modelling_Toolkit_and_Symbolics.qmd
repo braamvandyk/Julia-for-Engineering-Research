@@ -212,3 +212,178 @@ z
 This is the key functionality from Symbolics we want to use. But we won't use it directly. Rather, we shall use the [ModelingToolkit](https://docs.sciml.ai/ModelingToolkit/stable/) package, that builds on Symbolics and makes it easy to specify systems of equations, differential or non-linear, and then solve them with numerical solvers.
 
 ## Modeling Toolkit
+### Non-linear system
+Let's start with an example of a simple set of non-linear equations:
+
+$$y = 2x^{2} - 7$$
+$$y = 10\sqrt{x}$$
+
+![](img/mtkexample1.svg)
+
+```julia
+using ModelingToolkit, NonlinearSolve
+
+@variables x y
+@parameters a b c
+
+eqs = [y ~ a*x^2 - b, y ~ c*√x]
+
+@named nlsys = NonlinearSystem(eqs, [x, y], [a, b, c])
+
+initial_guess = [x => 3.5, y => 20]
+params = [a => 2, b => 7, c => 10]
+
+prob = NonlinearProblem(nlsys, initial_guess, params)
+sol = solve(prob, NewtonRaphson())
+
+# u: 2-element Vector{Float64}:
+#   3.6045577280701777
+#  18.98567282997952
+```
+
+Here we load two packages: ModelingToolkit, to set up the problem, and NonlinearSolve, to solve it.
+
+Using the Symbolics package (this is re-exported by ModelingToolkit - you don't need to explicitly load Symbolics), we specify the variables and parameters for the problem. We could hard code the values of `a`, `b` and `c`, but specifying them as parameters allows to change their values easily later.
+
+We specify the system of equations as an array, `eqs`. Note that in each symbolic equation, we use `~` instead of `=`. This is simply because Julia has rather strong opinions about you overloading the assignment operator, `=`, in a macro.
+
+Now, there is one new step: we create a `NonlinearSystem`. This is effectively the step were we ask `ModelingToolkit` to create the code for our system of non-linear equations. We pass the array of equations, an array with the variables and an array with the parameters. The latter can also be an empty array, if you hard-coded the parameter values.
+
+You may wonder why there is `@named` in front of this line...
+
+We need a variable to refer to the object created by `NonlinearSystem`. Internally, however ModelingToolkit needs to also know what the name of this variable is. You *could* handle this by adding a keyword argument `name` with the same name as the variable (expressed as a Symbol), or you can just use the convenient macro, `@named`, that will handle it for you.
+
+Next, we create a `NonlinearProblem`, just like we did in the chapter on solving non-linear systems. Instead of passing a function that encodes the system of equations, we pass the object created by `NonlinearSystem`. Then we solve the problem, exactly like before.
+
+### Solving ODEs
+The example above was a fairly straightforward problem. `ModelingToolkit` can however do a lot more for us. To illustrate some of the *magic*, we'll look at an example from the `ModelingToolkit` documentation.
+
+Here we have a system three of ODEs, the first of which is a second order ODE.
+
+$$\begin{align}
+\frac{\mathrm{d}}{\mathrm{d}t} \frac{\mathrm{d} x\left( t \right)}{\mathrm{d}t} =& \sigma \left(  - x\left( t \right) + y\left( t \right) \right) \\
+\frac{\mathrm{d} y\left( t \right)}{\mathrm{d}t} =&  - y\left( t \right) + \left( \rho - z\left( t \right) \right) x\left( t \right) \\
+\frac{\mathrm{d} z\left( t \right)}{\mathrm{d}t} =& x\left( t \right) y\left( t \right) - \beta z\left( t \right)
+\end{align}$$
+
+```julia
+using ModelingToolkit, DifferentialEquations, Plots
+
+@parameters σ ρ β
+@variables t x(t) y(t) z(t)
+D = Differential(t)
+
+eqs = [D(D(x)) ~ σ * (y - x),
+    D(y) ~ x * (ρ - z) - y,
+    D(z) ~ x * y - β * z]
+
+@named sys = ODESystem(eqs)
+
+sys = structural_simplify(sys)
+
+u0 = [D(x) => 2.0,
+    x => 1.0,
+    y => 0.0,
+    z => 0.0]
+
+p = [σ => 28.0,
+    ρ => 10.0,
+    β => 8 / 3]
+
+tspan = (0.0, 100.0)
+prob = ODEProblem(sys, u0, tspan, p, jac = true)
+sol = solve(prob, Tsit5())
+
+plot(sol, idxs = (x, y))
+```
+
+Just like before, we specify the variables and parameters. We then, again, specify an array of equations. As discussed above in the section on `Symbolics`, we use `Differential` to specify the derivatives. A second (or higher) derivative is simply a nested call of this function.
+
+Like in our previous example, we now need to ask `ModelingToolkit` to build the code for our system of ODEs. This is done with a call to `ODESystem`. This time, the call to ODESystem looks a lot simpler. Where are the specifications for the variables and parameters?
+
+As it happens, the full call would be:
+
+```julia
+@named sys = ODESystem(eqs, t, [x, y, z], [σ, ρ, β])
+```
+
+The parameters are the equations, the independent variables, the dependent variables and the parameters. `ModelingToolkit` is clever enough to figure out which is which for ODESystems. This doesn't work for `NonlinearSystems` yet, but one would imaging this functionality is on its way.
+
+The next part is where the magic happens:
+
+```julia
+sys = structural_simplify(sys)
+```
+
+We call the all-singing, all-dancing `structural_simplify()`, which is really the heart of `ModelingToolkit`. It will do a whole host of transformations of your system, using everything available in `Symbolics`. Let's look at the intermediate results to understand what it is doing for us:
+
+```julia
+@named sys = ODESystem(eqs, t, [x, y, z], [σ, ρ, β])
+
+# Model sys with 3 equations
+# States (3):
+#   x(t)
+#   y(t)
+#   z(t)
+# Parameters (3):
+#   σ
+#   ρ
+#   β
+
+sys = structural_simplify(sys)
+
+# Model sys with 4 equations
+# States (4):
+#   y(t)
+#   z(t)
+#   x(t)
+#   xˍt(t)       
+# Parameters (3):
+#   σ
+#   ρ
+#   β
+# Incidence matrix:4×9 SparseArrays.SparseMatrixCSC{Num, Int64} with 13 stored entries:
+#  ×  ×  ×  ⋅  ⋅  ⋅  ×  ⋅  ⋅
+#  ×  ×  ×  ⋅  ⋅  ⋅  ⋅  ×  ⋅
+#  ⋅  ⋅  ⋅  ×  ⋅  ×  ⋅  ⋅  ⋅
+#  ×  ⋅  ×  ⋅  ⋅  ⋅  ⋅  ⋅  ×
+
+equations(sys)
+
+# 4-element Vector{Equation}:
+#  Differential(t)(y(t)) ~ (ρ - z(t))*x(t) - y(t)
+#  Differential(t)(z(t)) ~ x(t)*y(t) - β*z(t)
+#  Differential(t)(x(t)) ~ xˍt(t)
+#  Differential(t)(xˍt(t)) ~ xˍtt(t)
+```
+
+From the results of each line, you can see that `structural_simplify()` has converted our system of three first and second order ODEs into a system of four first order ODEs. We can inspect these equations with the `equations()` function, and get the pretty versions with `latexify()`:
+
+$$\begin{align}
+\frac{\mathrm{d} y\left( t \right)}{\mathrm{d}t} =&  - y\left( t \right) + \left( \rho - z\left( t \right) \right) x\left( t \right) \\
+\frac{\mathrm{d} z\left( t \right)}{\mathrm{d}t} =& x\left( t \right) y\left( t \right) - \beta z\left( t \right) \\
+\frac{\mathrm{d} x\left( t \right)}{\mathrm{d}t} =& xˍt\left( t \right) \\
+\frac{\mathrm{d} xˍt\left( t \right)}{\mathrm{d}t} =& xˍtt\left( t \right)
+\end{align}$$
+
+Wait a minute! Aren't we missing some details on the last two equations? What is `x_tt(t)` defined as? For reasons that are as clear as mud, you need to also call `observed(sys)` to see the missing bits:
+
+```julia
+observed(sys)
+# 1-element Vector{Equation}:
+#  xˍtt(t) ~ σ*(y(t) - x(t))
+```
+
+The rest of the code should be familiar. We specify the initial values and the time span for the integration, create an ODEProblem and call the solver. The only part that will be new is in the call to `ODEProblem`:
+
+```julia
+prob = ODEProblem(sys, u0, tspan, p, jac = true)
+```
+
+We have added the keyword parameter `jac = true`. This tells the ODE solver that we have also specified the Jacobian matrix of the system, which was done automatically, and symbolically, for you by `ModelingToolkit`. This can greatly enhance the solving of difficult systems.
+
+Then we solve the problem and finally, we plot the results:
+
+![](img/mtkexample2.svg)
+
+This was a very short introduction to Symbolics and ModelingToolkit. There is a lot more to learn in the documentation, including several tutorials.
