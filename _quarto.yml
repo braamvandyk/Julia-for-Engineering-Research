@@ -27,4 +27,4 @@ format:
     css: styles.css
     toc: true
     monofont: "JetBrains Mono"
-    embed-resources: false
+    embed-resources: true
