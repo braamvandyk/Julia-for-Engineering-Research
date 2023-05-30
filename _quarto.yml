@@ -6,8 +6,8 @@ website:
   back-to-top-navigation: true
   navbar:
     left:
-      - href: index.qmd
-        text: Home
+      - text: Home
+        file: index.qmd
       - 01_Getting_started_with_Julia.qmd
       - 02_Installing_Julia.qmd
       - 03_Running_Julia.qmd
@@ -19,7 +19,10 @@ website:
       - 09_Optimisation.qmd
       - 10_Automatic_Differentiation.qmd
       - 11_Modelling_Toolkit_and_Symbolics.qmd
-      - 12_Working_with_Data.qmd
+      - 12_Working_with_Files.qmd
+      - 13_DataFrames.qmd
+    pinned: true
+    search: true
 
 format:
   html:

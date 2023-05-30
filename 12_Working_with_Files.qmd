@@ -1,0 +1,502 @@
+---
+title: "Working with Files"
+---
+
+## Reading in Data
+
+This section discusses reading in and manipulating stored in files.
+
+There are many, many different libraries to manipulate various formats of text and binary files. Here we shall look only at the built-in Julia methods, and the most popular package for reading in large amounts of data - CSV.jl.
+
+For cases where you may want to store binary data (such as storing variables to file), the JLD2^[The data is stored in a format compatible with the HDF5 standard and the package and read most files created by other programs in HDF5 format. HDF, or Hierarchical Data Format is a standard created by the US National Center for Supercomputing Applications.] package is very convenient.
+
+
+For processing the data, there are again a near-infinite number of options. The most popular, and extremely powerful, choice is to put the data in a DataFrame object. 
+
+### Using Files in Julia - Open, Read and Write
+You can do simple file access through base the Julia commands `open`, `read` and `write`:
+
+To open a file in write mode:
+```julia
+f = open("filename.txt", "w")
+# IOStream(<file filename.txt>)
+
+write(f, "Hello world.\n")
+# 13
+
+close(f)
+```
+To open a file in read mode:
+```julia
+f = open("filename.txt", "r")
+# IOStream(<file filename.txt>)
+s = readlines(f)
+# 1-element Vector{String}:
+#  "Hello world."
+```
+To open a file in append mode:
+```julia
+f = open("filename.txt", "a")
+# IOStream(<file filename.txt>)
+write(f, "Hello back.\n")
+# 12
+close(f)
+f = open("filename.txt", "r") # or just f = open("filename.txt")
+# IOStream(<file filename.txt>)
+s = readlines(f)
+2-element Vector{String}:
+#  "Hello world."
+#  "Hello back."
+```
+
+Opening a file in read, write and append mode is fairly straight-forward. The object returned is an `IOStream`. There are several ways to interact with this object.
+
+- `readline()`: Reads the next line in a file and return it as a `String`
+- `readlines()`: This reads the entire file, interprets the contents as `Strings` and returns an array with each line a separate entry.
+- `read()`: This reads the entire file, interprets the contents as data (UInt8, single byte values), e.g.
+```julia
+ss = read(f)
+# 25-element Vector{UInt8}:
+#  0x48
+#  0x65
+#  0x6c
+#  0x6c
+#  0x6f
+#  0x20
+#  0x77
+#  0x6f
+#  0x72
+#  0x6c
+#  0x64
+#  0x2e
+#  0x0a
+#  0x48
+#  0x65
+#  0x6c
+#  0x6c
+#  0x6f
+#  0x20
+#  0x62
+#  0x61
+#  0x63
+#  0x6b
+#  0x2e
+#  0x0a
+
+Char.(ss)
+# 25-element Vector{Char}:
+#  'H': ASCII/Unicode U+0048 (category Lu: Letter, uppercase)
+#  'e': ASCII/Unicode U+0065 (category Ll: Letter, lowercase)
+#  'l': ASCII/Unicode U+006C (category Ll: Letter, lowercase)
+#  'l': ASCII/Unicode U+006C (category Ll: Letter, lowercase)
+#  'o': ASCII/Unicode U+006F (category Ll: Letter, lowercase)
+#  ' ': ASCII/Unicode U+0020 (category Zs: Separator, space)
+#  'w': ASCII/Unicode U+0077 (category Ll: Letter, lowercase)
+#  'o': ASCII/Unicode U+006F (category Ll: Letter, lowercase)
+#  'r': ASCII/Unicode U+0072 (category Ll: Letter, lowercase)
+#  'l': ASCII/Unicode U+006C (category Ll: Letter, lowercase)
+#  'd': ASCII/Unicode U+0064 (category Ll: Letter, lowercase)
+#  '.': ASCII/Unicode U+002E (category Po: Punctuation, other)
+#  '\n': ASCII/Unicode U+000A (category Cc: Other, control)
+#  'H': ASCII/Unicode U+0048 (category Lu: Letter, uppercase)
+#  'e': ASCII/Unicode U+0065 (category Ll: Letter, lowercase)
+#  'l': ASCII/Unicode U+006C (category Ll: Letter, lowercase)
+#  'l': ASCII/Unicode U+006C (category Ll: Letter, lowercase)
+#  'o': ASCII/Unicode U+006F (category Ll: Letter, lowercase)
+#  ' ': ASCII/Unicode U+0020 (category Zs: Separator, space)
+#  'b': ASCII/Unicode U+0062 (category Ll: Letter, lowercase)
+#  'a': ASCII/Unicode U+0061 (category Ll: Letter, lowercase)
+#  'c': ASCII/Unicode U+0063 (category Ll: Letter, lowercase)
+#  'k': ASCII/Unicode U+006B (category Ll: Letter, lowercase)
+#  '.': ASCII/Unicode U+002E (category Po: Punctuation, other)
+#  '\n': ASCII/Unicode U+000A (category Cc: Other, control)
+```
+- `write()`: Write a string to the file. 
+
+:::{.callout-important}
+Note that you need to explicitly add new lines characters, `\n`. A call to `write(f, "Line 1", "Line 1")` will write the text "Line 1Line 2" to a single line in the file.
+:::
+
+The use of `open()` is optional for reading and overwriting a file (not appending). You could simply supply the filename to `read()/readline()/readlines()` and `write()`:
+
+```julia
+write("filename.txt", "This is some text.\n")
+# 19
+
+readlines("filename.txt")
+# 1-element Vector{String}:
+#  "This is some text."
+```
+
+Where `open()` comes in handy, is when you want to manipulate the contents of the file with a function. You can pass a Combining `open()` with a `do` block is the most common way of doing this:
+
+```julia
+as = collect(1:10)
+# 10-element Vector{Int64}:
+#   1
+#   2
+#   3
+#   4
+#   5
+#   6
+#   7
+#   8
+#   9
+#  10
+
+open("data.txt", "w") do f
+    for a in as
+        write(f, string(a)*"/n")
+    end
+end
+
+b = Int64[]
+# Int64[]
+
+open("data.txt", "r") do f
+    for l in eachline(f)
+        push!(b, parse(Int64, l))
+    end
+end
+
+b
+# 10-element Vector{Int64}:
+#   1
+#   2
+#   3
+#   4
+#   5
+#   6
+#   7
+#   8
+#   9
+#  10
+```
+Some new things to note in this example: `eachline()` returns an iterator that contains the lines of the file. We can loop through the lines using this and the lines only get read when needed.
+
+`parse()`, interprets a string as the type that is passed as the first parameter - `Int64 in this case. It will error if the interpretation is not possible:
+
+```julia
+parse(Float64, "this is not a value")
+# ERROR: ArgumentError: cannot parse "this is not a value" as Float64
+```
+For more information, see the [manual](https://docs.julialang.org/en/v1/base/io-network/)
+
+### The DelimitedFiles Standard Library
+While using the built-in file I/O functions are useful for simple text files, we more often work with larger files containing data. The [`DelimitedFiles`](http://delimitedfiles.juliadata.org/dev/) package is useful for working with small to medium (in the Mb range, not Gb) files that contain rows and columns of data. This package was a Julia standard library up to v1.9.0, when it was spun out as a separate package. The intent is to do this with more of the standard libraries to allow them to be developed faster and updated in-between Julia versions.
+
+The benefit of `DelimitedFiles` over alternatives, like `CSV` is that it is lightweight. It does not have the functionality of CSV, nor the speed with larger files. When you only want to read in a small file, however, the additional compile time for `CSV` is more of a burden than a blessing. This is where `DelimitedFiles` shines.
+
+There are only two function in the package:
+
+- `readdlm()`: Read a delimited file
+- `writedlm()`: Write a delimited file
+
+In order to accommodate a large number of optional parameters, the package declares several versions of `readdlm`:
+
+```julia
+readdlm(source, delim::AbstractChar, T::Type, eol::AbstractChar; header=false, skipstart=0, skipblanks=true, use_mmap, quotes=true, dims, comments=false, comment_char='#')
+readdlm(source, delim::AbstractChar, eol::AbstractChar; options...)
+readdlm(source, delim::AbstractChar, T::Type; options...)
+readdlm(source, delim::AbstractChar; options...)
+readdlm(source, T::Type; options...)
+readdlm(source; options...)
+```
+These parameters do the following:
+
+- `source`: The source filename as a string, or a stream object.
+- `delim`: The character used as a delimiter, such as `','`, or `'\t'` (a tab character).
+- `T`: The type of the data. If not specified, the function will interpret the data to identify the type and may return a heterogeneous array. If `T` is a numeric type, non-numeric entries will be interpreted as `NaN` for floating point types, or zero.
+- `eol`: The end-of-line character, typically `'\n'`.
+- `header`: If `true`, the first row is read as column headings and the function returns a tuple `(data_cells, header_cells)`, rather than just `data_cells`
+- `skipstart`: An integer value, indicating the number of lines to skip at the start
+- `skipblanks`: If `true`, skip blank lines
+- `use_mmap`: Use a memory map to access the file. This could speed up large file access, but must be used with caution on Windows - only when reading once and never when writing to the file.
+- `quotes`: If true, column entries that are enclosed in double quotes may contain end-of-line and delimiter characters. Double quote characters inside the quote must be escaped with another double quote(`""`)
+- `dims`: A tuple, `(rows, columns)`, that estimated the size of the data. This can speed up things for large files as sufficient memory is allocated in a single block.
+- `comments` and `comment_char`: If `comments` is true, lines starting with `comment_char` and text after a `comment_char` in a line are ignored.
+
+
+The write option is a lot simpler and only takes the file to write to, the data, the delimiter and then the keyword arguments from `readdlm()`:
+
+```julia
+writedlm(f, A, delim='\t'; opts)
+```
+Here, the only option that is currently used, is `quotes` to indicate that quoted strings can contain end-of-line and delimiter characters.
+
+Some examples:
+
+```julia
+a = collect(1:5)
+# 5-element Vector{Int64}:
+#  1
+#  2
+#  3
+#  4
+#  5
+
+b = collect(2:2:10)
+# 5-element Vector{Int64}:
+#   2
+#   4
+#   6
+#   8
+#  10
+
+writedlm("data.csv", [a b], ',')
+
+readlines("data.csv")
+# 5-element Vector{String}:
+#  "1,2"
+#  "2,4"
+#  "3,6"
+#  "4,8"
+#  "5,10"
+
+data = readdlm("data.csv", ',')
+# 5×2 Matrix{Float64}:
+#  1.0   2.0
+#  2.0   4.0
+#  3.0   6.0
+#  4.0   8.0
+#  5.0  10.0
+
+data = readdlm("data.csv", ',', Int64)
+# 5×2 Matrix{Int64}:
+#  1   2
+#  2   4
+#  3   6
+#  4   8
+#  5  10
+```
+
+### FileIO.jl and JLD2.jl
+The `FileIO` package is a common framework for reading and writing files that is used by many other packages, such as `JLD2`.
+
+`FileIO` supplies `load` and `save` and will identify the file's type from the extension. The actual code for a given file type is implemented by the package that uses `FileIO`.
+
+There is a long list of file types and the packages that implement `load` and `save` for them in the [`FileIO` documentation](https://juliaio.github.io/FileIO.jl/stable/registry/). You can simply use `FileIO` and the package will call the correct package to save or load your data or file. That package must of course also be installed in your project.
+
+One of these packges is `JLD2`. It implements `save` and `load` from `FileIO` for generic Julia variables. `JLD2` replaces the original `JLD` and is often hugely faster. `JLD` is still around, but you probably don't want to use it.
+
+#### Using JLD2
+For consistency over many filetypes, we shall look at the `FileIO` interface implemented by JLD2. You can either just install and use `JLD2` or you can install both `FileIO` and `JLD2`, then just use `FileIO`. If you are only going to deal one or two file types, then you may prefer only installing the specific packages, rather than deal with FileIO. Each package will support `load` and `save` functions in addition to their internal functions.
+
+##### JLD2 with `laod` and `save`
+The `FileIO` specification requires you to supply a name for each variable you save. This can either by via creating a `Dict`^[A dictionary, or a collection of name and value pairs.], or by passing the names and variables sequentially as parameters:
+
+```julia
+using JLD2
+
+struct MyData
+    x
+    y
+end
+
+data = MyData(rand(5), rand(5))
+# MyData([0.41915922256751215, 0.36513861729204666, 0.922892254146376, 0.12902554672750943, 0.2285766214336168], [0.8030027668439638, 0.2007295612353277, 0.6996873161379902, 0.7449547510169909, 0.5305104381235525])
+
+v = rand(10)
+# 10-element Vector{Float64}:
+#  0.7689384578959101
+#  0.7408163205271128
+#  0.9655957120143325
+#  0.3581479242990463
+#  0.28719219030844134
+#  0.6645105539839383
+#  0.8936175723328116
+#  0.22088721590210036
+#  0.3338736118785931
+#  0.6492950330159202
+
+save("data.jld2", Dict("data" => data, "vector" => v))
+save("data2.jld2", "data", data, "vector", v)
+```
+The last two statements are equivalent.
+
+To read the file, you can either read the whole dictionary, or specify the entries you want (using the name you specified):
+
+```julia
+load("data.jld2")
+# Dict{String, Any} with 2 entries:
+#   "vector" => [0.768938, 0.740816, 0.965596, 0.358148, 0.287192, 0.664511, 0.893618, 0.220887, 0.333874, 0.649295]
+#   "data"   => MyData([0.419159, 0.365139, 0.922892, 0.129026, 0.228577], [0.803003, 0.20073, 0.699687, 0.744955, 0.5305…
+
+dat = load("data.jld2", "data")
+MyData([0.41915922256751215, 0.36513861729204666, 0.922892254146376, 0.12902554672750943, 0.2285766214336168], [0.8030027668439638, 0.2007295612353277, 0.6996873161379902, 0.7449547510169909, 0.5305104381235525])
+
+data.x == dat.x
+# true
+
+data.y == dat.y
+# true
+```
+
+Here the `struct`, `MyData` is already defined, but if you read a data file in a fresh instance of Julia without defining it, you will see that `JLD2` reconstructs the custom type for you:
+
+```julia
+using JLD2
+
+data = load("data.jld2", "data")
+# ┌ Warning: type Main.MyData does not exist in workspace; reconstructing
+# └ @ JLD2 C:\Users\Braam\.julia\packages\JLD2\ryhNR\src\data\reconstructing_datatypes.jl:495
+# JLD2.ReconstructedTypes.var"##Main.MyData#292"([0.41915922256751215, 0.36513861729204666, 0.922892254146376, 0.12902554672750943, 0.2285766214336168], [0.8030027668439638, 0.2007295612353277, 0.6996873161379902, 0.7449547510169909, 0.5305104381235525])
+
+typeof(data)
+# JLD2.ReconstructedTypes.var"##Main.MyData#292"
+```
+
+You won't be able to create new objects of the type, however, as the constructors are not also recreated. You will however be able to access the data.
+
+```julia
+data.x
+# 5-element Vector{Float64}:
+#  0.41915922256751215
+#  0.36513861729204666
+#  0.922892254146376
+#  0.12902554672750943
+#  0.2285766214336168
+
+data.y
+# 5-element Vector{Float64}:
+#  0.8030027668439638
+#  0.2007295612353277
+#  0.6996873161379902
+#  0.7449547510169909
+#  0.5305104381235525
+```
+
+### CSV.jl
+CSV, or comma separated values files are a very common way of storing data. You can save an Excel worksheet as a CSV file, and then process that further in Julia.
+
+The `CSV` package is one of the fastest (often the fastest, but things can change with new versions of other packages) ways of reading large (VERY large) CSV files in any language^[See https://www.zdnet.com/article/programming-languages-julia-touts-its-speed-edge-over-python-and-r/ as an example. Here Julia and CSV was up to 22x faster than R's `fread` and both R and Julia were faster than Pandas (Python)].
+
+The `CSV` package has a multitude of features. We are only going to look at the most commonly used ones here. You would however spend your time will in reading the full [documentation](https://csv.juliadata.org/stable/index.html) to see other options, like reading data directly from a zip or gzipped file.
+
+We are also going to assume the most common use case, that your data is in a DataFrame object. There is a separate section on DataFrames.
+
+#### Writing a CSV file
+Writing a DataFrame to a CSV file is simple. You just call `CSV.write(filename, dataframe, keyword options)`
+
+```julia
+using CSV, DataFrames
+
+df = DataFrame(a = rand(10), b = rand(10))
+# 10×2 DataFrame
+#  Row │ a           b
+#      │ Float64     Float64
+# ─────┼──────────────────────
+#    1 │ 0.48043     0.94456
+#    2 │ 0.0665074   0.677552
+#    3 │ 0.789794    0.396974
+#    4 │ 0.0412975   0.987218
+#    5 │ 0.456003    0.789401
+#    6 │ 0.295094    0.985048
+#    7 │ 0.837373    0.654643
+#    8 │ 0.378567    0.632108
+#    9 │ 0.890707    0.700569
+#   10 │ 0.00709744  0.637061
+
+CSV.write("data.csv", df)
+# "data.csv"
+```
+There are many options that can be passed as keyword arguments. We shall look at only the more commonly used ones:
+
+- `delim`: A character (or string) that specifies the delimiter character. Default to a comma.
+- `quotechar`: A character that specifies what quote character should be used to wrap strings that contain end-of-line, delimiting characters.
+- `missingstring`: A string that will be written in the place of `missing` values.
+- `dataformat`: A date format string for `Date` and `DateTime` values.
+- `append`: If `true`, will append to an existing file. Defaults to `false`.
+- `header`: A list of column names to replace those of the input table or DataFrame
+- `decimal`: The character to use for decimals, Defaults to `'.'`.
+
+There are several more in the [documentation](https://csv.juliadata.org/stable/writing.html#CSV.write).
+
+#### Reading a CSV file
+The easiest way to read a CSV file is via `CSV.read()`. This function allows you to specify a sink - the type the data should be cast into.
+
+```julia
+using CSV, DataFrames
+
+df = CSV.read("data.csv", DataFrame)
+# 10×2 DataFrame
+#  Row │ a           b
+#      │ Float64     Float64
+# ─────┼──────────────────────
+#    1 │ 0.48043     0.94456
+#    2 │ 0.0665074   0.677552
+#    3 │ 0.789794    0.396974
+#    4 │ 0.0412975   0.987218
+#    5 │ 0.456003    0.789401
+#    6 │ 0.295094    0.985048
+#    7 │ 0.837373    0.654643
+#    8 │ 0.378567    0.632108
+#    9 │ 0.890707    0.700569
+#   10 │ 0.00709744  0.637061
+```
+You can also pass keyword options, like for `CSV.write()`:
+
+- `header`: 
+    - When passed an integer, this is the number of the line that contains the column names. Lines before this are considered comments.
+    - If a vector of integers are passed, these rows will be concatenated to determine the column names. - A vector of names (either strings or symbols) can also be passed to specify the names. Don't do this if there are names in the file, unless you skip that line with `skipto` 
+    - `header` can be set to either zero or `false` to auto-generate column names (Column1, Column2...).
+    - If commented or empty rows are present, counting starts at the first non-commented/empty row.
+- `normalizenames`:
+    - When set to `true`, this will replace spaces in names with underscores and any other processing that is needed to generate valid Julia identifiers. 
+    - Defaults to `false`.
+- `skipto`:
+    - Jump to the specified line (an integer) and start reading there.
+    - Can be used to skip the column names and replace them with specified names in `header`.
+    - Note that commented and empty rows (if `ignoreemptyrows` is specified) are **not** counted.
+- `footerskip`:
+    - Skip the specified number of lines at the end of the file.
+    - Commented rows do not count, nor empty rows if `skipemptyrows` is specified.
+- `transpose`:
+    - Transpose the file - rows become columns etc.
+- `comment`:
+    - A string that specifies which rows are commented in the file. Any row beginning with this is considered a comment.
+- `ignoreemptyrows`:
+    - If `true`, empty lines will be skipped.
+    - Note that this can influence the count in `skipto` and `header`.
+    - Defaults to `true`.
+- `select`:
+    - Pass a vector of integers, symbols, strings or `Bool`s to indicate which columns to read.
+    - Can also pass a predicate function
+        (i, name) -> keep::Bool
+        Only functions for which the function returns `true` are kept.
+- `drop`:
+    - The inverse of `select`. Indicate which columns to skip.
+- `limit`:
+    - The maximum number of rows to read.
+    - Combine with `skipto` to only read a part of the file.
+- `missingstring`:
+    - Specifies a string that indicates `missing` values. Often this will be `NA` when the data file was generated by R.
+- `delim`:
+    - A character used to separate the columns.
+    - Defaults to `','`.
+- `ignorerepeated`:
+    - If `true`, consequetive delimiters are treated as a single one.
+    - Use with caution, as consequetive delimiters can also be used to show a missing value from a column. Some files, however, use fixed column widths and pad with delimiters, such as spaces.
+- `quoted`:
+    - Indicate whether quoted strings are present
+- `quotechar`:
+    - Indicate the character used as quotation mark.
+    - Quoted strings can include end-of-line and delimiter characters.
+- `dateformat`:
+    - A date format string for Date and DateTime columns
+    - See Dates.DateFormat in the Julia [documentation](https://docs.julialang.org/en/v1/stdlib/Dates/#Dates.DateFormat).
+- `decimal`:
+    - Indicate the deciimal character
+    - Defaults to `'.'`.
+- `truestrings` / `falsestrings`
+    - Vectors that specify strings that indicate `true` and `false` values, like "true", "TRUE", "T", "1", etc.
+- `skipwhitespace`:
+    - If `true`, skip leading and trailing white space from values and column names
+- `types`:
+    - A single type, vector or Dict of types to specify the types of each column, when you want to override the automatic detection of types.
+    - The Dict can link a column name (as string or symbol) or index to a type, e.g. `Dict(1 => Int64)`.
+    - Consider using `validate` with `types`.
+- `validate`:
+    - Check that the data and specified types match up.
+
+Other parameters specify the number of parallel thread to read in large files and how many lines should be processed to determine the types of each column, etc. Clearly `CSV` is a complex package with huge flexibility. Unfortunately, this usually means a bit of a learning curve for the users.
