@@ -18,7 +18,7 @@ When you open up Julia, you will be presented with the REPL (Read Execute Print 
 julia>
 ```
 
-You can enter code directly at the `julia>` prompt, but since none of this will be saved, it is probably not the prefered way of coding.
+You can enter code directly at the `julia>` prompt, but since none of this will be saved, it is probably not the preferred way of coding.
 
 A better way would be to save your code into a file, e.g. *myscript.jl*, and then execute this *script* by using the `include()` command. For example, if the file myscript.jl includes the following:
 

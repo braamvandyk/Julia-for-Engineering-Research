@@ -3,6 +3,7 @@ project:
 
 website:
   title: "Julia for Engineering Research"
+  favicon: img/julia.ico
   back-to-top-navigation: true
   navbar:
     left:

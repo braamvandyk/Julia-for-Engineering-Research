@@ -428,7 +428,7 @@ We can again ignore any line starting with a semi-colon. The one line that matte
   %1 = mul i64 %0, 50005000
 ```
 
-The Julia compiler could analyse the code well enough to see that the answer to our function is sumply 50005000 times the input value and that is exactly what it returned!
+The Julia compiler could analyse the code well enough to see that the answer to our function is simply 50005000 times the input value and that is exactly what it returned!
 
 With floating-point and rational values, there were type conversions required before multiplying the integer value of the loop counter with the input value. This "hid" the true nature of the calculation enough that the compiler could not see the short-cut. There is however continuous development in the compiler, and we can reasonably expect this to also be optimised in a future version of Julia.
 

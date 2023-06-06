@@ -149,7 +149,7 @@ Some useful functions for working with sparse matrices include:
 - `nnz()` returns the number of entries in the array. This could include values that have been set to zero.
 - `count(!iszero, x)` will check each entry and count only non-zero values
 - `dropzeros()` will drop entries that have been set to zero from the list of stored entries. It returns a new sparse array
-- `dropzero!()` is similar to `dropzero()`, but modifies the array directly.
+- `dropzeros!()` is similar to `dropzeros()`, but modifies the array directly.
 - `spzeros(m,n)` is similar to `zeros()`. It creates a `m`x`n` sparse array with all elements set to zero.
 - `sparse(I, J, V)` creates a sparse array from thee vectors. `I` is a vector of the row indices, `J` of column indices and `V` holds the values of the entries.
 - `sparsevec(I, V)` is the vector equivalent of `sparse()`
@@ -198,7 +198,7 @@ u: 3-element Vector{Float64}:
 ```
 Since LinearSolve has to allow for automatic differentiation[^1], which may require passing *dual variables* to the function, it will implicitly use the type of the variables as specified in `A` in `b`. This will result in an error the inputs are arrays of integers and the if the solution contains fractions. To avoid this, we explicitly define the inputs as `Float64`.
 
-[^1]: Specifically *forward mode* automatic diffirentiation. See the relevant section for more detail.
+[^1]: Specifically *forward mode* automatic differentiation. See the relevant section for more detail.
 
 You can also specify which algorithm to use. See the full list and recommendations in the [documentation](https://docs.sciml.ai/LinearSolve/stable/solvers/solvers/).
 

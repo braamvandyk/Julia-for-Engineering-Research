@@ -9,7 +9,7 @@ It assumes some nominal programming background and knowledge of the engineering 
 
 This course is **NOT** meant to turn the reader into an expert in either Julia. or technical modelling. It is meant to get you up and running in a reasonably short time, so you can start learning by doing. More detailed references are given in each section for additional information.
 
-Once the reader is comfortable with the material, it is recommended to also work through [Parallel Computing and Scientific Machine Learning (SciML): Methods and Applications](https://book.sciml.ai/), which is a more advanced, and much more comprehensive document.
+Once you are comfortable with the material, it is recommended to also work through [Parallel Computing and Scientific Machine Learning (SciML): Methods and Applications](https://book.sciml.ai/), which is a more advanced, and much more comprehensive document.
 
 
 

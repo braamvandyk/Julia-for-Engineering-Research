@@ -3,3 +3,259 @@ title: "DataFrames"
 ---
 
 ## What is a DataFrame?
+In short, a DataFrame is a table of data, where each column has a title and a type. Operations can be performed on a per column or per row basis, and columns and rows can be added or removed easily. The [`DataFrames`](https://dataframes.juliadata.org/stable/) package in Julia is the de facto standard for working with tabular data and is integrated in many other packages. In a previous section we have seen that you can read a data file directly into a DataFrame via the `CSV` package, but this is only one example.
+
+The `DataFrames` package provides a lot of functionality for manipulating the data contain in a DataFrame. There are also additional packages that provide either more options, or alternative (simpler) syntax for convenience, such as `DataFramesMeta` and `Tidier`.
+
+We shall look at the basic use of DataFrames and leave these auxiliary packages and some more advanced functionality of `DataFrames` for a later section.
+
+### Creating a DataFrame
+Usually, you would create a DataFrame by reading in data from a file. You can however also create a DataFrame from variables directly:
+
+```julia
+df = DataFrame(X = [1, 2, 3], Y = [2, 3, 4], Z = 2.0)
+# 3×3 DataFrame
+#  Row │ X      Y      Z
+#      │ Int64  Int64  Float64
+# ─────┼───────────────────────
+#    1 │     1      2      2.0
+#    2 │     2      3      2.0
+#    3 │     3      4      2.0
+```
+
+Note that columns `X` and `Y` are specified as arrays of integers, and so the columns are typed as `Int64`. `Z` is specified as a floating point value and hence the column is types as `Float64`. The length of `Z` is also expanded to be the same as the other columns, with a fixed value. The column names, `X`, `Y` and `Z`, are all legal Julia symbols (variable names) and so we can use the assignment operator, `=`, here.
+
+You can also give columns longer names, with spaces, but then instead you need to either use the pair operator, `=>`, or define a `Dict` and then convert that to a DataFrame:
+
+```julia
+df = DataFrame("X values" => [1, 2, 3], "Y values" => [2, 3, 4], "Z" => 2.0)
+# 3×3 DataFrame
+#  Row │ X values  Y values  Z
+#      │ Int64     Int64     Float64
+# ─────┼─────────────────────────────
+#    1 │        1         2      2.0
+#    2 │        2         3      2.0
+#    3 │        3         4      2.0
+
+d = Dict("X values" => [1, 2, 3], "Y values" => [2, 3, 4], "Z" => 2.0)
+# Dict{String, Any} with 3 entries:
+#   "Z"        => 2.0
+#   "X values" => [1, 2, 3]
+#   "Y values" => [2, 3, 4]
+
+df = DataFrame(d)
+# 3×3 DataFrame
+#  Row │ X values  Y values  Z
+#      │ Int64     Int64     Float64
+# ─────┼─────────────────────────────
+#    1 │        1         2      2.0
+#    2 │        2         3      2.0
+#    3 │        3         4      2.0
+
+names(df)
+# 3-element Vector{String}:
+#  "X values"
+#  "Y values"
+#  "Z"
+```
+The last example also shows how to retrieve the names of the columns with the `names()` function.
+
+Don't use strings for column names just because you can. Using a symbol, like `:X_values`, instead of the string "X values" will give faster results and is just as readable. This does mean you need to use underscores instead of spaces, but all-in-all that is not too high a price to pay.
+
+A DataFrame can also be constructed one column at a time:
+
+```julia
+df = DataFrame()
+# 0×0 DataFrame
+
+df.A = 1:3
+# 1:3
+
+df.B = 2:2:6
+# 2:2:6
+
+df
+# 3×2 DataFrame
+#  Row │ A      B
+#      │ Int64  Int64
+# ─────┼──────────────
+#    1 │     1      2
+#    2 │     2      4
+#    3 │     3      6
+```
+Or row by row:
+
+```julia
+df = DataFrame(A=String[], B=Int64[])
+# 0×2 DataFrame
+#  Row │ A       B
+#      │ String  Int64
+# ─────┴───────────────
+
+push!(df, ("Bob", 1))
+# 1×2 DataFrame
+#  Row │ A       B
+#      │ String  Int64
+# ─────┼───────────────
+#    1 │ Bob         1
+
+push!(df, ("Tom", 5))
+# 2×2 DataFrame
+#  Row │ A       B
+#      │ String  Int64
+# ─────┼───────────────
+#    1 │ Bob         1
+#    2 │ Tom         5
+```
+Note how we forced types of the columns in the creation of the empty DataFrame. This is needed to give the columns names, and tell the empty DataFrame how many columns it will hold. You could specify the types as `Any`, but that would not lead to god performance.
+
+Lastly, you can also convert a matrix to a DataFrame. This requires you to allow DataFrames to automatically generate column names, or pass a vector of names:
+
+```julia
+m = rand(5, 5)
+# 5×5 Matrix{Float64}:
+#  0.460589   0.734461   0.771352   0.292767   0.0078547
+#  0.254958   0.153814   0.571355   0.196476   0.739701
+#  0.0799407  0.457583   0.553493   0.25409    0.245967
+#  0.106429   0.435509   0.0184347  0.932008   0.805972
+#  0.0877892  0.0231817  0.435262   0.0187286  0.812151
+
+julia> df = DataFrame(m, :auto) # Automatically generate names
+# 5×5 DataFrame
+#  Row │ x1         x2         x3         x4         x5
+#      │ Float64    Float64    Float64    Float64    Float64
+# ─────┼───────────────────────────────────────────────────────
+#    1 │ 0.460589   0.734461   0.771352   0.292767   0.0078547
+#    2 │ 0.254958   0.153814   0.571355   0.196476   0.739701
+#    3 │ 0.0799407  0.457583   0.553493   0.25409    0.245967
+#    4 │ 0.106429   0.435509   0.0184347  0.932008   0.805972
+#    5 │ 0.0877892  0.0231817  0.435262   0.0187286  0.812151
+
+df = DataFrame(m, [:X, :Y, :Z, :W, :Q]) # Specify names
+# 5×5 DataFrame
+#  Row │ X          Y          Z          W          Q
+#      │ Float64    Float64    Float64    Float64    Float64
+# ─────┼───────────────────────────────────────────────────────
+#    1 │ 0.460589   0.734461   0.771352   0.292767   0.0078547
+#    2 │ 0.254958   0.153814   0.571355   0.196476   0.739701
+#    3 │ 0.0799407  0.457583   0.553493   0.25409    0.245967
+#    4 │ 0.106429   0.435509   0.0184347  0.932008   0.805972
+#    5 │ 0.0877892  0.0231817  0.435262   0.0187286  0.812151
+```
+
+### Accessing the Data
+Once the data is in a DataFrame, you can access column like they are individual vectors:
+
+```julia
+df.X
+# 5-element Vector{Float64}:
+#  0.460589206535297
+#  0.25495814887990786
+#  0.07994066869519556
+#  0.10642869978604408
+#  0.0877892134158087
+```
+
+You can also add columns, even via calculations:
+
+```julia
+df.New = (df.X).^2 .- df.Y
+# 5-element Vector{Float64}:
+#  -0.5223183397440386
+#  -0.08881079559662731
+#  -0.45119243718262425
+#  -0.42418203290738643
+#  -0.015474773743873368
+
+df
+# 5×6 DataFrame
+#  Row │ X          Y          Z          W          Q          New
+#      │ Float64    Float64    Float64    Float64    Float64    Float64
+# ─────┼───────────────────────────────────────────────────────────────────
+#    1 │ 0.460589   0.734461   0.771352   0.292767   0.0078547  -0.522318
+#    2 │ 0.254958   0.153814   0.571355   0.196476   0.739701   -0.0888108
+#    3 │ 0.0799407  0.457583   0.553493   0.25409    0.245967   -0.451192
+#    4 │ 0.106429   0.435509   0.0184347  0.932008   0.805972   -0.424182
+#    5 │ 0.0877892  0.0231817  0.435262   0.0187286  0.812151   -0.0154748
+
+```
+
+Note the use of broadcasting in the first command - using `.^` instead of `^` and `.-` instead of `-`. This tells Julia to execute these operations on in element-wise fashion. The new column, `df.Z` is added to the DataFrame automatically.
+
+You can also access individual entries by specifying the row and column, the latter using either the names or indexes:
+
+```julia
+df[2, 3] # Row 2, Column 3 (Z)
+# 0.5713552793835407
+
+df[2:3, 3:5]
+# 2×3 DataFrame
+#  Row │ Z         W         Q
+#      │ Float64   Float64   Float64
+# ─────┼──────────────────────────────
+#    1 │ 0.571355  0.196476  0.739701
+#    2 │ 0.553493  0.25409   0.245967
+
+df[1:3, :W]
+# 3-element Vector{Float64}:
+#  0.29276715395306163
+#  0.19647571959450094
+#  0.25409034700483624
+```
+To select an entire row or column, the `:` operator is used, just like in Arrays. This returns a copy of the slice of the DataFrame. When using a `!`, however, a view to the data is returns. Modifying the view will modify the contents of the DataFrame as well:
+
+```julia
+df = DataFrame(X = [1, 2, 3], Y = [2, 4, 6], Z = [3, 6, 9])
+# 3×3 DataFrame
+#  Row │ X      Y      Z
+#      │ Int64  Int64  Int64
+# ─────┼─────────────────────
+#    1 │     1      2      3
+#    2 │     2      4      6
+#    3 │     3      6      9
+
+xvals = df[:, :X]
+# 3-element Vector{Int64}:
+#  1
+#  2
+#  3
+
+xvals[1] = 100
+# 100
+
+df
+# 3×3 DataFrame
+#  Row │ X      Y      Z
+#      │ Int64  Int64  Int64
+# ─────┼─────────────────────
+#    1 │     1      2      3
+#    2 │     2      4      6
+#    3 │     3      6      9
+
+xview = df[!, :X]
+# 3-element Vector{Int64}:
+#  1
+#  2
+#  3
+
+xview[1] = 100
+# 100
+
+df
+# 3×3 DataFrame
+#  Row │ X      Y      Z
+#      │ Int64  Int64  Int64
+# ─────┼─────────────────────
+#    1 │   100      2      3
+#    2 │     2      4      6
+#    3 │     3      6      9
+
+```
+
+### Data Wrangling with DataFrames
+Data wrangling is the pre-processing of your data to get it into the form you need for the modelling or analysis you intend to do with it. This can include many steps. DataFrames has a rich feature set to support you in this.
+
+
+
+
+

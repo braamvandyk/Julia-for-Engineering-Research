@@ -277,12 +277,12 @@ The `FileIO` package is a common framework for reading and writing files that is
 
 There is a long list of file types and the packages that implement `load` and `save` for them in the [`FileIO` documentation](https://juliaio.github.io/FileIO.jl/stable/registry/). You can simply use `FileIO` and the package will call the correct package to save or load your data or file. That package must of course also be installed in your project.
 
-One of these packges is `JLD2`. It implements `save` and `load` from `FileIO` for generic Julia variables. `JLD2` replaces the original `JLD` and is often hugely faster. `JLD` is still around, but you probably don't want to use it.
+One of these packages is `JLD2`. It implements `save` and `load` from `FileIO` for generic Julia variables. `JLD2` replaces the original `JLD` and is often hugely faster. `JLD` is still around, but you probably don't want to use it.
 
 #### Using JLD2
 For consistency over many filetypes, we shall look at the `FileIO` interface implemented by JLD2. You can either just install and use `JLD2` or you can install both `FileIO` and `JLD2`, then just use `FileIO`. If you are only going to deal one or two file types, then you may prefer only installing the specific packages, rather than deal with FileIO. Each package will support `load` and `save` functions in addition to their internal functions.
 
-##### JLD2 with `laod` and `save`
+##### JLD2 with `load` and `save`
 The `FileIO` specification requires you to supply a name for each variable you save. This can either by via creating a `Dict`^[A dictionary, or a collection of name and value pairs.], or by passing the names and variables sequentially as parameters:
 
 ```julia
@@ -405,7 +405,7 @@ There are many options that can be passed as keyword arguments. We shall look at
 - `delim`: A character (or string) that specifies the delimiter character. Default to a comma.
 - `quotechar`: A character that specifies what quote character should be used to wrap strings that contain end-of-line, delimiting characters.
 - `missingstring`: A string that will be written in the place of `missing` values.
-- `dataformat`: A date format string for `Date` and `DateTime` values.
+- `dateformat`: A date format string for `Date` and `DateTime` values.
 - `append`: If `true`, will append to an existing file. Defaults to `false`.
 - `header`: A list of column names to replace those of the input table or DataFrame
 - `decimal`: The character to use for decimals, Defaults to `'.'`.
@@ -475,8 +475,8 @@ You can also pass keyword options, like for `CSV.write()`:
     - A character used to separate the columns.
     - Defaults to `','`.
 - `ignorerepeated`:
-    - If `true`, consequetive delimiters are treated as a single one.
-    - Use with caution, as consequetive delimiters can also be used to show a missing value from a column. Some files, however, use fixed column widths and pad with delimiters, such as spaces.
+    - If `true`, consecutive delimiters are treated as a single one.
+    - Use with caution, as consecutive delimiters can also be used to show a missing value from a column. Some files, however, use fixed column widths and pad with delimiters, such as spaces.
 - `quoted`:
     - Indicate whether quoted strings are present
 - `quotechar`:
@@ -486,7 +486,7 @@ You can also pass keyword options, like for `CSV.write()`:
     - A date format string for Date and DateTime columns
     - See Dates.DateFormat in the Julia [documentation](https://docs.julialang.org/en/v1/stdlib/Dates/#Dates.DateFormat).
 - `decimal`:
-    - Indicate the deciimal character
+    - Indicate the decimal character
     - Defaults to `'.'`.
 - `truestrings` / `falsestrings`
     - Vectors that specify strings that indicate `true` and `false` values, like "true", "TRUE", "T", "1", etc.
