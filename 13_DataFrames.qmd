@@ -3,6 +3,7 @@ title: "DataFrames"
 ---
 
 ## What is a DataFrame?
+
 In short, a DataFrame is a table of data, where each column has a title and a type. Operations can be performed on a per column or per row basis, and columns and rows can be added or removed easily. The [`DataFrames`](https://dataframes.juliadata.org/stable/) package in Julia is the de facto standard for working with tabular data and is integrated in many other packages. In a previous section we have seen that you can read a data file directly into a DataFrame via the `CSV` package, but this is only one example.
 
 The `DataFrames` package provides a lot of functionality for manipulating the data contain in a DataFrame. There are also additional packages that provide either more options, or alternative (simpler) syntax for convenience, such as `DataFramesMeta` and `Tidier`.
@@ -10,9 +11,10 @@ The `DataFrames` package provides a lot of functionality for manipulating the da
 We shall look at the basic use of DataFrames and leave these auxiliary packages and some more advanced functionality of `DataFrames` for a later section.
 
 ### Creating a DataFrame
+
 Usually, you would create a DataFrame by reading in data from a file. You can however also create a DataFrame from variables directly:
 
-```julia
+``` julia
 df = DataFrame(X = [1, 2, 3], Y = [2, 3, 4], Z = 2.0)
 # 3×3 DataFrame
 #  Row │ X      Y      Z
@@ -27,7 +29,7 @@ Note that columns `X` and `Y` are specified as arrays of integers, and so the co
 
 You can also give columns longer names, with spaces, but then instead you need to either use the pair operator, `=>`, or define a `Dict` and then convert that to a DataFrame:
 
-```julia
+``` julia
 df = DataFrame("X values" => [1, 2, 3], "Y values" => [2, 3, 4], "Z" => 2.0)
 # 3×3 DataFrame
 #  Row │ X values  Y values  Z
@@ -58,13 +60,14 @@ names(df)
 #  "Y values"
 #  "Z"
 ```
+
 The last example also shows how to retrieve the names of the columns with the `names()` function.
 
 Don't use strings for column names just because you can. Using a symbol, like `:X_values`, instead of the string "X values" will give faster results and is just as readable. This does mean you need to use underscores instead of spaces, but all-in-all that is not too high a price to pay.
 
 A DataFrame can also be constructed one column at a time:
 
-```julia
+``` julia
 df = DataFrame()
 # 0×0 DataFrame
 
@@ -83,9 +86,10 @@ df
 #    2 │     2      4
 #    3 │     3      6
 ```
+
 Or row by row:
 
-```julia
+``` julia
 df = DataFrame(A=String[], B=Int64[])
 # 0×2 DataFrame
 #  Row │ A       B
@@ -107,11 +111,12 @@ push!(df, ("Tom", 5))
 #    1 │ Bob         1
 #    2 │ Tom         5
 ```
+
 Note how we forced types of the columns in the creation of the empty DataFrame. This is needed to give the columns names, and tell the empty DataFrame how many columns it will hold. You could specify the types as `Any`, but that would not lead to god performance.
 
 Lastly, you can also convert a matrix to a DataFrame. This requires you to allow DataFrames to automatically generate column names, or pass a vector of names:
 
-```julia
+``` julia
 m = rand(5, 5)
 # 5×5 Matrix{Float64}:
 #  0.460589   0.734461   0.771352   0.292767   0.0078547
@@ -144,9 +149,10 @@ df = DataFrame(m, [:X, :Y, :Z, :W, :Q]) # Specify names
 ```
 
 ### Accessing the Data
+
 Once the data is in a DataFrame, you can access column like they are individual vectors:
 
-```julia
+``` julia
 df.X
 # 5-element Vector{Float64}:
 #  0.460589206535297
@@ -158,7 +164,7 @@ df.X
 
 You can also add columns, even via calculations:
 
-```julia
+``` julia
 df.New = (df.X).^2 .- df.Y
 # 5-element Vector{Float64}:
 #  -0.5223183397440386
@@ -177,14 +183,13 @@ df
 #    3 │ 0.0799407  0.457583   0.553493   0.25409    0.245967   -0.451192
 #    4 │ 0.106429   0.435509   0.0184347  0.932008   0.805972   -0.424182
 #    5 │ 0.0877892  0.0231817  0.435262   0.0187286  0.812151   -0.0154748
-
 ```
 
 Note the use of broadcasting in the first command - using `.^` instead of `^` and `.-` instead of `-`. This tells Julia to execute these operations on in element-wise fashion. The new column, `df.Z` is added to the DataFrame automatically.
 
 You can also access individual entries by specifying the row and column, the latter using either the names or indexes:
 
-```julia
+``` julia
 df[2, 3] # Row 2, Column 3 (Z)
 # 0.5713552793835407
 
@@ -202,9 +207,10 @@ df[1:3, :W]
 #  0.19647571959450094
 #  0.25409034700483624
 ```
+
 To select an entire row or column, the `:` operator is used, just like in Arrays. This returns a copy of the slice of the DataFrame. When using a `!`, however, a view to the data is returns. Modifying the view will modify the contents of the DataFrame as well:
 
-```julia
+``` julia
 df = DataFrame(X = [1, 2, 3], Y = [2, 4, 6], Z = [3, 6, 9])
 # 3×3 DataFrame
 #  Row │ X      Y      Z
@@ -249,13 +255,225 @@ df
 #    1 │   100      2      3
 #    2 │     2      4      6
 #    3 │     3      6      9
-
 ```
 
+You can also select just specific rows and columns:
+
+```julia
+df[[1, 3], [1, 3]]
+# 2×2 DataFrame
+#  Row │ X      Z     
+#      │ Int64  Int64 
+# ─────┼──────────────
+#    1 │     1      3
+#    2 │     3      9
+```
+
+
 ### Data Wrangling with DataFrames
-Data wrangling is the pre-processing of your data to get it into the form you need for the modelling or analysis you intend to do with it. This can include many steps. DataFrames has a rich feature set to support you in this.
 
+Data wrangling is the pre-processing of your data to get it into the form you need for the modelling or analysis you intend to do with it. This can include many steps. DataFrames has a rich feature set to support you in this. We'll look at several examples here, but if you are going to be doing this type of work often, save yourself a lot of page-turning and download, print and laminate a copy of the [**Data Wrangling with DataFrames.jl Cheat Sheet**](https://www.ahsmart.com/assets/pages/data-wrangling-with-data-frames-jl-cheat-sheet/DataFramesCheatSheet_v1.x_rev1.pdf)
 
+For simplicity, the examples in this section will all be done with a single data set:
 
+```julia
+df = DataFrame(X = 1:3:1500, Y = repeat(1:100, outer=5), Z = repeat(1:100, inner=5)
+# 500×3 DataFrame
+#  Row │ X      Y      Z     
+#      │ Int64  Int64  Int64 
+# ─────┼─────────────────────
+#    1 │     1      1      1 
+#    2 │     4      2      1 
+#    3 │     7      3      1 
+#    4 │    10      4      1 
+#    5 │    13      5      1 
+#    6 │    16      6      2 
+#    7 │    19      7      2 
+#    8 │    22      8      2 
+#    9 │    25      9      2 
+#   ⋮  │   ⋮      ⋮      ⋮   
+#  492 │  1474     92     99 
+#  493 │  1477     93     99
+#  494 │  1480     94     99
+#  495 │  1483     95     99
+#  496 │  1486     96    100
+#  497 │  1489     97    100
+#  498 │  1492     98    100
+#  499 │  1495     99    100
+#  500 │  1498    100    100
+#            482 rows omitted
 
+first(df,3)
+# 3×3 DataFrame
+#  Row │ X      Y      Z     
+#      │ Int64  Int64  Int64 
+# ─────┼─────────────────────
+#    1 │     1      1      1
+#    2 │     4      2      1
+#    3 │     7      3      1
+
+last(df,4)
+# 4×3 DataFrame
+#  Row │ X      Y      Z     
+#      │ Int64  Int64  Int64 
+# ─────┼─────────────────────
+#    1 │  1489     97    100
+#    2 │  1492     98    100
+#    3 │  1495     99    100
+#    4 │  1498    100    100
+```
+
+In generating this data, we used Julia's `repeat` function. For the `Y` column, we specify `outer=5`, which means the data (`1:100`) is repeated 5 times as a set, i.e. 1 to 100, then 1 to 100 again, for a total of 5 times. For the `Z` column, we specify `inner=5`, which means each of the values from 1 to 100 is repeated 5 times: 1, 1, 1, 1, 1, 2, 2, 2, 2, 2,... etc.
+
+We can quickly see the first or last few entries using the Julia functions `first` and `last`, with the second parameter showing how many entries to display. The number of rows displayed by Julia for the full DataFrame depends on the size of the window it is being displayed in. The middle omitted rows are indicated with the `⋮` characters. If the DataFrame is too wide, columns will also be omitted, with a message indicating how many columns are hidden.
+
+If you **really** want to see all the rows or columns, you can call `show` and specify `allrows=true` and/or `allcols=true`
+
+```julia
+show(df, allrows=true, allcols=true)
+```
+
+For obvious reasons, we won't include the 500 rows of data here.
+
+#### Selecting and Transforming Data
+In the introductory section, we selected specific rows and column based on their indices. You can also select columns based on their names:
+
+```julia
+select(df, [:X, :Z])
+# 500×2 DataFrame     
+#  Row │ X      Z     
+#      │ Int64  Int64 
+# ─────┼──────────────
+#    1 │     1      1
+#    2 │     4      1
+#    3 │     7      1
+#   ⋮  │   ⋮      ⋮
+#  498 │  1492    100
+#  499 │  1495    100
+#  500 │  1498    100
+#     494 rows omitted
+```
+
+There are also selector function to allow for selection of ranges of columns:
+
+- `Not()`: Select all the columns expect the specified one(s)
+- `Between()`: Select all column starting with the first specified column and ending with the second. You can use names or indices to specify the columns
+- `Cols()`: Use this to combine other selector functions
+- `All()`: Select all columns - same as specifying `:`
+
+**Examples:**
+
+In the previous example we selected columns `X` and `Z`, which is the same as selecting everything expect `Y`:
+
+```julia
+select(df, Not(:Y))
+# 500×2 DataFrame
+#  Row │ X      Z     
+#      │ Int64  Int64 
+# ─────┼──────────────
+#    1 │     1      1
+#    2 │     4      1
+#    3 │     7      1
+#   ⋮  │   ⋮      ⋮
+#  498 │  1492    100
+#  499 │  1495    100
+#  500 │  1498    100
+#     494 rows omitted
+```
+We only passed a single symbol to `Not`, but could also pass an array of symbols to exclude multiple columns.
+
+To make things more interesting, we can first add a few more columns:
+
+```julia
+df.A = 2 .* df.X
+df.B = df.Y .+ df.Z
+df.C = df.Z .^ 2
+df
+# 500×6 DataFrame
+#  Row │ X      Y      Z      A      B      C     
+#      │ Int64  Int64  Int64  Int64  Int64  Int64 
+# ─────┼──────────────────────────────────────────
+#    1 │     1      1      1      2      2      1
+#    2 │     4      2      1      8      3      1
+#    3 │     7      3      1     14      4      1
+#   ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮
+#  498 │  1492     98    100   2984    198  10000
+#  499 │  1495     99    100   2990    199  10000
+#  500 │  1498    100    100   2996    200  10000
+#                                 494 rows omitted
+```
+
+```julia
+select(df, Cols(:A, Between(:X, :Z)))
+# 500×4 DataFrame
+#  Row │ A      X      Y      Z     
+#      │ Int64  Int64  Int64  Int64 
+# ─────┼────────────────────────────
+#    1 │     2      1      1      1
+#    2 │     8      4      2      1
+#    3 │    14      7      3      1
+#   ⋮  │   ⋮      ⋮      ⋮      ⋮
+#  498 │  2984   1492     98    100
+#  499 │  2990   1495     99    100
+#  500 │  2996   1498    100    100
+#                   494 rows omitted
+```
+ Here we used `Cols` to combine selecting column `A` and all columns from `X` to `Z`. This also changed the order of the columns.
+
+We used the `select` function to do the selections, but could as easily have used the normal array-type notation:
+
+```julia
+df[:, Cols(:A, Between(:X, :Z))]
+# 500×4 DataFrame
+#  Row │ A      X      Y      Z     
+#      │ Int64  Int64  Int64  Int64 
+# ─────┼────────────────────────────
+#    1 │     2      1      1      1
+#    2 │     8      4      2      1
+#    3 │    14      7      3      1
+#   ⋮  │   ⋮      ⋮      ⋮      ⋮
+#  498 │  2984   1492     98    100
+#  499 │  2990   1495     99    100
+#  500 │  2996   1498    100    100
+#                   494 rows omitted
+```
+
+To permanently change the DataFrame, either assign the returned result to the same variable, or use the mutating version of `select()`: `select!()`.
+
+```julia
+df = select(df, Cols(:A, Between(:X, :Z)))
+df
+# 500×4 DataFrame
+#  Row │ A      X      Y      Z     
+#      │ Int64  Int64  Int64  Int64 
+# ─────┼────────────────────────────
+#    1 │     2      1      1      1
+#    2 │     8      4      2      1
+#    3 │    14      7      3      1
+#   ⋮  │   ⋮      ⋮      ⋮      ⋮
+#  498 │  2984   1492     98    100
+#  499 │  2990   1495     99    100
+#  500 │  2996   1498    100    100
+#                   494 rows omitted
+```
+
+or
+
+```julia
+select!(df, Cols(:A, Between(:X, :Z)))
+# 500×4 DataFrame
+#  Row │ A      X      Y      Z     
+#      │ Int64  Int64  Int64  Int64 
+# ─────┼────────────────────────────
+#    1 │     2      1      1      1
+#    2 │     8      4      2      1 Da
+#    3 │    14      7      3      1
+#   ⋮  │   ⋮      ⋮      ⋮      ⋮
+#  498 │  2984   1492     98    100
+#  499 │  2990   1495     99    100
+#  500 │  2996   1498    100    100
+#                   494 rows omitted
+```
+
+#### Filtering Data
 

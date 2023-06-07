@@ -1,31 +1,23 @@
-using ModelingToolkit, DifferentialEquations, NonlinearSolve, Plots, Latexify
+using DataFrames
 
-@parameters σ ρ β
-@variables t x(t) y(t) z(t)
-D = Differential(t)
+df = DataFrame(X = 1:3:1500, Y = repeat(1:100, outer=5), Z = repeat(1:100, inner=5))
 
-eqs = [D(D(x)) ~ σ * (y - x),
-    D(y) ~ x * (ρ - z) - y,
-    D(z) ~ x * y - β * z]
+filter(:Y => ==(50), df)
 
-@named sys = ODESystem(eqs, t, [x, y, z], [σ, ρ, β])
 
-sys = structural_simplify(sys)
+select(df, [:X, :Z])
+select(df, Not(:Y))
 
-equations(sys)
+df.A = 2 .* df.X
+df.B = df.Y .+ df.Z
+df.C = df.Z .^ 2
+df
 
-u0 = [D(x) => 2.0,
-    x => 1.0,
-    y => 0.0,
-    z => 0.0]
+select(df, Cols(:A, Between(:X, :Z)))
 
-p = [σ => 28.0,
-    ρ => 10.0,
-    β => 8 / 3]
+df[:, Cols(:A, Between(:X, :Z))]
 
-tspan = (0.0, 100.0)
-prob = ODEProblem(sys, u0, tspan, p, jac = true)
-sol = solve(prob, Tsit5())
+df2 = select(df, Cols(:A, Between(:X, :Z)))
+df2
 
-plot(sol, idxs = (x, y))
-savefig("img/mtkexample2.svg")
+select!(df, Cols(:A, Between(:X, :Z)))

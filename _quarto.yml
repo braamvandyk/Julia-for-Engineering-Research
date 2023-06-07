@@ -7,8 +7,6 @@ website:
   back-to-top-navigation: true
   navbar:
     left:
-      - text: Home
-        file: index.qmd
       - 01_Getting_started_with_Julia.qmd
       - 02_Installing_Julia.qmd
       - 03_Running_Julia.qmd
