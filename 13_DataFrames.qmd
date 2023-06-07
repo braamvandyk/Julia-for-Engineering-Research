@@ -53,17 +53,11 @@ df = DataFrame(d)
 #    1 │        1         2      2.0
 #    2 │        2         3      2.0
 #    3 │        3         4      2.0
-
-names(df)
-# 3-element Vector{String}:
-#  "X values"
-#  "Y values"
-#  "Z"
 ```
 
-The last example also shows how to retrieve the names of the columns with the `names()` function.
-
+:::{.callout-caution}
 Don't use strings for column names just because you can. Using a symbol, like `:X_values`, instead of the string "X values" will give faster results and is just as readable. This does mean you need to use underscores instead of spaces, but all-in-all that is not too high a price to pay.
+:::
 
 A DataFrame can also be constructed one column at a time:
 
@@ -274,7 +268,7 @@ df[[1, 3], [1, 3]]
 
 Data wrangling is the pre-processing of your data to get it into the form you need for the modelling or analysis you intend to do with it. This can include many steps. DataFrames has a rich feature set to support you in this. We'll look at several examples here, but if you are going to be doing this type of work often, save yourself a lot of page-turning and download, print and laminate a copy of the [**Data Wrangling with DataFrames.jl Cheat Sheet**](https://www.ahsmart.com/assets/pages/data-wrangling-with-data-frames-jl-cheat-sheet/DataFramesCheatSheet_v1.x_rev1.pdf)
 
-For simplicity, the examples in this section will all be done with a single data set:
+We start off by creating a dataset to work with:
 
 ```julia
 df = DataFrame(X = 1:3:1500, Y = repeat(1:100, outer=5), Z = repeat(1:100, inner=5)
@@ -321,6 +315,21 @@ last(df,4)
 #    2 │  1492     98    100
 #    3 │  1495     99    100
 #    4 │  1498    100    100
+
+names(df)
+# 3-element Vector{String}:
+#  "X"
+#  "Y"
+#  "Z"
+
+describe(df)
+# 3×7 DataFrame
+#  Row │ variable  mean     min    median   max    nmissing  eltype   
+#      │ Symbol    Float64  Int64  Float64  Int64  Int64     DataType 
+# ─────┼──────────────────────────────────────────────────────────────
+#    1 │ X           749.5      1    749.5   1498         0  Int64
+#    2 │ Y            50.5      1     50.5    100         0  Int64
+#    3 │ Z            50.5      1     50.5    100         0  Int64
 ```
 
 In generating this data, we used Julia's `repeat` function. For the `Y` column, we specify `outer=5`, which means the data (`1:100`) is repeated 5 times as a set, i.e. 1 to 100, then 1 to 100 again, for a total of 5 times. For the `Z` column, we specify `inner=5`, which means each of the values from 1 to 100 is repeated 5 times: 1, 1, 1, 1, 1, 2, 2, 2, 2, 2,... etc.
@@ -335,7 +344,46 @@ show(df, allrows=true, allcols=true)
 
 For obvious reasons, we won't include the 500 rows of data here.
 
+The `names()` function returns a vector of the column names as strings. You can also get summary statistics of the data with the `describe()` function.
+
+If you only want specific statistics, you can specify them in the call:
+
+```julia
+describe(df, :mean, :std)
+# 3×3 DataFrame
+#  Row │ variable  mean     std     
+#      │ Symbol    Float64  Float64 
+# ─────┼────────────────────────────
+#    1 │ X           749.5  433.445
+#    2 │ Y            50.5   28.895
+#    3 │ Z            50.5   28.895
+```
+You can also apply a custom function to describe the data. Here we use the Julia function `extrema()`, which returns the minimum and maximum value in an array. We'll specify that we want the results in a column call `minmax`:
+
+```julia
+describe(df, extrema => :minmax)
+# 3×2 DataFrame
+#  Row │ variable  minmax    
+#      │ Symbol    Tuple…    
+# ─────┼─────────────────────
+#    1 │ X         (1, 1498)
+#    2 │ Y         (1, 100)
+#    3 │ Z         (1, 100)
+```
+
+Lastly, the number of rows and column can be easily retrieved:
+
+```julia
+nrow(df)
+# 500
+
+ncol(df)
+# 6
+```
+
 #### Selecting and Transforming Data
+
+##### Selecting Columns
 In the introductory section, we selected specific rows and column based on their indices. You can also select columns based on their names:
 
 ```julia
@@ -475,5 +523,265 @@ select!(df, Cols(:A, Between(:X, :Z)))
 #                   494 rows omitted
 ```
 
-#### Filtering Data
+It is also possible to select columns from a DataFrame that match to a *regular expression*. This is a template that describes a string of text. For more information, see one the many [tutorials](https://www.regular-expressions.info/tutorialcnt.html) on the web.
+
+```julia
+df = DataFrame(
+    Names = ["Tom", "Dick", "Harry"], 
+    AddressLine1 = ["2 Maple Drive", "4 Oak Street", "6 Pine Road"],
+    AddressLine2 = ["Hopetown", "Smallville", "Metropolis"],
+    AddressZip = [1234, 2345, 3456]
+)
+3×4 DataFrame
+#  Row │ Names   AddressLine1   AddressLine2  AddressZip 
+#      │ String  String         String        Int64      
+# ─────┼─────────────────────────────────────────────────
+#    1 │ Tom     2 Maple Drive  Hopetown            1234
+#    2 │ Dick    4 Oak Street   Smallville          2345
+#    3 │ Harry   6 Pine Road    Metropolis          3456
+
+
+df[:, r"Addr"]
+# 3×3 DataFrame
+#  Row │ AddressLine1   AddressLine2  AddressZip 
+#      │ String         String        Int64      
+# ─────┼─────────────────────────────────────────
+#    1 │ 2 Maple Drive  Hopetown            1234
+#    2 │ 4 Oak Street   Smallville          2345
+#    3 │ 6 Pine Road    Metropolis          34
+
+```
+
+Here we select all rows, but only the column that have the substring "Addr" in their names.
+
+##### Selecting Rows (Filtering) and Sorting
+
+You can select rows by filtering the data. There are two equivalent ways:
+
+```julia
+filter(:X => <=(10), df)
+# 4×6 DataFrame
+#  Row │ X      Y      Z      A      B      C     
+#      │ Int64  Int64  Int64  Int64  Int64  Int64 
+# ─────┼──────────────────────────────────────────
+#    1 │     1      1      1      2      2      1
+#    2 │     4      2      1      8      3      1
+#    3 │     7      3      1     14      4      1
+#    4 │    10      4      1     20      5      1
+
+df[df.X .<= 10, :]
+# 4×6 DataFrame
+#  Row │ X      Y      Z      A      B      C     
+#      │ Int64  Int64  Int64  Int64  Int64  Int64 
+# ─────┼──────────────────────────────────────────
+#    1 │     1      1      1      2      2      1
+#    2 │     4      2      1      8      3      1
+#    3 │     7      3      1     14      4      1
+#    4 │    10      4      1     20      5      1
+```
+
+In both cases we pass a *predicate* function, i.e. a function that returns `true` for rows that should be included. In the first case, a pair operator links a column name to the predicate function and in the second case we simply pass an expression that returns true for all the correct instances. Note the use of broadcasting in the second example.
+
+You can use any predicate function. A new useful ones include:
+
+```julia
+df[findfirst(==(4), df.C), :] # Find the first row where column C has a value of 4
+# DataFrameRow
+#  Row │ X      Y      Z      A      B      C     
+#      │ Int64  Int64  Int64  Int64  Int64  Int64 
+# ─────┼──────────────────────────────────────────
+#    6 │    16      6      2     32      8      4
+
+df[findall(==(4), df.C), :] # Find all rows where column C has a value of 4
+# 5×6 DataFrame
+#  Row │ X      Y      Z      A      B      C     
+#      │ Int64  Int64  Int64  Int64  Int64  Int64 
+# ─────┼──────────────────────────────────────────
+#    1 │    16      6      2     32      8      4
+#    2 │    19      7      2     38      9      4
+#    3 │    22      8      2     44     10      4
+#    4 │    25      9      2     50     11      4
+#    5 │    28     10      2     56     12      4
+
+df[df.C .== 4, :] # Find all rows where column C has a value of 4, alternative form
+# 5×6 DataFrame
+#  Row │ X      Y      Z      A      B      C     
+#      │ Int64  Int64  Int64  Int64  Int64  Int64 
+# ─────┼──────────────────────────────────────────
+#    1 │    16      6      2     32      8      4
+#    2 │    19      7      2     38      9      4
+#    3 │    22      8      2     44     10      4
+#    4 │    25      9      2     50     11      4
+#    5 │    28     10      2     56     12      4
+```
+
+It may also be useful to sort the data according to specified columns:
+
+```julia
+sort(df, :Y)
+# 500×6 DataFrame
+#  Row │ X      Y      Z      A      B      C     
+#      │ Int64  Int64  Int64  Int64  Int64  Int64 
+# ─────┼──────────────────────────────────────────
+#    1 │     1      1      1      2      2      1
+#    2 │   301      1     21    602     22    441
+#    3 │   601      1     41   1202     42   1681
+#    4 │   901      1     61   1802     62   3721
+#    5 │  1201      1     81   2402     82   6561
+#   ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮
+#  497 │   598    100     40   1196    140   1600
+#  498 │   898    100     60   1796    160   3600
+#  499 │  1198    100     80   2396    180   6400
+#  500 │  1498    100    100   2996    200  10000
+#                                 491 rows omitted
+
+sort(df, [:Y, :B])
+# 500×6 DataFrame
+#  Row │ X      Y      Z      A      B      C
+#      │ Int64  Int64  Int64  Int64  Int64  Int64
+# ─────┼──────────────────────────────────────────
+#    1 │     1      1      1      2      2      1
+#    2 │   301      1     21    602     22    441
+#    3 │   601      1     41   1202     42   1681
+#    4 │   901      1     61   1802     62   3721
+#    5 │  1201      1     81   2402     82   6561
+#   ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮
+#  497 │   598    100     40   1196    140   1600
+#  498 │   898    100     60   1796    160   3600
+#  499 │  1198    100     80   2396    180   6400
+#  500 │  1498    100    100   2996    200  10000
+#                                 491 rows omitted
+```
+
+##### Applying Function to Columns and Rows
+
+Applying a function to a column or multiple columns has been shown before when we added columns to a DataFrame. Since each column acts like a vector, we simply use normal Julia broadcasting to apply functions to whole columns:
+
+```julia
+df.BdivC = df.B ./ df.C
+500-element Vector{Float64}:
+ 2.0
+ 3.0
+ 4.0
+ 5.0
+ 6.0
+ 2.0
+ 2.25
+ ⋮
+ 0.01979389858177737
+ 0.0196
+ 0.0197
+ 0.0198
+ 0.0199
+ 0.02
+
+df
+500×7 DataFrame
+ Row │ X      Y      Z      A      B      C      BdivC     
+     │ Int64  Int64  Int64  Int64  Int64  Int64  Float64   
+─────┼─────────────────────────────────────────────────────
+   1 │     1      1      1      2      2      1  2.0
+   2 │     4      2      1      8      3      1  3.0
+   3 │     7      3      1     14      4      1  4.0
+   4 │    10      4      1     20      5      1  5.0
+   5 │    13      5      1     26      6      1  6.0
+  ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮        ⋮
+ 497 │  1489     97    100   2978    197  10000  0.0197
+ 498 │  1492     98    100   2984    198  10000  0.0198
+ 499 │  1495     99    100   2990    199  10000  0.0199
+ 500 │  1498    100    100   2996    200  10000  0.02
+                                           491 rows omitted
+```
+
+In order to apply functions across rows, we need to use some of the built-in functions of DataFrames, `select` and `transform`, along with `ByRow`.
+
+The basic syntax is: 
+
+`select(df, <array of columns to select>)`
+`select(df, <array of columns to select>, <array of columns to pass to function> => <function> => <name(s) of column(s) to hold result>)`
+`select(df, AsTable(:) => <function> => <name(s) of column(s) to hold result>)` # pass the entire table to the function
+
+Some examples:
+
+```julia
+
+select(df, :X, :X => cumsum => :cumX) # Put the cumulative sum of X in column cumX
+# 500×2 DataFrame
+#  Row │ X      cumX   
+#      │ Int64  Int64  
+# ─────┼───────────────
+#    1 │     1       1
+#    2 │     4       5
+#    3 │     7      12
+#    4 │    10      22
+#    5 │    13      35
+#   ⋮  │   ⋮      ⋮
+#  497 │  1489  370265
+#  498 │  1492  371757
+#  499 │  1495  373252
+#  500 │  1498  374750
+#      491 rows omitted
+
+select(df, [:X, :Y], [:X, :Y] => ByRow((x, y) -> sin(x)*cos(y)) => :sinXcosY) # Put the value of sin(X)*cos*(Y) in column sinXcosY
+# 500×3 DataFrame
+#  Row │ X      Y      sinXcosY    
+#      │ Int64  Int64  Float64     
+# ─────┼───────────────────────────
+#    1 │     1      1   0.454649
+#    2 │     4      2   0.314941
+#    3 │     7      3  -0.650412
+#    4 │    10      4   0.355596
+#    5 │    13      5   0.119185
+#   ⋮  │   ⋮      ⋮         ⋮
+#  497 │  1489     97   0.106082
+#  498 │  1492     98  -0.207859
+#  499 │  1495     99  -0.0154374
+#  500 │  1498    100   0.443124
+#                  491 rows omitted
+
+select(df, AsTable(:) => ByRow(extrema) => [:min, :max]) # Find the smallest and largest value in each row
+# 500×2 DataFrame
+#  Row │ min    max   
+#      │ Int64  Int64 
+# ─────┼──────────────
+#    1 │     1      2
+#    2 │     1      8
+#    3 │     1     14
+#    4 │     1     20
+#    5 │     1     26
+#   ⋮  │   ⋮      ⋮
+#  497 │    97  10000
+#  498 │    98  10000
+#  499 │    99  10000
+#  500 │   100  10000
+#     491 rows omitted
+```
+
+In each case, we used `select` and it only returned the specified columns. If we instead call `transform`, the entire DataFrame is returned, as well as any new columns added in the calculations, e.g.
+
+```julia
+transform(df, AsTable(:) => ByRow(extrema) => [:min, :max])
+# 500×8 DataFrame
+#  Row │ X      Y      Z      A      B      C      min    max   
+#      │ Int64  Int64  Int64  Int64  Int64  Int64  Int64  Int64 
+# ─────┼────────────────────────────────────────────────────────
+#    1 │     1      1      1      2      2      1      1      2
+#    2 │     4      2      1      8      3      1      1      8
+#    3 │     7      3      1     14      4      1      1     14
+#    4 │    10      4      1     20      5      1      1     20
+#    5 │    13      5      1     26      6      1      1     26
+#   ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮      ⋮      ⋮
+#  497 │  1489     97    100   2978    197  10000     97  10000
+#  498 │  1492     98    100   2984    198  10000     98  10000
+#  499 │  1495     99    100   2990    199  10000     99  10000
+#  500 │  1498    100    100   2996    200  10000    100  10000
+#                                               491 rows omitted
+
+```
+Just like before, `select` and `transform` return new DataFrames, while `select!` and `transform!` will modify the existing DataFrame.
+
+### Joining DataFrames
+
+
+
 
