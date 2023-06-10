@@ -176,7 +176,7 @@ In every new version of the Julia compiler, some work is included to reduce he l
 
 Some of the people reading this document will be experienced programmers and some will be masters of numerical methods. Most of you won't be either, but still want to solve a technical problem. Here Julia is your friend.
 
-Any commonly used numerical methods you are likely to want to use is already available in a package, generally written by people with PhDs in the relevant field and optimised to the nth degree by researchers who needed this before you did and contributed to the openly available source code. Sometimes, the methods are already built into Julia, as is the case for linear algebra.
+Any commonly used numerical methods you are likely to want to use are already available in a package, generally written by people with PhDs in the relevant field and optimised to the n^th^ degree by researchers who needed this before you did and contributed to the openly available source code. Sometimes, the methods are already built into Julia, as is the case for linear algebra.
 
 Let's say you want to factorise a matrix. You *could* pull your linear algebra textbook and your numerical methods notes off the shelf and remind yourself which factorisation methods are best suited to your type of matrix and how those methods work, then code your own copy. Or you could just let Julia take care of it for you:
 

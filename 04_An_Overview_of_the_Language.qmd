@@ -1383,18 +1383,236 @@ Here, there are a few things to pay attention to:
 - We are calling the higher-level function `open()`, which takes another function as its first parameter. The `do` block **ALWAYS** passes the specified (anonymous) function to the first parameter of the calling function. The nominal syntax for `open()` is `open(f::Function, args...; kwargs...)`. The function, `f` is specified by the `do` block.
 - We pass the parameter `io` to the function be specifying `io` next to the keyword `do`. This is similar to the `x -> ...` in an anonymous function, here we effectively have `io -> ...`
 
+### Passing Values to Functions and Returning Results
+
+In all of the examples so far, we have passed values to the functions. These values are called *parameters* or *arguments* and there are two types of parameters in Julia: positional parameters and keyword arguments.
+
+#### Positional parameters
+
+Positional parameters are parameters where Julia knows which local (to the function) variable to assign the value to, based on the parameter's position in the list of arguments. If we have a function `f(x, y)`, and we call it with `f(1, 2)`, Julia will assign the value of 1 to `x` and 2 to `y`.
+
+Positional parameters can have default values: `f(x, y=2)`. We can now either call the function with `f(2, 4)`, in which case `x` will be assigned a value of 2 and `y` a value of 4, or we can omit the value for `y` and call `f(2)`, in which was `x` will be assigned a value of 2 and `y` will use its default value, also 2.
+
+Multiple parameters can have default values, e.g. `f(x, y=2, z = 3)`. If we now call `f(2)`, `y` and `z` use their default values. What happens when we call `f(2, 10)`?
+
+```julia
+function f(x, y=2, z=4)
+    println(x)
+    println(y)
+    println(z)
+end
+
+f(2)
+# 2
+# 2
+# 4
+
+f(2, 10)
+# 2
+# 10
+# 4
+```
+We see that the second value is passed to `y`, since it is the second positional parameter. Positional values are always passed left to right, then default values are used. So how would we pass values for `x` and `z` and have `y` use its default value? The answer is keyword arguments.
+
+#### Keyword arguments
+
+Keyword arguments (a.k.a. keyword parameters, a.k.a. kwargs) are identified by name when passing values to a function. To define them, we first list the positional parameters, then a semi-colon, then the keyword arguments. Keyword arguments **must** all have default values assigned to them.
+
+```julia
+function f(x; y=2, z=4)
+    println(x)
+    println(y)
+    println(z)
+end
+
+f(2)
+# 2
+# 2
+# 4
+```
+
+So, as expected, `y` and `z` are using their default values. We can now decide to override the defaults for `y`, `z` or both:
+
+```julia
+f(2, z=3)
+# 2       
+# 2
+# 3
+
+f(2, y=5, z=10)
+# 2
+# 5
+# 10
+```
+
+Since `x` is a positional parameters, a value must always be passed for it, or we get an error:
+
+```julia
+f(y=5, z=10)
+# ERROR: MethodError: no method matching f(; y::Int64, z::Int64)
+
+# Closest candidates are:
+#   f(::Any; y, z)
+#    @ Main d:\JuliaCode\Julia4ER\Julia for Engineering Research\scrathpad.jl:42
+```
+
+:::{.callout-note}
+It is common to find that positional and keyword arguments are separated with a semi-colon at the point where the function is called, e.g. `f(2; y=3, z=5)`. This is just done to emphasize that the parameters after the semi-colon are kwargs, but it is not required. A comma will do just fine.
+:::
+
+#### Returning Results
+
+To return values from a function, there are two options:
+
+- Use the keyword `return`
+- Mutate (modify) an array passed as parameter to the function
+
+Functions in Julia will always return a value. Either there is an explicit `return` statement, or the last calculated value is automatically returned. It is good practise to always explicitly return a value. If your function returns nothing, then use `return nothing` to prevent an unexpected and unintended value from being returned.
+
+You can have multiple `return` statements, but the first one te execute will terminate the function and return to the line after the call to the function.
+
+```julia
+function isnotnegative(x)
+    if x >= 0
+        return true
+    else
+        return false
+    end
+end
+```
+or more concisely
+
+```julia
+function isnotnegative(x)
+    return x >= 0
+end
+```
+
+This is more understandable than the equivalent:
+
+```julia
+function isnotnegative()
+    x >= 0
+end
+```
+
+Julia uses *pass-by-sharing* for parameters passed to functions. If you don't know what that means, you are in good [company](https://discourse.julialang.org/t/i-thought-i-understood-pass-by-sharing-in-julia-until-i-found-this/46897/8).
+
+The practical implications however are fairly simply to understand. Parameters are immutable - you cannot modify them:
+
+```julia
+function trychangeing(x)
+    println("Passed value: $x")
+    x = 10
+    println("Local value: $x")
+end
+
+x = -1
+trychangeing(x)
+# Passed value: -1
+# Local value: 10
+
+println("Value at call site: $x")
+# Value at call site: -1
+
+a = [1]
+trychangeing(a)
+# Passed value: [1]
+# Local value: 10
+
+println("Value at call site: $a")
+# Value at call site: [1]
+```
+
+What happens is that Julia creates a new, local variable in the scope of the function and assigns it the value of the parameter that was passed. You can change the values of the parameters, but that does not affect the variables that were passed to the function - `x` and `a` in the examples.
+
+How do you then mutate an argument? You cannot change scalar values at all. Neither can you change an array. But the value of an array is just a pointer to some data that it contains, and you *can* change that data:
+
+```julia
+function canchange!(x)
+    println("Passed value: $x")
+    x[1] = -10
+    println("Local value: $x")
+end
+
+a = [1, 2, 3]
+canchange!(a)
+# Passed value: [1, 2, 3]
+# Local value: [-10, 2, 3]
+
+println(a)
+[-10, 2, 3]
+```
+:::{.callout-note}
+Note the addition of the exclamation mark (bang, for our American friends) to the name of the function. This is not a Julia requirement, just good manners. We inform the user of the code that one or parameter will be mutated.
+:::
+
+A function returns only one value. What then if you need to return more than one result? Simply return them as a tuple and unpack them at the call site:
+
+```julia
+function sqr_two(a, b)
+    return a^2, b^2 # The parentheses around the tuple are optional
+end
+
+a2, b2 = sqr_two(2, 3) # Unpack the returned tuple into the two variables, a2 and b2
+println("a2 = $a2 and b2 = $b2."
+# a2 = 4 and b2 = 9.
+```
+
+#### Slurping and Splatting - Variable number of positional arguments
+
+Julia uses the `...` operator to *slurp* and *splat* values. Slurping means combining multiple scalar values into an array (slurping them up) and splatting means breaking an array into a number of scalar values. While this is sometimes used in other places, the most common application is to allow a variable number of parameters to be passed to a function.
+
+```julia
+function confused(a, b, c...)
+    println("a is $a")
+    println("b is $b")
+    println("c is $c")
+end
+
+confused(1, 2, 3, 4, 5)
+# a is 1  
+# b is 2
+# c is (3, 4, 5)
+```
+
+Splatting allows an array to be passed to a function that expects a number of scalars:
+
+```julia
+function confused2(a, b, c)
+    println("a is $a")
+    println("b is $b")
+    println("c is $c")
+end
+
+x = [1, 2, 3]
+confused2(x...)
+# a is 1  
+# b is 2
+# c is 3
+
+x = [1, 2, 3, 4]
+confused2(x...)
+# ERROR: MethodError: no method matching confused(::Int64, ::Int64, ::Int64, ::Int64)
+
+# Closest candidates are:
+#   confused(::Any, ::Any, ::Any)
+# ...
+```
+The last example results in an error, as there is no version of the function that accepts four parameters.
+
+
 ## Type Stability and Fast Code
  Being able to change the type of a variable can be useful, but it does also open the door to something that can cause slowdown in your code: **type instability**. This is when the type of x changes during the execution of your code, making many of the optimisations Julia could do impossible. Instead, additional code is required to handle the type changes. Keep a look-out for something like this:
 
 ```julia
-julia> function myfunc(n)
-           sum = 0
-           for i in 1:n
-               sum += 1.5
-           end
-           return sum
-       end
-myfunc (generic function with 1 method)
+function myfunc(n)
+    sum = 0
+    for i in 1:n
+        sum += 1.5
+    end
+    return sum
+end
 ```
 
 At first glance, there is nothing strange about this code. If you take a closer look however, you will see that `sum` is created as an integer via `sum = 0`, but then we assign floating-point values to it.
@@ -1451,7 +1669,7 @@ To learn more about type stability and many other useful tips to help you write 
 
 The main things to consider, if you want fast code are:
 
-1. The fastest code is code that you don't need to execute. Better algorithms always trump more optimised code
+1. The fastest code is code that you don't need to execute. **Better algorithms always trump more optimised code**
 2. Avoid type instability in your code.
 3. Avoid unnecessary memory allocation by re-using arrays where possible.
 
