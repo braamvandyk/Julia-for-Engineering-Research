@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "Bdiv",
         "Bloggs",
         "dataframe",
         "datatypes",
@@ -8,12 +9,14 @@
         "fracs",
         "fread",
         "heatmaps",
+        "Hopetown",
         "idxs",
         "infty",
         "lalalala",
         "lalalalalalalalalala",
         "linsolve",
         "mathbf",
+        "minmax",
         "Moderna",
         "mtkexample",
         "mycomp",
@@ -32,6 +35,7 @@
         "radiuslimited",
         "rosebrock",
         "signext",
+        "Smallville",
         "solss",
         "somearray",
         "ssode",
@@ -41,6 +45,9 @@
         "tspan",
         "uspan",
         "uwtable",
-        "xˍtt"
+        "xˍtt",
+        "Xcos",
+        "xvals",
+        "xview"
     ]
 }

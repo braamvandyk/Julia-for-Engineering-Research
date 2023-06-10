@@ -1,43 +1,32 @@
-using DataFrames
+using CSV, DataFrames, Statistics
 
-df = DataFrame(X = 1:3:1500, Y = repeat(1:100, outer=5), Z = repeat(1:100, inner=5))
+df = CSV.read(raw"D:\JuliaCode\KaggleData\food_ingredients_and_allergens.csv", DataFrame; normalizenames=true)
+select!(df, [:Food_Product, :Allergens])
 
+allAllergens = String[]
+for row in eachrow(df)
+    allergens = row.Allergens
+    for s in eachsplit(allergens, ", ")
+        push!(allAllergens, s)
+    end
+end
+unique!(allAllergens)
 
-
-
-select(df, [:X, :Z])
-select(df, Not(:Y))
-
-df.A = 2 .* df.X
-df.B = df.Y .+ df.Z
-df.C = df.Z .^ 2
-df
-
-describe(df)
-
-select(df, Cols(:A, Between(:X, :Z)))
-
-df[:, Cols(:A, Between(:X, :Z))]
-
-df2 = select(df, Cols(:A, Between(:X, :Z)))
-df2
-
-select!(df, Cols(:A, Between(:X, :Z)))
-
-filter(:X => <=(10), df)
-df[df.X .<= 10, :]
+for allergen in allAllergens
+    transform!(df, :Allergens => ByRow(s -> contains(string(s), allergen)) => Symbol(allergen))
+end
 
 
-select(df, :X, :X => cumsum => :cumX)
-select(df, [:X, :Y], [:X, :Y] => ByRow((x, y) -> sin(x)*cos(y)) => :sinXcosY)
-select(df, AsTable(:) => ByRow(extrema) => [:min, :max])
-transform(df, AsTable(:) => ByRow(extrema) => [:min, :max])
+gdf = groupby(df, [:Almonds, :Wheat])
+for (keys, sdf) in pairs(gdf)
+    println("Number of foods with $keys: $(nrow(sdf))")
+end
 
-df = DataFrame(
-    Names = ["Tom", "Dick", "Harry"], 
-    AddressLine1 = ["2 Maple Drive", "4 Oak Street", "6 Pine Road"],
-    AddressLine2 = ["Hopetown", "Smallville", "Metropolis"],
-    AddressZip = [1234, 2345, 3456]
-)
+combine(gdf, nrow, proprow)
 
-df[:, r"Addr"]
+
+
+
+df = DataFrame(X = 1:50, Y = repeat(1:2, outer=25), Z = repeat(2:2:10, inner=10))
+gdf = groupby(df, [:Y, :Z])
+counts = select(gdf, nrow, :X => mean)

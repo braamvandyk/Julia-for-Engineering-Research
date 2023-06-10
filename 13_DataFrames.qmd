@@ -55,7 +55,7 @@ df = DataFrame(d)
 #    3 │        3         4      2.0
 ```
 
-:::{.callout-caution}
+::: callout-caution
 Don't use strings for column names just because you can. Using a symbol, like `:X_values`, instead of the string "X values" will give faster results and is just as readable. This does mean you need to use underscores instead of spaces, but all-in-all that is not too high a price to pay.
 :::
 
@@ -253,7 +253,7 @@ df
 
 You can also select just specific rows and columns:
 
-```julia
+``` julia
 df[[1, 3], [1, 3]]
 # 2×2 DataFrame
 #  Row │ X      Z     
@@ -263,14 +263,13 @@ df[[1, 3], [1, 3]]
 #    2 │     3      9
 ```
 
-
 ### Data Wrangling with DataFrames
 
 Data wrangling is the pre-processing of your data to get it into the form you need for the modelling or analysis you intend to do with it. This can include many steps. DataFrames has a rich feature set to support you in this. We'll look at several examples here, but if you are going to be doing this type of work often, save yourself a lot of page-turning and download, print and laminate a copy of the [**Data Wrangling with DataFrames.jl Cheat Sheet**](https://www.ahsmart.com/assets/pages/data-wrangling-with-data-frames-jl-cheat-sheet/DataFramesCheatSheet_v1.x_rev1.pdf)
 
 We start off by creating a dataset to work with:
 
-```julia
+``` julia
 df = DataFrame(X = 1:3:1500, Y = repeat(1:100, outer=5), Z = repeat(1:100, inner=5)
 # 500×3 DataFrame
 #  Row │ X      Y      Z     
@@ -338,7 +337,7 @@ We can quickly see the first or last few entries using the Julia functions `firs
 
 If you **really** want to see all the rows or columns, you can call `show` and specify `allrows=true` and/or `allcols=true`
 
-```julia
+``` julia
 show(df, allrows=true, allcols=true)
 ```
 
@@ -348,7 +347,7 @@ The `names()` function returns a vector of the column names as strings. You can 
 
 If you only want specific statistics, you can specify them in the call:
 
-```julia
+``` julia
 describe(df, :mean, :std)
 # 3×3 DataFrame
 #  Row │ variable  mean     std     
@@ -358,9 +357,10 @@ describe(df, :mean, :std)
 #    2 │ Y            50.5   28.895
 #    3 │ Z            50.5   28.895
 ```
+
 You can also apply a custom function to describe the data. Here we use the Julia function `extrema()`, which returns the minimum and maximum value in an array. We'll specify that we want the results in a column call `minmax`:
 
-```julia
+``` julia
 describe(df, extrema => :minmax)
 # 3×2 DataFrame
 #  Row │ variable  minmax    
@@ -373,7 +373,7 @@ describe(df, extrema => :minmax)
 
 Lastly, the number of rows and column can be easily retrieved:
 
-```julia
+``` julia
 nrow(df)
 # 500
 
@@ -384,9 +384,10 @@ ncol(df)
 #### Selecting and Transforming Data
 
 ##### Selecting Columns
+
 In the introductory section, we selected specific rows and column based on their indices. You can also select columns based on their names:
 
-```julia
+``` julia
 select(df, [:X, :Z])
 # 500×2 DataFrame     
 #  Row │ X      Z     
@@ -404,16 +405,16 @@ select(df, [:X, :Z])
 
 There are also selector function to allow for selection of ranges of columns:
 
-- `Not()`: Select all the columns expect the specified one(s)
-- `Between()`: Select all column starting with the first specified column and ending with the second. You can use names or indices to specify the columns
-- `Cols()`: Use this to combine other selector functions
-- `All()`: Select all columns - same as specifying `:`
+-   `Not()`: Select all the columns expect the specified one(s)
+-   `Between()`: Select all column starting with the first specified column and ending with the second. You can use names or indices to specify the columns
+-   `Cols()`: Use this to combine other selector functions
+-   `All()`: Select all columns - same as specifying `:`
 
 **Examples:**
 
 In the previous example we selected columns `X` and `Z`, which is the same as selecting everything expect `Y`:
 
-```julia
+``` julia
 select(df, Not(:Y))
 # 500×2 DataFrame
 #  Row │ X      Z     
@@ -428,11 +429,12 @@ select(df, Not(:Y))
 #  500 │  1498    100
 #     494 rows omitted
 ```
+
 We only passed a single symbol to `Not`, but could also pass an array of symbols to exclude multiple columns.
 
 To make things more interesting, we can first add a few more columns:
 
-```julia
+``` julia
 df.A = 2 .* df.X
 df.B = df.Y .+ df.Z
 df.C = df.Z .^ 2
@@ -451,7 +453,7 @@ df
 #                                 494 rows omitted
 ```
 
-```julia
+``` julia
 select(df, Cols(:A, Between(:X, :Z)))
 # 500×4 DataFrame
 #  Row │ A      X      Y      Z     
@@ -466,11 +468,12 @@ select(df, Cols(:A, Between(:X, :Z)))
 #  500 │  2996   1498    100    100
 #                   494 rows omitted
 ```
- Here we used `Cols` to combine selecting column `A` and all columns from `X` to `Z`. This also changed the order of the columns.
+
+Here we used `Cols` to combine selecting column `A` and all columns from `X` to `Z`. This also changed the order of the columns.
 
 We used the `select` function to do the selections, but could as easily have used the normal array-type notation:
 
-```julia
+``` julia
 df[:, Cols(:A, Between(:X, :Z))]
 # 500×4 DataFrame
 #  Row │ A      X      Y      Z     
@@ -488,7 +491,7 @@ df[:, Cols(:A, Between(:X, :Z))]
 
 To permanently change the DataFrame, either assign the returned result to the same variable, or use the mutating version of `select()`: `select!()`.
 
-```julia
+``` julia
 df = select(df, Cols(:A, Between(:X, :Z)))
 df
 # 500×4 DataFrame
@@ -507,7 +510,7 @@ df
 
 or
 
-```julia
+``` julia
 select!(df, Cols(:A, Between(:X, :Z)))
 # 500×4 DataFrame
 #  Row │ A      X      Y      Z     
@@ -525,7 +528,7 @@ select!(df, Cols(:A, Between(:X, :Z)))
 
 It is also possible to select columns from a DataFrame that match to a *regular expression*. This is a template that describes a string of text. For more information, see one the many [tutorials](https://www.regular-expressions.info/tutorialcnt.html) on the web.
 
-```julia
+``` julia
 df = DataFrame(
     Names = ["Tom", "Dick", "Harry"], 
     AddressLine1 = ["2 Maple Drive", "4 Oak Street", "6 Pine Road"],
@@ -549,7 +552,6 @@ df[:, r"Addr"]
 #    1 │ 2 Maple Drive  Hopetown            1234
 #    2 │ 4 Oak Street   Smallville          2345
 #    3 │ 6 Pine Road    Metropolis          34
-
 ```
 
 Here we select all rows, but only the column that have the substring "Addr" in their names.
@@ -558,7 +560,7 @@ Here we select all rows, but only the column that have the substring "Addr" in t
 
 You can select rows by filtering the data. There are two equivalent ways:
 
-```julia
+``` julia
 filter(:X => <=(10), df)
 # 4×6 DataFrame
 #  Row │ X      Y      Z      A      B      C     
@@ -584,7 +586,7 @@ In both cases we pass a *predicate* function, i.e. a function that returns `true
 
 You can use any predicate function. A new useful ones include:
 
-```julia
+``` julia
 df[findfirst(==(4), df.C), :] # Find the first row where column C has a value of 4
 # DataFrameRow
 #  Row │ X      Y      Z      A      B      C     
@@ -617,7 +619,7 @@ df[df.C .== 4, :] # Find all rows where column C has a value of 4, alternative f
 
 It may also be useful to sort the data according to specified columns:
 
-```julia
+``` julia
 sort(df, :Y)
 # 500×6 DataFrame
 #  Row │ X      Y      Z      A      B      C     
@@ -657,53 +659,51 @@ sort(df, [:Y, :B])
 
 Applying a function to a column or multiple columns has been shown before when we added columns to a DataFrame. Since each column acts like a vector, we simply use normal Julia broadcasting to apply functions to whole columns:
 
-```julia
+``` julia
 df.BdivC = df.B ./ df.C
-500-element Vector{Float64}:
- 2.0
- 3.0
- 4.0
- 5.0
- 6.0
- 2.0
- 2.25
- ⋮
- 0.01979389858177737
- 0.0196
- 0.0197
- 0.0198
- 0.0199
- 0.02
+# 500-element Vector{Float64}:
+#  2.0
+#  3.0
+#  4.0
+#  5.0
+#  6.0
+#  2.0
+#  2.25
+#  ⋮
+#  0.01979389858177737
+#  0.0196
+#  0.0197
+#  0.0198
+#  0.0199
+#  0.02
 
-df
-500×7 DataFrame
- Row │ X      Y      Z      A      B      C      BdivC     
-     │ Int64  Int64  Int64  Int64  Int64  Int64  Float64   
-─────┼─────────────────────────────────────────────────────
-   1 │     1      1      1      2      2      1  2.0
-   2 │     4      2      1      8      3      1  3.0
-   3 │     7      3      1     14      4      1  4.0
-   4 │    10      4      1     20      5      1  5.0
-   5 │    13      5      1     26      6      1  6.0
-  ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮        ⋮
- 497 │  1489     97    100   2978    197  10000  0.0197
- 498 │  1492     98    100   2984    198  10000  0.0198
- 499 │  1495     99    100   2990    199  10000  0.0199
- 500 │  1498    100    100   2996    200  10000  0.02
-                                           491 rows omitted
+# df
+# 500×7 DataFrame
+#  Row │ X      Y      Z      A      B      C      BdivC     
+#      │ Int64  Int64  Int64  Int64  Int64  Int64  Float64   
+# ─────┼─────────────────────────────────────────────────────
+#    1 │     1      1      1      2      2      1  2.0
+#    2 │     4      2      1      8      3      1  3.0
+#    3 │     7      3      1     14      4      1  4.0
+#    4 │    10      4      1     20      5      1  5.0
+#    5 │    13      5      1     26      6      1  6.0
+#   ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮        ⋮
+#  497 │  1489     97    100   2978    197  10000  0.0197
+#  498 │  1492     98    100   2984    198  10000  0.0198
+#  499 │  1495     99    100   2990    199  10000  0.0199
+#  500 │  1498    100    100   2996    200  10000  0.02
+#                                            491 rows omitted
 ```
 
 In order to apply functions across rows, we need to use some of the built-in functions of DataFrames, `select` and `transform`, along with `ByRow`.
 
-The basic syntax is: 
+The basic syntax is:
 
-`select(df, <array of columns to select>)`
-`select(df, <array of columns to select>, <array of columns to pass to function> => <function> => <name(s) of column(s) to hold result>)`
-`select(df, AsTable(:) => <function> => <name(s) of column(s) to hold result>)` # pass the entire table to the function
+`select(df, <array of columns to select>)` `select(df, <array of columns to select>, <array of columns to pass to function> => <function> => <name(s) of column(s) to hold result>)` `select(df, AsTable(:) => <function> => <name(s) of column(s) to hold result>)` \# pass the entire table to the function
 
 Some examples:
 
-```julia
+``` julia
 
 select(df, :X, :X => cumsum => :cumX) # Put the cumulative sum of X in column cumX
 # 500×2 DataFrame
@@ -759,7 +759,7 @@ select(df, AsTable(:) => ByRow(extrema) => [:min, :max]) # Find the smallest and
 
 In each case, we used `select` and it only returned the specified columns. If we instead call `transform`, the entire DataFrame is returned, as well as any new columns added in the calculations, e.g.
 
-```julia
+``` julia
 transform(df, AsTable(:) => ByRow(extrema) => [:min, :max])
 # 500×8 DataFrame
 #  Row │ X      Y      Z      A      B      C      min    max   
@@ -776,12 +776,303 @@ transform(df, AsTable(:) => ByRow(extrema) => [:min, :max])
 #  499 │  1495     99    100   2990    199  10000     99  10000
 #  500 │  1498    100    100   2996    200  10000    100  10000
 #                                               491 rows omitted
-
 ```
+
 Just like before, `select` and `transform` return new DataFrames, while `select!` and `transform!` will modify the existing DataFrame.
+
+### Grouping Data
+
+DataFrames will group your data by column values through the `groupby()` function. One or more columns can be specified and you will get a GroupedDataFrame - a container of `SubDataFrame`s for each unique combination of the values in the specified columns.
+
+``` julia
+df = DataFrame(X = 1:50, Y = repeat(1:2, outer=25), Z = repeat(2:2:10, inner=10))
+# 50×3 DataFrame
+#  Row │ X      Y      Z     
+#      │ Int64  Int64  Int64 
+# ─────┼─────────────────────
+#    1 │     1      1      2 
+#    2 │     2      2      2
+#    3 │     3      1      2
+#    4 │     4      2      2
+#    5 │     5      1      2
+#    6 │     6      2      2
+#   ⋮  │   ⋮      ⋮      ⋮
+#   45 │    45      1     10
+#   46 │    46      2     10
+#   47 │    47      1     10
+#   48 │    48      2     10
+#   49 │    49      1     10
+#   50 │    50      2     10
+#             38 rows omitted
+
+gdf = groupby(df, [:Y, :Z]
+# GroupedDataFrame with 10 groups based on keys: Y, Z
+# First Group (5 rows): Y = 1, Z = 2
+#  Row │ X      Y      Z     
+#      │ Int64  Int64  Int64 
+# ─────┼─────────────────────
+#    1 │     1      1      2
+#   ⋮  │   ⋮      ⋮      ⋮
+#    5 │     9      1      2
+#              3 rows omitted
+# ⋮
+# Last Group (5 rows): Y = 2, Z = 10
+#  Row │ X      Y      Z     
+#      │ Int64  Int64  Int64 
+# ─────┼─────────────────────
+#    1 │    42      2     10
+#   ⋮  │   ⋮      ⋮      ⋮
+#    5 │    50      2     10
+#              3 rows omitted
+
+counts = select(gdf, nrow, :X => mean)
+# 50×4 DataFrame
+#  Row │ Y      Z      nrow   X_mean  
+#      │ Int64  Int64  Int64  Float64 
+# ─────┼──────────────────────────────
+#    1 │     1      2      5      5.0
+#    2 │     2      2      5      6.0
+#    3 │     1      2      5      5.0
+#    4 │     2      2      5      6.0
+#    5 │     1      2      5      5.0
+#    6 │     2      2      5      6.0
+#   ⋮  │   ⋮      ⋮      ⋮       ⋮
+#   45 │     1     10      5     45.0
+#   46 │     2     10      5     46.0
+#   47 │     1     10      5     45.0
+#   48 │     2     10      5     46.0
+#   49 │     1     10      5     45.0
+#   50 │     2     10      5     46.0
+#                      38 rows omitted
+```
+
+Here we create a DataFrame with three columns: `X` ranges from 1 to 50, `Y` alternates between 1 and 2, and `Z` is a sequence of the even numbers from 2 to 10. We then group by `Y` and `Z`, which gives us a `GroupedDataFrame` with 10 groups, for the 10 unique combinations of values in `Y` and `Z`. The last command created a new DataFrame, called `counts` which contains the number of rows in each of the 10 `SubDataFrame`s in our `GroupedDataFrame` (`gdf`) as well as the mean[^1] value of the `X` column in each of the 10 groups.
+
+[^1]: Note that to use the `mean` function, you need to first include the `Statistics` standard library
+
+#### A More Complete Example
+
+For this example, we use a dataset from [Kaggle](https://www.kaggle.com/datasets/uom190346a/food-ingredients-and-allergens). The data file includes information on the ingredients of 399 types of food.
+
+```julia
+df = CSV.read(raw"D:\JuliaCode\KaggleData\food_ingredients_and_allergens.csv", DataFrame; normalizenames=true)
+select!(df, [:Food_Product, :Allergens])
+# 399×2 DataFrame
+#  Row │ Food_Product             Allergens
+#      │ String                   String31
+# ─────┼─────────────────────────────────────────────────
+#    1 │ Almond Cookies           Almonds, Wheat, Dairy
+#    2 │ Almond Cookies           Almonds, Wheat, Dairy
+#    3 │ Chicken Noodle Soup      Chicken, Wheat, Celery
+#    4 │ Chicken Noodle Soup      Chicken, Wheat, Celery
+#    5 │ Cheddar Cheese           Dairy
+#    6 │ Ranch Dressing           Dairy
+#    7 │ Caramel Popcorn          Dairy
+#    8 │ Caesar Salad             Dairy
+#   ⋮  │            ⋮                       ⋮
+#  393 │ Chocolate Chip Pancakes  Wheat, Dairy, Cocoa
+#  394 │ Lemon Bars               Wheat, Dairy, Eggs
+#  395 │ Lemon Bars               Wheat, Dairy, Eggs
+#  396 │ Pecan Pie                Wheat, Dairy, Nuts
+#  397 │ Zucchini Bread           Wheat, Dairy, Nuts
+#  398 │ Banana Bread             Wheat, Dairy, Nuts
+#  399 │ Hawaiian Pizza           Wheat, Pork, Dairy
+#                                        384 rows omitted
+```
+
+We are going to focus on the allergens in these foods. We select to keep only the two column containing the names of the foods and the allergens contained in them. Unfortunately, the allergens are given as a single string of comma-separated values. This means we have to do a little processing of the data. 
+
+We ideally want a separate column for each allergen that contains a `true` (1) or `false` (0) to indicate if the allergen is present or not. To get this, we must process all the entries on allergens and split the strings into the individual allergens. We then need to identify the unique values, and add a true or false in a new column for each food and each allergen. This sounds like a lot of work, but Julia makes this easy.
+
+```julia
+allAllergens = String[]
+for row in eachrow(df)
+    allergens = row.Allergens
+    for s in eachsplit(allergens, ", ")
+        push!(allAllergens, s)
+    end
+end
+unique!(allAllergens)
+
+# 24-element Vector{String}:
+#  "Almonds"
+#  "Wheat"
+#  "Dairy"
+#  "Chicken"
+#  "Celery"
+#  "Anchovies"
+#  "Cocoa"
+#  ⋮
+#  "Oats"
+#  "Peanuts"
+#  "Pine nuts"
+#  "Rice"
+#  "Shellfish"
+#  "Pork"
+#  "Alcohol"
+```
+
+We create an empty vector of `String`s to hold the allergen names - `allAllergens`. Then we iterate trough the DataFrame, one row at a time, using the `eachrow` iterator. We extract the string holding the allergens into a temporary string `allergens` with `allergens = row.Allergens` (where `row` is the current row in the iterator `eachrow`).
+
+To split the string (`allergens`) into the various allergens, we use the Julia function `eachsplit`, which splits the string with the specified delimiter (", "), and returns an iterator of substrings. We loop through this iterator and push each substring into the empty vector we created at the start.
+
+Lastly, we use the Julia function `unique!` to remove all duplicates from this vector. We now have a list of 24 possible allergens.
+
+```julia
+for allergen in allAllergens
+    transform!(df, :Allergens => ByRow(s -> contains(string(s), allergen)) => Symbol(allergen))
+end
+
+df[:, [:Food_Product, :Almonds, :Wheat, :Dairy]]
+# 399×4 DataFrame
+#  Row │ Food_Product             Almonds  Wheat  Dairy 
+#      │ String                   Bool     Bool   Bool  
+# ─────┼────────────────────────────────────────────────
+#    1 │ Almond Cookies              true   true   true
+#    2 │ Almond Cookies              true   true   true
+#    3 │ Chicken Noodle Soup        false   true  false
+#    4 │ Chicken Noodle Soup        false   true  false
+#    5 │ Cheddar Cheese             false  false   true
+#    6 │ Ranch Dressing             false  false   true
+#   ⋮  │            ⋮                ⋮       ⋮      ⋮
+#  394 │ Lemon Bars                 false   true   true
+#  395 │ Lemon Bars                 false   true   true
+#  396 │ Pecan Pie                  false   true   true
+#  397 │ Zucchini Bread             false   true   true
+#  398 │ Banana Bread               false   true   true
+#  399 │ Hawaiian Pizza             false   true   true
+#                                       387 rows omitted
+```
+
+We now run through our newly created list of allergens and call the DataFrames function `transform!` for each allergen. `transform!` is the mutating version of `transform` and will modify the specified DataFrame rather than return a new object. `transform` includes all of the columns in the original DataFrame, unlike `select`, which will include only the specified columns.
+
+We specify here than we want to take the contents of the `Allergens` column, and pass it, one row at a time (`ByRow()`) to an anonymous function ()`s -> contains(string(s), allergen))`) and store the result in a new column `Symbol(allergen)`. Note that we are converting the name of the allergen, which is a `String` to a `Symbol`, which is what DataFrames expects here.
+
+The anonymous function we define essentially only calls the Julia function `contains`, which will return a `true` or `false` depending on whether the string contains a specified substring. We convert the value from the DataFrame to a string (with the `string()` function), as DataFrames uses a more specialised data type for string values to save memory and improve performance. We have a quick look at three of the allergens and see that we indeed have exactly what we wanted.
+
+We can now analyse the data any way we want to. Let's group the data to see combinations of almonds and wheat in the various foods:
+
+```julia
+gdf = groupby(df, [:Almonds, :Wheat])
+
+for (keys, sdf) in pairs(gdf)
+    println("Number of foods with $keys: $(nrow(sdf))")
+end
+
+# Number of foods with GroupKey: (Almonds = true, Wheat = true): 2
+# Number of foods with GroupKey: (Almonds = false, Wheat = true): 94
+# Number of foods with GroupKey: (Almonds = false, Wheat = false): 303
+```
 
 ### Joining DataFrames
 
+DataFrames allows for joining of tables, just like in a SQL database. We shall give a few key definitions here to illustrate the concept.
+
+Firstly, what is a *join*? It is a combination of two tables, based on the values in a specified column, typically an ID or similar index value. The resulting table may include columns from one or both of the tables, for the rows that are included in the joined table, depending on the type of join.
+
+We define two DataFrames to use in our examples:
+
+```julia
+df1 = DataFrame(ID = [1, 2, 3], Floor = ["A", "B", "C"], Office = [11, 12, 12])
+# 3×3 DataFrame
+#  Row │ ID     Floor   Office 
+#      │ Int64  String  Int64  
+# ─────┼───────────────────────
+#    1 │     1  A           11
+#    2 │     2  B           12
+#    3 │     3  C           12
+
+df2 = DataFrame(ID = [1, 2, 7, 11], Name = ["Tom", "Dan", "Harry", "Bob"])
+# 4×2 DataFrame
+#  Row │ ID     Name   
+#      │ Int64  String 
+# ─────┼───────────────
+#    1 │     1  Tom
+#    2 │     2  Dan
+#    3 │     7  Harry
+#    4 │    11  Bob
+```
+**Inner join**: An inner join between two tables will include only the rows where the field (e.g. ID) on which you join, are the same in each table. Rows that include a value of ID that is only present in one of the two tables will not be included. All columns from both tables are included.
+
+
+```julia
+innerjoin(df1, df2, on=:ID)
+# 2×4 DataFrame
+#  Row │ ID     Floor   Office  Name   
+#      │ Int64  String  Int64   String 
+# ─────┼───────────────────────────────
+#    1 │     1  A           11  Tom
+#    2 │     2  B           12  Dan
+```
+
+**Left join**: A left join between two tables will include all the rows from the *left* table, as well as those rows from *right* table where the joining field (e.g. ID) match. All columns are included, which may result in `missing` values in columns from the *right* table.
+
+
+```julia
+leftjoin(df1, df2, on=:ID)
+# 3×4 DataFrame
+#  Row │ ID     Floor   Office  Name    
+#      │ Int64  String  Int64   String? 
+# ─────┼────────────────────────────────
+#    1 │     1  A           11  Tom
+#    2 │     2  B           12  Dan
+#    3 │     3  C           12  missing 
+```
+
+**Right join**: Similar to a *left join*, but all rows from the *right table* are included and only matching rows from the *left* table. This may result in `missing` values in columns from the *left* table.
+
+
+```julia
+rightjoin(df1, df2, on=:ID)
+# 4×4 DataFrame
+#  Row │ ID     Floor    Office   Name   
+#      │ Int64  String?  Int64?   String 
+# ─────┼─────────────────────────────────
+#    1 │     1  A             11  Tom
+#    2 │     2  B             12  Dan
+#    3 │     7  missing  missing  Harry
+#    4 │    11  missing  missing  Bob
+```
+
+**Outer join**: This will include all rows from both *left* and *right* tables, possibly resulting in `missing` values in all columns.
+
+
+```julia
+# outerjoin(df1, df2, on=:ID)
+# 5×4 DataFrame
+#  Row │ ID     Floor    Office   Name    
+#      │ Int64  String?  Int64?   String? 
+# ─────┼──────────────────────────────────
+#    1 │     1  A             11  Tom
+#    2 │     2  B             12  Dan
+#    3 │     3  C             12  missing 
+#    4 │     7  missing  missing  Harry
+#    5 │    11  missing  missing  Bob
+```
+**Semi join** (a.k.a. **Left semi join**): Like an inner join, this will only return rows that match in both columns, but will only return columns from the *left* table. This is useful if you want to select, for example, names from a list that are also present in another list, without including additional data from that list. To do a *right semi join*, just reverse the order to the two `DataFrame`s.
+
+
+```julia
+semijoin(df1, df2, on=:ID)
+# 2×3 DataFrame
+#  Row │ ID     Floor   Office 
+#      │ Int64  String  Int64  
+# ─────┼───────────────────────
+#    1 │     1  A           11
+#    2 │     2  B           12
+```
+
+**Anti join** (a.k.a. **Left anti join**): Like the semi join, but will only return rows from the *left* table that are **NOT** matched in the *right* table.
+
+
+```julia
+antijoin(df1, df2, on=:ID)
+# 1×3 DataFrame
+#  Row │ ID     Floor   Office 
+#      │ Int64  String  Int64  
+# ─────┼───────────────────────
+#    1 │     3  C           12
+```
 
 
 
