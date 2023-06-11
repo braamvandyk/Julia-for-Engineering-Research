@@ -119,7 +119,7 @@ m = rand(5, 5)
 #  0.106429   0.435509   0.0184347  0.932008   0.805972
 #  0.0877892  0.0231817  0.435262   0.0187286  0.812151
 
-julia> df = DataFrame(m, :auto) # Automatically generate names
+df = DataFrame(m, :auto) # Automatically generate names
 # 5×5 DataFrame
 #  Row │ x1         x2         x3         x4         x5
 #      │ Float64    Float64    Float64    Float64    Float64

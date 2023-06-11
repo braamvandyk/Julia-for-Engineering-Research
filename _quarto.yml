@@ -5,23 +5,31 @@ website:
   title: "Julia for Engineering Research"
   favicon: img/julia.ico
   back-to-top-navigation: true
-  navbar:
-    left:
-      - 01_Getting_started_with_Julia.qmd
-      - 02_Installing_Julia.qmd
-      - 03_Running_Julia.qmd
-      - 04_An_Overview_of_the_Language.qmd
-      - 05_Plotting.qmd
-      - 06_Solving_Linear_Systems.qmd
-      - 07_Solving_Non-linear_Systems.qmd
-      - 08_Solving_Differential_Equations.qmd
-      - 09_Optimisation.qmd
-      - 10_Automatic_Differentiation.qmd
-      - 11_Modelling_Toolkit_and_Symbolics.qmd
-      - 12_Working_with_Files.qmd
-      - 13_DataFrames.qmd
-    pinned: true
+  sidebar:
+    style: "docked"
     search: true
+    contents:
+      - section: "Introduction"
+        contents:
+        - 01_Getting_started_with_Julia.qmd
+        - 02_Installing_Julia.qmd
+        - 03_Running_Julia.qmd
+        - 04_An_Overview_of_the_Language.qmd
+      - section: "Visualisation"
+        contents:
+        - 05_Plotting.qmd
+      - section: "Mathematics"
+        contents:
+        - 06_Solving_Linear_Systems.qmd
+        - 07_Solving_Non-linear_Systems.qmd
+        - 08_Solving_Differential_Equations.qmd
+        - 09_Optimisation.qmd
+        - 10_Automatic_Differentiation.qmd
+        - 11_Modelling_Toolkit_and_Symbolics.qmd
+      - section: "Data Processing"
+        contents:
+        - 12_Working_with_Files.qmd
+        - 13_DataFrames.qmd
 
 format:
   html:
@@ -30,3 +38,5 @@ format:
     toc: true
     monofont: "JetBrains Mono"
     embed-resources: true
+    smooth-scroll: true
+    footnotes-hover: true

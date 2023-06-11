@@ -177,17 +177,17 @@ The package provides several functions, including:
 A simple example:
 
 ```julia
-julia> f(x) = 2x^2 - x
-f (generic function with 1 method)
+f(x) = 2x^2 - x
+# f (generic function with 1 method)
 
-julia> df(x) = ForwardDiff.derivative(f, x)
-df (generic function with 1 method)
+df(x) = ForwardDiff.derivative(f, x)
+# df (generic function with 1 method)
 
-julia> f(2)
-6
+f(2)
+# 6
 
-julia> df(2)
-7
+df(2)
+# 7
 ```
 ForwardDiff does have the option to handle mutating functions, where the array result is return in the first parameter. Several packages use ForwardDiff as an option integrated in solvers, including Roots.jl and some of the differential equation solvers.
 

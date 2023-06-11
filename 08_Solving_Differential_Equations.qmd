@@ -109,7 +109,7 @@ Now we have solved the set of three differential equations and we have the molar
 Part of what is returned in the `sol` structure is an interpolator. If we want to have the molar flows at **any** point in the reactor, we need only call `sol(x)` to get the values of the dependent variables  (`sol.u`) at a value `x` of the independent variable (`sol.t`). `sol` is a callable structure, sometimes called a *functor*.
 
 ```julia
-julia> sol(5.123)
+sol(5.123)
 3-element Vector{Float64}:
  28.55013685340714
   8.550136853407144
@@ -165,31 +165,31 @@ We *broadcast* the `sum()` function over `sol.u` by inserting a period between t
 Now we want to divide each entry in each sub-array in `sol.u` with this sum to get the molar fractions ar each point. We do this by broadcasting again. For functions the period is inserted between the function name and the parenthesis, but for operators, the period is put in front of the operator. The broadcasted, or element-wise, division will divide each entry in `fracs` (an array of molar flows) by the corresponding entry in `totflows`. The result in an array of arrays, just like `sol.u`, but with the molar fractions instead of molar flows.
 
 ```julia
-julia> totflows = sum.(sol.u)
-17-element Vector{Float64}:
- 100.0
-  99.99858583839894
-  99.98444669706105
-  99.84330258351507
-  98.45642225894247
-   ⋮
-  61.04774569180567
-  60.55195629285704
-  60.282897789407826
-  60.20298976079488
+totflows = sum.(sol.u)
+# 17-element Vector{Float64}:
+#  100.0
+#   99.99858583839894
+#   99.98444669706105
+#   99.84330258351507
+#   98.45642225894247
+#    ⋮
+#   61.04774569180567
+#   60.55195629285704
+#   60.282897789407826
+#   60.20298976079488
 
-julia> fracs = sol.u ./ totflows
-17-element Vector{Vector{Float64}}:
- [0.6, 0.4, 0.0]
- [0.5999943432736005, 0.3999915149104007, 1.4141815998834358e-5]
- [0.5999377771105296, 0.3999066656657945, 0.0001555572236758087]
- [0.5993722266294071, 0.3990583399441108, 0.0015694334264820865]
- [0.5937288895710717, 0.39059333435660765, 0.015677776072320636]
- ⋮
- [0.34477515022525834, 0.01716272533788762, 0.6380621244368541]
- [0.339410277571518, 0.009115416357277122, 0.6514743060712049]
- [0.33646189107006863, 0.0046928366051030585, 0.6588452723248283]
- [0.3355811703217333, 0.0033717554826000534, 0.6610470741956666]
+fracs = sol.u ./ totflows
+# 17-element Vector{Vector{Float64}}:
+#  [0.6, 0.4, 0.0]
+#  [0.5999943432736005, 0.3999915149104007, 1.4141815998834358e-5]
+#  [0.5999377771105296, 0.3999066656657945, 0.0001555572236758087]
+#  [0.5993722266294071, 0.3990583399441108, 0.0015694334264820865]
+#  [0.5937288895710717, 0.39059333435660765, 0.015677776072320636]
+#  ⋮
+#  [0.34477515022525834, 0.01716272533788762, 0.6380621244368541]
+#  [0.339410277571518, 0.009115416357277122, 0.6514743060712049]
+#  [0.33646189107006863, 0.0046928366051030585, 0.6588452723248283]
+#  [0.3355811703217333, 0.0033717554826000534, 0.6610470741956666]
 ```
 
 The plotting library expects you to pass the x-values as an array and when there are multiple y-values, these should be in a matrix where each column is a series. We therefore need to convert the array of arrays into a matrix.
@@ -203,32 +203,32 @@ The opposite of splatting is *slurping*, when multiple scalars are slurped up in
 What happens here is that the `hcat()` function (horizontal concatenation) expects a series of values that will be concatenated as the rows of a new array. We pass it the fracs variable, which is an array of arrays, and we splat it. This means that `hcat()` gets a series of inputs, one for each row in `fracs`. These are then concatenated as follows:
 
 ```julia
-julia> hcat(fracs...)
-3×17 Matrix{Float64}:
- 0.6  0.599994    0.599938     0.599372    0.593729   0.574037   0.540935  0.502011  …  0.391779   0.369135  0.354054   0.344775   0.33941     0.336462    0.335581
- 0.4  0.399992    0.399907     0.399058    0.390593   0.361056   0.311402  0.253017     0.0876678  0.053702  0.0310817  0.0171627  0.00911542  0.00469284  0.00337176       
- 0.0  1.41418e-5  0.000155557  0.00156943  0.0156778  0.0649074  0.147664  0.244972     0.520554   0.577163  0.614864   0.638062   0.651474    0.658845    0.661047
+hcat(fracs...)
+# 3×17 Matrix{Float64}:
+#  0.6  0.599994    0.599938     0.599372    0.593729   0.574037   0.540935  0.502011  …  0.391779   0.369135  0.354054   0.344775   0.33941     0.336462    0.335581
+#  0.4  0.399992    0.399907     0.399058    0.390593   0.361056   0.311402  0.253017     0.0876678  0.053702  0.0310817  0.0171627  0.00911542  0.00469284  0.00337176       
+#  0.0  1.41418e-5  0.000155557  0.00156943  0.0156778  0.0649074  0.147664  0.244972     0.520554   0.577163  0.614864   0.638062   0.651474    0.658845    0.661047
  ```
 
  Why use `hcat()` and not `vcat()`? Remember that a 1D array in Julia is considered to be a column vector. This means `fracs` is a column vector where each entry is also a column vector. If we `vcat` fracs, these individual column vectors get appended to each other in one long column vector and we lose the distinction between the individual points along the reactor:
 
  ```julia
- julia> vcat(fracs...)
-51-element Vector{Float64}:
- 0.6
- 0.4
- 0.0
- 0.5999943432702689
- 0.3999915149054033
- 1.4141824327869601e-5
- 0.5999377767074147
- ⋮
- 0.33587562016618194
- 0.00381343024927297
- 0.6603109495845451
- 0.33464693236081094
- 0.0019703985412164293
- 0.6633826690979727
+vcat(fracs...)
+# 51-element Vector{Float64}:
+#  0.6
+#  0.4
+#  0.0
+#  0.5999943432702689
+#  0.3999915149054033
+#  1.4141824327869601e-5
+#  0.5999377767074147
+#  ⋮
+#  0.33587562016618194
+#  0.00381343024927297
+#  0.6603109495845451
+#  0.33464693236081094
+#  0.0019703985412164293
+#  0.6633826690979727
  ```
 
  But the `hcat(fracs...)` call horizontally concatenated the sub-arrays (column vectors), making each series a row of the matrix. We need each series to be a column. We get that by transposing the result with the `'` appended to the end. `A'` is the transposed version of a real matrix, `A`
@@ -238,39 +238,39 @@ julia> hcat(fracs...)
 :::
 
 ```julia
-julia> y = hcat(fracs...)'
-17×3 adjoint(::Matrix{Float64}) with eltype Float64:
- 0.6       0.4         0.0
- 0.599994  0.399992    1.41418e-5
- 0.599938  0.399907    0.000155557
- 0.599372  0.399058    0.00156943
- 0.593729  0.390593    0.0156778
- ⋮
- 0.344775  0.0171627   0.638062
- 0.33941   0.00911542  0.651474
- 0.336462  0.00469284  0.658845
- 0.335581  0.00337176  0.661047
+y = hcat(fracs...)'
+# 17×3 adjoint(::Matrix{Float64}) with eltype Float64:
+#  0.6       0.4         0.0
+#  0.599994  0.399992    1.41418e-5
+#  0.599938  0.399907    0.000155557
+#  0.599372  0.399058    0.00156943
+#  0.593729  0.390593    0.0156778
+#  ⋮
+#  0.344775  0.0171627   0.638062
+#  0.33941   0.00911542  0.651474
+#  0.336462  0.00469284  0.658845
+#  0.335581  0.00337176  0.661047
 ```
 
 Finally we get:
 
 ```julia
-julia> y = hcat(fracs...)'
-17×3 adjoint(::Matrix{Float64}) with eltype Float64:
- 0.6       0.4         0.0
- 0.599994  0.399992    1.41418e-5
- 0.599938  0.399907    0.000155558
- 0.599372  0.399058    0.00156954
- 0.593725  0.390587    0.015688
- 0.573817  0.360726    0.0654572
- 0.540162  0.310243    0.149596
- ⋮
- 0.366919  0.0503788   0.582702
- 0.352276  0.0284133   0.619311
- 0.343461  0.0151917   0.641347
- 0.338506  0.00775872  0.653735
- 0.335876  0.00381343  0.660311
- 0.334647  0.0019704   0.663383
+y = hcat(fracs...)'
+# 17×3 adjoint(::Matrix{Float64}) with eltype Float64:
+#  0.6       0.4         0.0
+#  0.599994  0.399992    1.41418e-5
+#  0.599938  0.399907    0.000155558
+#  0.599372  0.399058    0.00156954
+#  0.593725  0.390587    0.015688
+#  0.573817  0.360726    0.0654572
+#  0.540162  0.310243    0.149596
+#  ⋮
+#  0.366919  0.0503788   0.582702
+#  0.352276  0.0284133   0.619311
+#  0.343461  0.0151917   0.641347
+#  0.338506  0.00775872  0.653735
+#  0.335876  0.00381343  0.660311
+#  0.334647  0.0019704   0.663383
 ```
 ::: {.callout-note}
 Note that the type returned is an `adjoint(::Matrix{Float64})`. This is a *lazy* structure. It just maps onto the original matrix, rather than recalculate it, for better efficiency.

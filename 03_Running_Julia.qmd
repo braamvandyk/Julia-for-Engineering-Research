@@ -31,12 +31,12 @@ barplot(["A", "B", "C"], rand(3))
 then my can run the script as follows:
 
 ```julia
-julia> include("myscript.jl")
-     ┌                                        ┐
-   A ┤■■■■■■■■■■■■■■■■■■■ 0.479201
-   B ┤■■■■■■■■■■■■■■■■ 0.394627
-   C ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 0.754307
-     └                                        ┘
+include("myscript.jl")
+  #    ┌                                        ┐
+  #  A ┤■■■■■■■■■■■■■■■■■■■ 0.479201
+  #  B ┤■■■■■■■■■■■■■■■■ 0.394627
+  #  C ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 0.754307
+  #    └                                        ┘
 ```
 
 You can also run the script from the command line with:

@@ -30,16 +30,16 @@ end
 We enter the code at the Julia REPL (we'll get to this soon) and call it:
 
 ```julia
-julia> function myfunc(a, b)
-           return 2b + a
-       end
-myfunc (generic function with 1 method)
+function myfunc(a, b)
+    return 2b + a
+end
+# myfunc (generic function with 1 method)
 
-julia> myfunc(1, 2)
-5
+myfunc(1, 2)
+# 5
 
-julia> myfunc(1.0, 2.0)
-5.0
+myfunc(1.0, 2.0)
+# 5.0
 ```
 The first thing to notice is that unlike in languages like C, Basic, Pascal or Fortran, we never specified the types of the variable, i.e., whether they are integers or floating-point values (numbers with fractional parts). There are times when you want to do this, but generally you would not. However, when we called the function with two integers, the answer was returned as an integer. When we called the code with two floating-point values, the answer was returned as a floating-point value.
 
@@ -47,20 +47,20 @@ What happened behind the scenes? Julia infers the types of all of the inputs and
 
 
 ```julia
-julia> @code_llvm myfunc(1, 2)
-;  @ REPL[1]:1 within `myfunc`
-; Function Attrs: uwtable
-define i64 @julia_myfunc_172(i64 signext %0, i64 signext %1) #0 {
-top:
-;  @ REPL[1]:2 within `myfunc`
-; ┌ @ int.jl:88 within `*`
-   %2 = shl i64 %1, 1
-; └
-; ┌ @ int.jl:87 within `+`
-   %3 = add i64 %2, %0
-; └
-  ret i64 %3
-}
+@code_llvm myfunc(1, 2)
+# ;  @ REPL[1]:1 within `myfunc`
+# ; Function Attrs: uwtable
+# define i64 @julia_myfunc_172(i64 signext %0, i64 signext %1) #0 {
+# top:
+# ;  @ REPL[1]:2 within `myfunc`
+# ; ┌ @ int.jl:88 within `*`
+#    %2 = shl i64 %1, 1
+# ; └
+# ; ┌ @ int.jl:87 within `+`
+#    %3 = add i64 %2, %0
+# ; └
+#   ret i64 %3
+# }
 ```
 
 Most of what you see here is going to look like hieroglyphics, but don't worry. You can ignore any line that starts with a semi-colon. These are automatically generated comments. The first line of actual code is:
@@ -97,20 +97,20 @@ Without breaking your head about the details, you should appreciate that this is
 Now let's see what we get when we pass to 64-bit floating-point values.
 
 ```julia
-julia> @code_llvm myfunc(1.0, 2.0)
-;  @ REPL[1]:1 within `myfunc`
-; Function Attrs: uwtable
-define double @julia_myfunc_191(double %0, double %1) #0 {
-top:
-;  @ REPL[1]:2 within `myfunc`
-; ┌ @ promotion.jl:389 within `*` @ float.jl:385
-   %2 = fmul double %1, 2.000000e+00
-; └
-; ┌ @ float.jl:383 within `+`
-   %3 = fadd double %2, %0
-; └
-  ret double %3
-}
+@code_llvm myfunc(1.0, 2.0)
+# ;  @ REPL[1]:1 within `myfunc`
+# ; Function Attrs: uwtable
+# define double @julia_myfunc_191(double %0, double %1) #0 {
+# top:
+# ;  @ REPL[1]:2 within `myfunc`
+# ; ┌ @ promotion.jl:389 within `*` @ float.jl:385
+#    %2 = fmul double %1, 2.000000e+00
+# ; └
+# ; ┌ @ float.jl:383 within `+`
+#    %3 = fadd double %2, %0
+# ; └
+#   ret double %3
+# }
 ```
 
 The function definition looks similar to the previous case, expect that we now have variables of type `double`, rather than `i64`.
@@ -133,22 +133,22 @@ The important thing to learn from this is that **Julia built optimised versions 
 It goes even further.
 
 ```julia
-julia> A = [1 2;
-            3 4]
-2×2 Matrix{Int64}:
- 1  2
- 3  4
+A = [1 2;
+     3 4]
+# 2×2 Matrix{Int64}:
+#  1  2
+#  3  4
 
-julia> B = [5 6;
-            7 8]
-2×2 Matrix{Int64}:
- 5  6
- 7  8
+B = [5 6;
+     7 8]
+# 2×2 Matrix{Int64}:
+#  5  6
+#  7  8
 
-julia> myfunc(A, B)
-2×2 Matrix{Int64}:
- 11  14
- 17  20
+myfunc(A, B)
+# 2×2 Matrix{Int64}:
+#  11  14
+#  17  20
 ```
 
 Here we defined to 2x2 matrices of 64-bit integers and passed those to our function. And it just works! More so, the code was again optimised for handling these types of variables.
@@ -158,14 +158,14 @@ This is how Julia generates fast code. The original function we defined without 
 This allows you to generate the fastest possible code, but for large pieces of code, this also results in a delay while the code is compiled. This is called TTFX (Time to First X) or often just Time to First Plot, as this is especially noticeable when calling the various plotting libraries in Julia. The first time to call a plotting function, there is a considerable delay. Every time after that, the plotting is lightning fast.
 
 ```julia
-julia> @time using Plots
-  6.401451 seconds (8.83 M allocations: 612.705 MiB, 2.67% gc time, 11.00% compilation time: 3% of which was recompilation)
+@time using Plots
+  # 6.401451 seconds (8.83 M allocations: 612.705 MiB, 2.67% gc time, 11.00% compilation time: 3% of which was recompilation)
 
-julia> @time scatter(randn(10), randn(10))
-  1.152227 seconds (93.64 k allocations: 4.612 MiB, 99.65% compilation time)
+@time scatter(randn(10), randn(10))
+  # 1.152227 seconds (93.64 k allocations: 4.612 MiB, 99.65% compilation time)
 
-julia> @time scatter(randn(10), randn(10))
-  0.000392 seconds (414 allocations: 43.344 KiB)
+@time scatter(randn(10), randn(10))
+  # 0.000392 seconds (414 allocations: 43.344 KiB)
 ```
 
 It takes 6.4 seconds to import the Plots package. The first time we call `scatter` to generate a scatter plot, the code is compiled, which takes 1.15 seconds. The next time however, the compiled code is already available, and it takes 0.4 milliseconds to generate the plot. Every subsequent call to `scatter` with the same types of values passed to it, will also be fast.
@@ -181,48 +181,47 @@ Any commonly used numerical methods you are likely to want to use are already av
 Let's say you want to factorise a matrix. You *could* pull your linear algebra textbook and your numerical methods notes off the shelf and remind yourself which factorisation methods are best suited to your type of matrix and how those methods work, then code your own copy. Or you could just let Julia take care of it for you:
 
 ```julia
-julia> A = rand(5, 5) #create a random matrix
-5×5 Matrix{Float64}:
- 0.80492   0.282962  0.470656  0.947669   0.185726
- 0.201024  0.65166   0.827719  0.759129   0.597441
- 0.391872  0.829147  0.437748  0.0278852  0.0868745
- 0.583262  0.934832  0.187209  0.771838   0.373839
- 0.424062  0.973599  0.7794    0.917351   0.0827884
+A = rand(5, 5) #create a random matrix
+# 5×5 Matrix{Float64}:
+#  0.80492   0.282962  0.470656  0.947669   0.185726
+#  0.201024  0.65166   0.827719  0.759129   0.597441
+#  0.391872  0.829147  0.437748  0.0278852  0.0868745
+#  0.583262  0.934832  0.187209  0.771838   0.373839
+#  0.424062  0.973599  0.7794    0.917351   0.0827884
+B = A*A' #create a symmetric matrix by multiplying A with its transpose
+# 5×5 Matrix{Float64}:
+#  1.88205   1.56614  0.798632  1.62299  1.86838
+#  1.56614   2.0834   1.0545    1.69067  2.11067
+#  0.798632  1.0545   1.041     1.13963  1.34739
+#  1.62299   1.69067  1.13963   1.98464  2.0424
+#  1.86838   2.11067  1.34739   2.0424   2.58357
 
-julia> B = A*A' #create a symmetric matrix by multiplying A with its transpose
-5×5 Matrix{Float64}:
- 1.88205   1.56614  0.798632  1.62299  1.86838
- 1.56614   2.0834   1.0545    1.69067  2.11067
- 0.798632  1.0545   1.041     1.13963  1.34739
- 1.62299   1.69067  1.13963   1.98464  2.0424
- 1.86838   2.11067  1.34739   2.0424   2.58357
+factorize(A)
+# LU{Float64, Matrix{Float64}, Vector{Int64}}
+# L factor:
+# 5×5 Matrix{Float64}:
+#  1.0       0.0        0.0        0.0       0.0
+#  0.526837  1.0        0.0        0.0       0.0
+#  0.724621  0.885107   1.0        0.0       0.0
+#  0.486846  0.83853    0.379704   1.0       0.0
+#  0.249744  0.70464   -0.537792  -0.110424  1.0
+# U factor:
+# 5×5 Matrix{Float64}:
+#  0.80492  0.282962   0.470656   0.947669   0.185726
+#  0.0      0.824524   0.531441   0.418083  -0.0150591
+#  0.0      0.0       -0.62422   -0.284911   0.252587
+#  0.0      0.0        0.0       -0.675877  -0.0868263
+#  0.0      0.0        0.0        0.0        0.68792
 
-julia> factorize(A)
-LU{Float64, Matrix{Float64}, Vector{Int64}}
-L factor:
-5×5 Matrix{Float64}:
- 1.0       0.0        0.0        0.0       0.0
- 0.526837  1.0        0.0        0.0       0.0
- 0.724621  0.885107   1.0        0.0       0.0
- 0.486846  0.83853    0.379704   1.0       0.0
- 0.249744  0.70464   -0.537792  -0.110424  1.0
-U factor:
-5×5 Matrix{Float64}:
- 0.80492  0.282962   0.470656   0.947669   0.185726
- 0.0      0.824524   0.531441   0.418083  -0.0150591
- 0.0      0.0       -0.62422   -0.284911   0.252587
- 0.0      0.0        0.0       -0.675877  -0.0868263
- 0.0      0.0        0.0        0.0        0.68792
-
-julia> factorize(B)
-Cholesky{Float64, Matrix{Float64}}
-U factor:
-5×5 UpperTriangular{Float64, Matrix{Float64}}:
- 1.37188  1.1416    0.582145  1.18304   1.36191
-  ⋅       0.883262  0.441459  0.385059  0.62939
-  ⋅        ⋅        0.712192  0.394468  0.38853
-  ⋅        ⋅         ⋅        0.53026   0.0671023
-  ⋅        ⋅         ⋅         ⋅        0.420928
+factorize(B)
+# Cholesky{Float64, Matrix{Float64}}
+# U factor:
+# 5×5 UpperTriangular{Float64, Matrix{Float64}}:
+#  1.37188  1.1416    0.582145  1.18304   1.36191
+#   ⋅       0.883262  0.441459  0.385059  0.62939
+#   ⋅        ⋅        0.712192  0.394468  0.38853
+#   ⋅        ⋅         ⋅        0.53026   0.0671023
+#   ⋅        ⋅         ⋅         ⋅        0.420928
 ```
 
 For the sake of examples, we create a random 5x5 matrix, `A` and then multiply it by its transpose to create a symmetric matrix, B. We then ask Julia to factorise both, by calling the `factorize()`  function (note the American spelling!).

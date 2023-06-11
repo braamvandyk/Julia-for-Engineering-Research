@@ -25,13 +25,13 @@ The following backends are supported:
 The `Plots.jl` package installed as a normal package via the package manager. This will also automatically install the `GR.jl` package as a dependency. In order to use the other backends, they must first be installed individually and then they must be activated, e.g.:
 
 ```julia
-julia> using Plots # Will use default backend: GR
+using Plots # Will use default backend: GR
 
-julia> plotlyjs() # Switch to PlotlyJS - previously installed
-Plots.PlotlyJSBackend()
+plotlyjs() # Switch to PlotlyJS - previously installed
+# Plots.PlotlyJSBackend()
 
-julia> gr() # Switch back to GR backend
-Plots.GRBackend()
+gr() # Switch back to GR backend
+# Plots.GRBackend()
 ```
 ### General use
 

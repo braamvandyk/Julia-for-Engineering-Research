@@ -14,34 +14,34 @@ $$Ax = b$$
 $$x = A \backslash b $$
 
 ```julia
-julia> A = [1 0 3;
-           -1 1 0;
-            2 1 1]
-3×3 Matrix{Int64}:
-  1  0  3
- -1  1  0
-  2  1  1
+A = [1 0 3;
+    -1 1 0;
+     2 1 1]
+# 3×3 Matrix{Int64}:
+  # 1  0  3
+#  -1  1  0
+  # 2  1  1
 
-julia> x = [1, 2, 1]
-3-element Vector{Int64}:
- 1
- 2
- 1
+x = [1, 2, 1]
+# 3-element Vector{Int64}:
+#  1
+#  2
+#  1
 
-julia> b = A*x
-3-element Vector{Int64}:
- 4
- 1
- 5
+b = A*x
+# 3-element Vector{Int64}:
+#  4
+#  1
+#  5
 
-julia> x̂=A\b # Note that the results are not integers
-3-element Vector{Float64}:
- 1.0
- 2.0
- 1.0
+x̂=A\b # Note that the results are not integers
+# 3-element Vector{Float64}:
+#  1.0
+#  2.0
+#  1.0
 
-julia> x ≈ x̂ # Use approximate check with floats
-true
+x ≈ x̂ # Use approximate check with floats
+# true
 ```
 ::: {.callout-tip}
 It may help to read  `A\b` as "A divides into b"
@@ -60,64 +60,64 @@ Similar approaches are used for sparse matrices, including use of LDLt factorisa
 If you are going to perform more than one calculation with the same matrix, it will be more efficient to store the factorisation result:
 
 ```julia
-julia> using LinearAlgebra # to import factorize()
+using LinearAlgebra # to import factorize()
 
-julia> A = [1 0 3;
-           -1 1 0;
-            2 1 1]
-3×3 Matrix{Int64}:
-  1  0  3
- -1  1  0
-  2  1  1
+A = [1 0 3;
+    -1 1 0;
+     2 1 1]
+# 3×3 Matrix{Int64}:
+#   1  0  3
+#  -1  1  0
+#   2  1  1
 
-julia> A = factorize(A) # replace A with its factorised form
-LU{Float64, Matrix{Float64}, Vector{Int64}}
-L factor:
-3×3 Matrix{Float64}:
-  1.0   0.0       0.0
- -0.5   1.0       0.0
-  0.5  -0.333333  1.0
-U factor:
-3×3 Matrix{Float64}:
- 2.0  1.0  1.0
- 0.0  1.5  0.5
- 0.0  0.0  2.66667
+A = factorize(A) # replace A with its factorised form
+# LU{Float64, Matrix{Float64}, Vector{Int64}}
+# L factor:
+# 3×3 Matrix{Float64}:
+#   1.0   0.0       0.0
+#  -0.5   1.0       0.0
+#   0.5  -0.333333  1.0
+# U factor:
+# 3×3 Matrix{Float64}:
+#  2.0  1.0  1.0
+#  0.0  1.5  0.5
+#  0.0  0.0  2.66667
 
-julia> A.U # To access the U part
-3×3 Matrix{Float64}:
- 2.0  1.0  1.0
- 0.0  1.5  0.5
- 0.0  0.0  2.66667
+A.U # To access the U part
+# 3×3 Matrix{Float64}:
+#  2.0  1.0  1.0
+#  0.0  1.5  0.5
+#  0.0  0.0  2.66667
 
-julia> A.L # To access the L part
-3×3 Matrix{Float64}:
-  1.0   0.0       0.0
- -0.5   1.0       0.0
-  0.5  -0.333333  1.0
+A.L # To access the L part
+# 3×3 Matrix{Float64}:
+#   1.0   0.0       0.0
+#  -0.5   1.0       0.0
+#   0.5  -0.333333  1.0
 
-julia> b = [4, 1, 5] # Our first b vector
-3-element Vector{Int64}:
- 4
- 1
- 5
+b = [4, 1, 5] # Our first b vector
+# 3-element Vector{Int64}:
+#  4
+#  1
+#  5
 
-julia> A\b # Solve using specialised methods for LU factorised matrices
-3-element Vector{Float64}:
- 1.0
- 2.0
- 1.0
+A\b # Solve using specialised methods for LU factorised matrices
+# 3-element Vector{Float64}:
+#  1.0
+#  2.0
+#  1.0
 
-julia> b = [1, 2, 7] # A new b vector
-3-element Vector{Int64}:
- 1
- 2
- 7
+b = [1, 2, 7] # A new b vector
+# 3-element Vector{Int64}:
+#  1
+#  2
+#  7
 
-julia> A\b # Solve without needing to repeat the factorisation
-3-element Vector{Float64}:
-  1.75
-  3.75
- -0.25000000000000006
+A\b # Solve without needing to repeat the factorisation
+# 3-element Vector{Float64}:
+#   1.75
+#   3.75
+#  -0.25000000000000006
  ```
 ::: {.callout-important}
 You could of course solve a linear system by multiplying with the inverse of the matrix, and this is fairly straightforward to do, with `inv(A)`. This is however, **almost never a good choice**, especially with large, sparse matrices, where the inverse is generally dense and may not fit into your computer's memory.
@@ -167,34 +167,34 @@ To install `LinearSolve.jl`, simply use the package manager.
 To illustrate how to use the package, we shall use the same toy examples from before:
 
 ```julia
-julia> using LinearSolve
+using LinearSolve
 
-julia> A = Float64[1 0 3; # explicitly define as Float64
-           -1 1 0;
-            2 1 1]
-3×3 Matrix{Float64}:
-  1.0  0.0  3.0
- -1.0  1.0  0.0
-  2.0  1.0  1.0
+A = Float64[1 0 3; # explicitly define as Float64
+    -1 1 0;
+     2 1 1]
+# 3×3 Matrix{Float64}:
+#   1.0  0.0  3.0
+#  -1.0  1.0  0.0
+#   2.0  1.0  1.0
 
-julia> b = Float64[4, 1, 5] # explicitly define as Float64
-3-element Vector{Float64}:
- 4.0
- 1.0
- 5.0
+b = Float64[4, 1, 5] # explicitly define as Float64
+# 3-element Vector{Float64}:
+#  4.0
+#  1.0
+#  5.0
 
-julia> prob = LinearProblem(A, b) # Define problem
-LinearProblem. In-place: true
-b: 3-element Vector{Float64}:
- 4.0
- 1.0
- 5.0
+prob = LinearProblem(A, b) # Define problem
+# LinearProblem. In-place: true
+# b: 3-element Vector{Float64}:
+#  4.0
+#  1.0
+#  5.0
 
-julia> sol = solve(prob) # and solve
-u: 3-element Vector{Float64}:
- 1.0
- 2.0
- 1.0
+sol = solve(prob) # and solve
+# u: 3-element Vector{Float64}:
+#  1.0
+#  2.0
+#  1.0
 ```
 Since LinearSolve has to allow for automatic differentiation[^1], which may require passing *dual variables* to the function, it will implicitly use the type of the variables as specified in `A` in `b`. This will result in an error the inputs are arrays of integers and the if the solution contains fractions. To avoid this, we explicitly define the inputs as `Float64`.
 
@@ -203,60 +203,60 @@ Since LinearSolve has to allow for automatic differentiation[^1], which may requ
 You can also specify which algorithm to use. See the full list and recommendations in the [documentation](https://docs.sciml.ai/LinearSolve/stable/solvers/solvers/).
 
 ```julia
- julia> sol = solve(prob, KrylovJL_GMRES())
-u: 3-element Vector{Float64}:
- 1.0000000000000004
- 2.0000000000000004
- 0.9999999999999998
+sol = solve(prob, KrylovJL_GMRES())
+# u: 3-element Vector{Float64}:
+#  1.0000000000000004
+#  2.0000000000000004
+#  0.9999999999999998
 ```
 In our example for using built-in methods, we stored the result of the factorisation to re-use this when solving the problem with another `b` vector. We can do the same with LinearSolve by adding one step:
 
 ```julia
-julia> using LinearSolve
+using LinearSolve
 
-julia> A = Float64[1 0 3;
-           -1 1 0;
-            2 1 1]
-3×3 Matrix{Float64}:
-  1.0  0.0  3.0
- -1.0  1.0  0.0
-  2.0  1.0  1.0
+A = Float64[1 0 3;
+    -1 1 0;
+     2 1 1]
+# 3×3 Matrix{Float64}:
+#   1.0  0.0  3.0
+#  -1.0  1.0  0.0
+#   2.0  1.0  1.0
 
-julia> b1 = Float64[4, 1, 5]
-3-element Vector{Float64}:
- 4.0
- 1.0
- 5.0
+b1 = Float64[4, 1, 5]
+# 3-element Vector{Float64}:
+#  4.0
+#  1.0
+#  5.0
 
-julia> prob = LinearProblem(A, b1)
-LinearProblem. In-place: true
-b: 3-element Vector{Float64}:
- 4.0
- 1.0
- 5.0
+prob = LinearProblem(A, b1)
+# LinearProblem. In-place: true
+# b: 3-element Vector{Float64}:
+#  4.0
+#  1.0
+#  5.0
 
-julia> linsolve = init(prob) # initialize a cache to store the linear system intermediates
-LinearSolve.LinearCache{Matrix{Float64}, Vector{Float64}, Vector{Float64}, SciMLBase.NullParameters, Nothing, LU{Float64, Matrix{Float64}, Vector{Int64}}, SciMLOperators.IdentityOperator, SciMLOperators.IdentityOperator, Float64, true}([1.0 0.0 3.0; -1.0 1.0 0.0; 2.0 1.0 1.0], [4.0, 1.0, 5.0], [0.0, 0.0, 0.0], SciMLBase.NullParameters(), nothing, LU{Float64, Matrix{Float64}, Vector{Int64}}(Matrix{Float64}(undef, 0, 0), Int64[], 0), true, SciMLOperators.IdentityOperator(3), SciMLOperators.IdentityOperator(3), 1.4901161193847656e-8, 1.4901161193847656e-8, 3, false, LinearSolve.OperatorAssumptions{true}())
+linsolve = init(prob) # initialize a cache to store the linear system intermediates
+# LinearSolve.LinearCache{Matrix{Float64}, Vector{Float64}, Vector{Float64}, SciMLBase.NullParameters, Nothing, LU{Float64, Matrix{Float64}, Vector{Int64}}, SciMLOperators.IdentityOperator, SciMLOperators.IdentityOperator, Float64, true}([1.0 0.0 3.0; -1.0 1.0 0.0; 2.0 1.0 1.0], [4.0, 1.0, 5.0], [0.0, 0.0, 0.0], SciMLBase.NullParameters(), nothing, LU{Float64, Matrix{Float64}, Vector{Int64}}(Matrix{Float64}(undef, 0, 0), Int64[], 0), true, SciMLOperators.IdentityOperator(3), SciMLOperators.IdentityOperator(3), 1.4901161193847656e-8, 1.4901161193847656e-8, 3, false, LinearSolve.OperatorAssumptions{true}())
 
-julia> sol1 = solve(linsolve) # solve the problem, using the cache
-u: 3-element Vector{Float64}:
- 1.0
- 2.0
- 1.0
+sol1 = solve(linsolve) # solve the problem, using the cache
+# u: 3-element Vector{Float64}:
+#  1.0
+#  2.0
+#  1.0
 
-julia> b2 = Float64[1, 2, 7] # another b vector
-3-element Vector{Float64}:
- 1.0
- 2.0
- 7.0
+b2 = Float64[1, 2, 7] # another b vector
+# 3-element Vector{Float64}:
+#  1.0
+#  2.0
+#  7.0
 
-julia> linsolve = LinearSolve.set_b(sol1.cache, b2) # update the cache with the new b vector
-LinearSolve.LinearCache{Matrix{Float64}, Vector{Float64}, Vector{Float64}, SciMLBase.NullParameters, Nothing, LU{Float64, Matrix{Float64}, Vector{Int64}}, SciMLOperators.IdentityOperator, SciMLOperators.IdentityOperator, Float64, true}([2.0 1.0 1.0; -0.5 1.5 0.5; 0.5 -0.3333333333333333 2.6666666666666665], [1.0, 2.0, 7.0], [1.0, 2.0, 1.0], SciMLBase.NullParameters(), nothing, LU{Float64, Matrix{Float64}, Vector{Int64}}([2.0 1.0 1.0; -0.5 1.5 0.5; 0.5 -0.3333333333333333 2.6666666666666665], [3, 2, 3], 0), false, SciMLOperators.IdentityOperator(3), SciMLOperators.IdentityOperator(3), 1.4901161193847656e-8, 1.4901161193847656e-8, 3, false, LinearSolve.OperatorAssumptions{true}())
+linsolve = LinearSolve.set_b(sol1.cache, b2) # update the cache with the new b vector
+# LinearSolve.LinearCache{Matrix{Float64}, Vector{Float64}, Vector{Float64}, SciMLBase.NullParameters, Nothing, LU{Float64, Matrix{Float64}, Vector{Int64}}, SciMLOperators.IdentityOperator, SciMLOperators.IdentityOperator, Float64, true}([2.0 1.0 1.0; -0.5 1.5 0.5; 0.5 -0.3333333333333333 2.6666666666666665], [1.0, 2.0, 7.0], [1.0, 2.0, 1.0], SciMLBase.NullParameters(), nothing, LU{Float64, Matrix{Float64}, Vector{Int64}}([2.0 1.0 1.0; -0.5 1.5 0.5; 0.5 -0.3333333333333333 2.6666666666666665], [3, 2, 3], 0), false, SciMLOperators.IdentityOperator(3), SciMLOperators.IdentityOperator(3), 1.4901161193847656e-8, 1.4901161193847656e-8, 3, false, LinearSolve.OperatorAssumptions{true}())
 
-julia> sol2 = solve(linsolve) # and solve again
-u: 3-element Vector{Float64}:
-  1.75
-  3.75
- -0.25000000000000006
+sol2 = solve(linsolve) # and solve again
+# u: 3-element Vector{Float64}:
+#   1.75
+#   3.75
+#  -0.25000000000000006
 ```
 
