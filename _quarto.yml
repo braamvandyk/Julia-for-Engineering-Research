@@ -9,6 +9,8 @@ website:
     style: "docked"
     search: true
     contents:
+      - text: "Home"
+        file: index.qmd
       - section: "Introduction"
         contents:
         - 01_Getting_started_with_Julia.qmd

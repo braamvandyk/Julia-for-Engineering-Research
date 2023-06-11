@@ -110,10 +110,10 @@ Part of what is returned in the `sol` structure is an interpolator. If we want t
 
 ```julia
 sol(5.123)
-3-element Vector{Float64}:
- 28.55013685340714
-  8.550136853407144
- 31.44986314659286
+# 3-element Vector{Float64}:
+#  28.55013685340714
+#   8.550136853407144
+#  31.44986314659286
 ```
 The original question however was for the composition, which is generally interpreted as the fractions of the components, not their flows. Let's convert the results to molar fractions:
 
@@ -140,18 +140,18 @@ The last bit of code in this part will need some explanation. As mentioned above
 the solution returned by the ODE solver is a structure, `sol` with multiple fields, including `sol.t` for the independent variable. This will hold the values for each step taken by the solver. The results for the dependent variables, `u[...]` are in `sol.u`, for each the steps in `t`. This means that `sol.u` is an array of arrays:
 
 ```julia
-julia> sol.u
-17-element Vector{Vector{Float64}}:
- [60.0, 40.0, 0.0]
- [59.99858583839893, 39.99858583839893, 0.001414161601070281]  
- [59.984446697061045, 39.984446697061045, 0.015553302938956699]
- [59.84330258351507, 39.84330258351507, 0.15669741648493382]   
- [58.45642225894246, 38.45642225894246, 1.543577741057545]     
- ⋮
- [21.04774569180567, 1.0477456918056731, 38.952254308194334]
- [20.551956292857035, 0.5519562928570385, 39.44804370714297]
- [20.282897789407816, 0.2828977894078193, 39.71710221059219]
- [20.20298976079487, 0.20298976079487502, 39.79701023920513]
+sol.u
+# 17-element Vector{Vector{Float64}}:
+#  [60.0, 40.0, 0.0]
+#  [59.99858583839893, 39.99858583839893, 0.001414161601070281]  
+#  [59.984446697061045, 39.984446697061045, 0.015553302938956699]
+#  [59.84330258351507, 39.84330258351507, 0.15669741648493382]   
+#  [58.45642225894246, 38.45642225894246, 1.543577741057545]     
+#  ⋮
+#  [21.04774569180567, 1.0477456918056731, 38.952254308194334]
+#  [20.551956292857035, 0.5519562928570385, 39.44804370714297]
+#  [20.282897789407816, 0.2828977894078193, 39.71710221059219]
+#  [20.20298976079487, 0.20298976079487502, 39.79701023920513]
 ```
 We can to convert these to molar fractions, which means we need to divide each entry of the sub-arrays by the sum of that sub-array. This is very easy in Julia. We just do this:
 
