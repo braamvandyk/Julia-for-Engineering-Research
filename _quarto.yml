@@ -5,9 +5,10 @@ website:
   title: "Julia for Engineering Research"
   favicon: img/julia.ico
   back-to-top-navigation: true
+  search: false
   sidebar:
     style: "docked"
-    search: true
+    search: false
     contents:
       - text: "Home"
         file: index.qmd
@@ -40,5 +41,5 @@ format:
     toc: true
     monofont: "JetBrains Mono"
     embed-resources: true
-    smooth-scroll: true
+    smooth-scroll: false
     footnotes-hover: true
