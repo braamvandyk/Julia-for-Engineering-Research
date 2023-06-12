@@ -127,7 +127,7 @@ Since we can't simply shift a floating-point value left by one bit to multiply i
 ```
 
 ::: {.callout-note}
-The important thing to learn from this is that **Julia built optimised versions of the function for each case**. Similarly, is we pass an integer and a floating-point value, or vice versa, or any two other appropriate types of values, new versions of the function will be constructed and each will be optimised for that combination of types passed.
+The important thing to learn from this is that **Julia built optimised versions of the function for each case**. Similarly, if we pass an integer and a floating-point value, or vice versa, or any two other appropriate types of values, new versions of the function will be constructed and each will be optimised for that combination of types passed.
 :::
 
 It goes even further.
