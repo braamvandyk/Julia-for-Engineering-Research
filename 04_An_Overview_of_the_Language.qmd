@@ -2,18 +2,19 @@
 title: "An Overview of the Language"
 ---
 
-This article is meant to give you a running start in Julia. The ultimate reference for all things regarding the language is the official [manual](https://docs.julialang.org/en/v1/), where you will find much more information.
+This section is meant to give you a running start in using Julia. The ultimate reference for all things regarding the language is the official [manual](https://docs.julialang.org/en/v1/), where you will find much more information.
 
 ## Package Management
-Julia will open up in the default environment, e.g., `@v1.8`. You can add packages to this environment, and they will be available to load as soon as you open Julia. Be very careful about doing this, as this can very often lead to what is lightly called *dependency hell*. This is what happens when a package you want to update depends on another package that can't update, sometime because it depends on a specific version of yet another package. The more packages you have in the current environment, to more often this will happen. The solution is to create a new environment for each project and add only the packages you are actually using in the project.
 
-```julia
+Julia will open up in the default environment, e.g., `@v1.9`. You can add packages to this environment, and they will be available to load as soon as you open Julia. Be very careful about doing this, as this can very often lead to what is lightly called *dependency hell*. This is what happens when a package you want to update depends on another package that can't update, sometime because it depends on a specific version of yet another package. The more packages you have in the current environment, to more often this will happen. The correct solution is to create a new environment for each project and add only the packages you are actually using in the project.
+
+``` julia
                _
    _       _ _(_)_     |  Documentation: https://docs.julialang.org
   (_)     | (_) (_)    |
    _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
   | | | | | | |/ _` |  |
-  | | |_| | | | (_| |  |  Version 1.8.5 (2023-01-08)
+  | | |_| | | | (_| |  |  Version 1.9.1 (2023-06-07)
  _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
 |__/                   |
 
@@ -22,7 +23,7 @@ cd("./Dummy")
 pwd()
 # "D:\\JuliaCode\\Dummy"
 
-(@v1.8) pkg> activate .   #type ] to activate package manager in REPL
+(@v1.9) pkg> activate .   #type ] to activate package manager in REPL
   # Activating project at `D:\JuliaCode\Dummy`
 
 (Dummy) pkg> add UnicodePlots
@@ -45,7 +46,7 @@ pwd()
 
 Here we changed the current directory to the *Dummy* sub-folder. Note the use of a forward slash. Backslashes are used for special characters, , `\n` for a new line and must themselves be *escaped* by typing a double backslash: `cd(".\\Dummy")`. Or you can use a raw string: `cd(raw".\Dummy")`. The forward slash however works just as well in Linux and MaxOS, so is preferred.
 
-`pwd()` is a function that replicates the Unix (Linux) command for *print working directory* and simply returns the name of the current folder. 
+`pwd()` is a function that replicates the Unix (Linux) command for *print working directory* and simply returns the name of the current folder.
 
 The package manager is then activated with `]` and the current folder is activated as a project with `activate .`, where `.` means the current directory (`..` means the parent directory).
 
@@ -53,11 +54,11 @@ Finally, we add a registered package, UnicodePlots.jl, and once the installation
 
 Once a package is installed, it can be loaded by issuing the `using` command:
 
-```julia
+``` julia
 using UnicodePlots
 ```
 
-In the `Dummy` folder, Julia creates two files: `project.toml` and `manifest.toml`. These hold the record of the specific versions of packages that have been installed. The packages directly installed are in the `project.toml` file, while the version numbers of dependencies are tracked in `manifest.toml`. These two files mean that someone else can reinstate the exact environment you developed your code in by activating the project and issuing the `instantiate` command to the package manager. This will install the same versions of the packages and dependencies as listed in the `*.toml` files.
+In the `Dummy` folder, Julia creates two files: `project.toml` and `manifest.toml`. These hold the record of the specific versions of packages that have been installed *for this project*. The packages directly installed are in the `project.toml` file, while the version numbers of dependencies are tracked in `manifest.toml`. These two files mean that someone else can reinstate the exact environment you developed your code in by activating the project and issuing the `instantiate` command to the package manager. This will install the same versions of the packages and dependencies as listed in the `*.toml` files.
 
 Each project should be in its own folder, with its own `*.toml` files. This means different projects can potentially use different versions of the same package, depending on what other packages are in use.
 
@@ -69,7 +70,7 @@ There are two ways to load a Julia package: `using` and `import`
 
 If you use `using`, all methods and variables exported by a package are brought into the current namespace. You can call them directly:
 
-```julia
+``` julia
 using Plots
 
 scatter(rand(10), rand(10))
@@ -77,7 +78,7 @@ scatter(rand(10), rand(10))
 
 This does mean that several functions and variables you are not using are now also in the namespace and you cannot define a new function with the same name or use another package that exports a function with the same name. For those cases, you can use `import`. If a package is `import`ed, you need to prepend each function call with the package name.
 
-```julia
+``` julia
 import Plots
 import GLMakie
 
@@ -85,7 +86,7 @@ Plots.scatter(rand(10), rand(10))
 GLMakie.scatter(rand(10), rand(10))
 ```
 
-::: {.callout-tip}
+::: callout-tip
 ## Try this
 
 See what happens when you use `using` for the previous example.
@@ -93,14 +94,14 @@ See what happens when you use `using` for the previous example.
 
 You can load specific functions or variables from a package:
 
-```julia
+``` julia
 using Plots: scatter
 import GLMakie: lines
 ```
 
 None of the other exported variables or functions will become available. When loading a single item, you can also rename it using the `as` keyword:
 
-```julia
+``` julia
 import Plots.scatter as ps
 import GLMakie: scatter as ms
 
@@ -110,7 +111,7 @@ ms(rand(10), rand(10))
 
 or even rename the package during import:
 
-```julia
+``` julia
 import BenchmarkTools as bt
 
 bt.@benchmark sin.(1:1_000_000)
@@ -124,13 +125,13 @@ bt.@benchmark sin.(1:1_000_000)
 #   11.8 ms      Histogram: log(frequency) by time        24 ms <
 
 #  Memory estimate: 7.63 MiB, allocs estimate: 2.
-
 ```
 
 ## Variables
+
 There is no programming without variables. In Julia, there is no need to pre-declare a variable (although you can) and variables can be reassigned to a value of another type:
 
-```julia
+``` julia
 x = 1
 # 1
 
@@ -156,7 +157,7 @@ As illustrated, the function `typeof()` will return the type of the variable or 
 
 Since variables can be reassigned in the global scope, this makes it difficult for the compiler to generate optimised code - the type of the variable could change. If you want fast code, then avoid using global variables, or if you absolutely have to use them, declare them as `const`.
 
-```julia
+``` julia
 const MyConst = 1
 # 1
 
@@ -179,9 +180,10 @@ Declaring a variable as `const` freezes the type of the variable, allowing more 
 The best practice, however, is to put your code inside functions.
 
 ### Strings and Characters
-Text values are stored as either strings (`"This is a string"`, type `String`) or single characters (`'c'`, type `Char`). A string can also be just one character long: `"A"`. Strings can also include multiple lines, and quotation marks, when enclosed with triple quotation marks:
 
-```julia
+Text values are stored as either strings (`"This is a string"`, type `String`) or single characters (`'c'`, type `Char`). Note the use of double and single quotation marks for `String` vs `Char`. A string can be just one character long: `"A"`. Strings can also include multiple lines, and quotation marks, when enclosed with triple quotation marks:
+
+``` julia
 s = """
     This is my
     very long
@@ -196,11 +198,11 @@ s[5:10]
 # " is my"
 ```
 
-Note how new lines are indicated with `'\n'`, which is itself a character.
+Note how new lines are indicated with `'\n'`, which is itself a character (n is short for **n**ew line).
 
 Numerical values can be converted to strings using the `string()` function:
 
-```julia
+``` julia
 string(123)
 # "123"
 ```
@@ -209,7 +211,7 @@ Strings and characters in Julia are encoded in UTF-8 Unicode. This allows all ki
 
 A somewhat unintuitive feature of Julia is that string concatenation is done via the `*` operator. This does have the advantage that multiple copies of a string can be concatenated via the exponentiation (`^`) operator:
 
-```julia
+``` julia
 str = "lala"
 # "lala"
 
@@ -223,9 +225,10 @@ str^5
 Julia includes a vast number of string processing functions. These are discussed in detail in the [manual](https://docs.julialang.org/en/v1/manual/strings/).
 
 #### String Interpolation
+
 You can *interpolate* a value from a variable or expression into a string, using the `$` character:
 
-```julia
+``` julia
 value = 1.0
 # 1.0
 
@@ -240,15 +243,19 @@ println("Twice the value is: $(2*value)")
 ```
 
 ### Integers and Floating-point Values
+
 Julia has the usual selection of variable types for integers and floating-point values. There are signed and unsigned versions of 8, 16, 32, 64 and 128-bit integers. See the [manual](https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/) for details.
 
 There is also a `Bool` type that holds either `true` (1) or `false` (0).
 
 For floating-point values, there is Float16, Float32 and Float64.
 
-The default integer, `Int` is Int64 for 64-bit Julia and `Int32` for 32-bit Julia. Generally, you would want to use `Float64` for floating-point numbers, unless there is a specific reason not to. Calculations on a GPU (via e.g., `CUDA.jl`) should be done using `Float32`.
+The default integer, `Int` is equivalent to `Int64` for 64-bit Julia and `Int32` for 32-bit Julia. Generally, you would want to use `Float64` for floating-point numbers, unless there is a specific reason not to. Calculations on a GPU (via e.g., `CUDA.jl`) should be done using `Float32`, unless you have a very expensive[^1] GPU capable of processing 64-bit floating point calculations.
+
+[^1]: An Nvidia Tesla A100 costs about US\$7400 in mid-2023
 
 #### A Word on Floating-Point Values
+
 Floating-point values are stored in a limited number of bits (typically 64 bits - a.k.a. double precision) and hence have a limited precision. The result is that most values cannot be precisely stored in a `Float64` variable. As a simple example, 1/10, which is clearly precisely equal to 0.1, is actually calculated as 0.1000000000000000055511151231257827021181583404541015625 with 256-bit precision.
 
 The smallest positive value that can be stored in a `Float64`, is 2.220446049250313e-16. You can calculate this in Julia using the `eps()` function e.g., `eps(Float64)`. The value epsilon is an indication of the precision you can expect. It is the smallest value you can add to the floating-point value that will cause it to result in a new value. Anything smaller may as well be zero. Obviously, epsilon depends on the magnitude of the values you are working with, and you can again use the `eps()` function: `eps(100) = 1.4210854715202004e-14`, so adding a smaller amount to 100 will not change the value.
@@ -259,14 +266,15 @@ The list of values is split into pairs and the pairs are added to each other, th
 
 Something else to consider, which much more often trips up new programmers, is that you will very rarely find two identical floating-point values through calculations. Directly comparing values that are realistically speaking equal, will very often result in the wrong part of an `if` statement executing. When comparing floating-point values, always use a check for approximate equality. This is done either via the `≈` operator (`\approx<tab>`), or the `isapprox()` function, which allows you to specify absolute and relative tolerances. The `≈` operator calls `isapprox()` with default tolerances.
 
-The internal storage of floating-point values is standardised by the [IEEE 754](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) standard, which is used in just about every programming language.
+The internal storage of floating-point values is standardised by the [IEEE 754](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) standard, which is used in just about every programming language. This is important, since it means you can pass values between Julia and code running in R or Python or compiled in C.
 
 ### BigInt and BigFloat
-Sometimes, you may find a need for additional precision. Arbitrary-precision integer and floating-point types are available as BigInt and BigFloat. 
+
+Sometimes, you may find a need for additional precision. Arbitrary-precision integer and floating-point types are available as BigInt and BigFloat.
 
 There are several ways to specify that you are using `big` numbers, but the simplest is via the `big()` function:
 
-```julia
+``` julia
 x = big(10.0)
 # 10.0
 
@@ -274,39 +282,41 @@ typeof(x)
 # BigFloat
 ```
 
-The precision again comes at the cost of performance. See the [manual](https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts) for more details.
+The precision again comes at the cost of performance. See the [manual](https://docs.julialang.org/en/v1/base/numbers/#BigFloats-and-BigInts) for more details. You only need to specify that one variable/number in a calculation is `big` - the rest will be converted automatically by Julia.
 
 ### Complex Numbers
+
 Julia has built-in types for complex numbers, which depend on the integer or floating-point type used to store the real and imaginary parts, e.g.
 
-```julia
+``` julia
 typeof(1 + 2im)
 # Complex{Int64}
 
 typeof(1.0 + 2.0im)
 # ComplexF64 (alias for Complex{Float64})
 ```
+
 As you will notice, a complex type is specified as `Complex{T}` where T is an integer or floating-point type. Any of the integer and floating-point types mentioned before could be used, including `BigInt` and `BigFloat`. Simply define the value as:
 
-```julia
+``` julia
 z = big(10.0) + 1.0im
 # 10.0 + 1.0im
 
 typeof(z)
 # Complex{BigFloat}
 
-z = big(10) + 1im
+z = big(10) + im
 # 10 + 1im
 
 typeof(z)
 # Complex{BigInt}
 ```
 
-The imaginary part of the number is indicated by adding `im` directly behind the number - no space!
+The imaginary part of the number is indicated by adding `im` directly behind the number - no space! As shown in the example, the `1` is optional in the imaginary part - you can just specify `im` for `1im`.
 
-The standard functions used with complex numbers are available, including:
+The expected functions for use with complex numbers are available, including:
 
-```julia
+``` julia
 z = 1 + 1im
 # 1 + 1im
 
@@ -339,9 +349,10 @@ sqrt(z)
 ```
 
 ### Rational Numbers
-You can also work with rational numbers. 
 
-```julia
+You can also work with rational numbers.
+
+``` julia
 a = 1//2 + 3//8
 # 7//8
 
@@ -351,9 +362,10 @@ float(a)
 rationalize(0.875)
 # 7//8
 ```
+
 This eliminates rounding losses, but at a loss of performance:
 
-```julia
+``` julia
 function myfunc(x)
     sum = zero(x)
     for i in 1:10_000
@@ -389,11 +401,11 @@ using BenchmarkTools
 #   664 μs        Histogram: log(frequency) by time       811 μs <
 
 #  Memory estimate: 0 bytes, allocs estimate: 0.
- ```
+```
 
 So, floating-point calculations are about 78x faster than with rational numbers. What about integers?
 
-```julia
+``` julia
 @benchmark myfunc(1)
 # BenchmarkTools.Trial: 10000 samples with 1000 evaluations.
 #  Range (min … max):  1.900 ns … 27.200 ns  ┊ GC (min … max): 0.00% … 0.00%
@@ -409,22 +421,23 @@ So, floating-point calculations are about 78x faster than with rational numbers.
 
 1.9 nanoseconds?!? That sounds too good to be true, doesn't it? Let's see what type of code Julia generated to make that possible.
 
-```julia
+``` julia
 @code_llvm myfunc(1)
-# ;  @ REPL[6]:1 within `myfunc`
-# ; Function Attrs: uwtable
-# define i64 @julia_myfunc_739(i64 signext %0) #0 {
-# top:
-# ;  @ REPL[6]:3 within `myfunc`
-#   %1 = mul i64 %0, 50005000
-# ;  @ REPL[6]:6 within `myfunc`
-#   ret i64 %1
-# }
+
+;  @ REPL[6]:1 within `myfunc`
+; Function Attrs: uwtable
+define i64 @julia_myfunc_739(i64 signext %0) #0 {
+top:
+;  @ REPL[6]:3 within `myfunc`
+  %1 = mul i64 %0, 50005000
+;  @ REPL[6]:6 within `myfunc`
+  ret i64 %1
+}
 ```
 
 We can again ignore any line starting with a semi-colon. The one line that matters is this:
 
-```julia
+``` julia
   %1 = mul i64 %0, 50005000
 ```
 
@@ -433,18 +446,20 @@ The Julia compiler could analyse the code well enough to see that the answer to 
 With floating-point and rational values, there were type conversions required before multiplying the integer value of the loop counter with the input value. This "hid" the true nature of the calculation enough that the compiler could not see the short-cut. There is however continuous development in the compiler, and we can reasonably expect this to also be optimised in a future version of Julia.
 
 ### Arrays, Tuples and Ranges
+
 #### Arrays
+
 In most code, you will find it convenient to deal with a collection of values at the same time. There are several ways of doing this.
 
-The most common collection of values is an Array. In mathematics, you will be familiar with vectors and matrices. These are simply one- and two-dimensional arrays. You can have arrays with any number of dimensions (*tensors*). The keywords `Vector` and `Matrix` are also available as synonyms for `Array` in the special cases of one and two dimensions.
+The most common collection of values is an Array. In mathematics, you will be familiar with *vectors* and *matrices*. These are simply one- and two-dimensional arrays. You can have arrays with any number of dimensions (*tensors*). The keywords `Vector` and `Matrix` are also available as synonyms for `Array` in the special cases of one and two dimensions.
 
-::: {.callout-note}
-Simple one-dimensional arrays are treated as column vectors for use in linear algebra calculations.
+::: callout-note
+Simple one-dimensional arrays are treated as **column vectors** for use in linear algebra calculations.
 :::
 
 Some examples:
 
-```julia
+``` julia
 a = [1, 2, 3]   # use commas to specify column vectors
 # 3-element Vector{Int64}:
 #  1
@@ -486,7 +501,12 @@ B = zeros(3, 3, 3)   # zeros() and ones() fill the array of the specified size
 #  0.0  0.0  0.0
 #  0.0  0.0  0.0 
 
-C = [1;2;;3;4;;;5;6;;7;8;;;9;10;;11;12]  # ; separates in first dimension, ;; in second dimension, ;;; in third etc.
+C = zeros(Int64, 2, 2) # You can specify the type - Float64 is the default
+# 2×2 Matrix{Int64}:
+#  0  0
+#  0  0
+
+D = [1;2;;3;4;;;5;6;;7;8;;;9;10;;11;12]  # ; separates in first dimension, ;; in second dimension, ;;; in third etc.
 # 2×2×3 Array{Int64, 3}:
 # [:, :, 1] =
 #  1  3
@@ -500,22 +520,22 @@ C = [1;2;;3;4;;;5;6;;7;8;;;9;10;;11;12]  # ; separates in first dimension, ;; in
 #   9  11
 #  10  12
 
-A = Float64[]   # an empty 1D array of Float64
+E = Float64[]   # an empty 1D array of Float64
 # Float64[]
 ```
 
-The individual entries of an array are accessed via `[]`, e.g., 
+The individual entries of an array are accessed via `[]`, e.g.,
 
-```julia
+``` julia
 A[2, 3]
 # 6
 ```
 
-In the background, `[]` calls  `getindex()` and `setindex()` to retrieve or modify the entries of the array. If you define your own array-like type, you will need to supply the appropriate `getindex()` and `setindex()` functions.
+In the background, `[]` calls `getindex()` and `setindex()` to retrieve or modify the entries of the array. If you define your own array-like type, you will need to supply the appropriate `getindex()` and `setindex()` functions.
 
 You can concatenate arrays horizontally and vertically with `hcat()` and `vcat()`, or using the syntax above with spaces or semi-colons:
 
-```julia
+``` julia
 A = [1, 2, 3]
 # 3-element Vector{Int64}:
 #  1
@@ -560,9 +580,10 @@ hcat(A, B)
 ```
 
 #### Tuples
+
 Tuples are functionally similar to arrays. They are specified with commas and (optional) parentheses. They are intimately linked with passing parameters to functions and returning values from functions, e.g.
 
-```julia
+``` julia
 function myfunc(a, b)
     return a*b, a+b
 end
@@ -577,11 +598,11 @@ typeof(myfunc(1, 2))
 
 We pass the parameters to the function as a tuple, (a, b). The results are returned as a tuple, (2, 3). Other than passing parameters to functions, what is the use of tuples? They are fairly widely used in Julia. The main differences from arrays are that while arrays are heap-allocated, tuples are stack-allocated. This is some more computer jargon, but what it means in practise is that tuples can be accessed faster than arrays but cannot be as large.
 
-Tuples are also *immutable*, meaning once created, they cannot be modified. The entries of an array can always be modified. This is important to keep in mind when writing functions in Julia. The only way you can modify a parameter passed to a function is if that parameter is an array. And then only the individual entries of the array can be changed - you cannot replace the array with another one (more detail later). 
+Tuples are also *immutable*, meaning once created, they cannot be modified. The entries of an array can always be modified. This is important to keep in mind when writing functions in Julia. The only way you can modify a parameter passed to a function is if that parameter is an array. And then only the individual entries of the array can be changed - you cannot replace the array with another one (more detail later).
 
 Some examples:
 
-```julia
+``` julia
 a = (1, 2, 3)
 # (1, 2, 3)
 
@@ -597,7 +618,7 @@ typeof(b)
 a[2]
 # 2
 
-c = (1,)
+c = (1,) # A tuple with only one value - note the trailing comma!
 # (1,)
 
 typeof(c)
@@ -612,7 +633,7 @@ typeof(d)
 
 We again use `[]` to access the individual entries.
 
-```julia
+``` julia
 a = (1, 2, 3)
 # (1, 2, 3)
 
@@ -622,7 +643,7 @@ a[2]
 
 Tuples can be unpacked into variables:
 
-```julia
+``` julia
 a
 # (1, 2, 3)
 
@@ -641,7 +662,7 @@ z
 
 And since the parentheses are optional in the direct specification of tuples, we can do this:
 
-```julia
+``` julia
 x = 1
 # 1
 
@@ -663,9 +684,10 @@ Here we defined a tuple `(x, y)` and then unpacked it into the variables `y` and
 Since tuples have superior performance to arrays, there exists a package that builds small arrays-like structures from tuples - [`StaticArrays.jl`](https://github.com/JuliaArrays/StaticArrays.jl). This is commonly used for maximum performance, but only for smallish arrays, typically less than 200-300 entries. More than that and you run out of space on the stack, which has a limited size.
 
 #### Named Tuples
-You can also name the entries in a tuple and access them via the names instead or indexes:
 
-```julia
+You can also name the entries in a tuple and access them via the names instead of indexes:
+
+``` julia
 nt = (a = 1, b = 2, c = "Bob")
 # (a = 1, b = 2, c = "Bob")
 
@@ -685,12 +707,13 @@ nt.c === nt[3] # The values are "egal", i.e. not just equal, but the actual same
 # true
 ```
 
-Note that the entries in a tuple or named tuple needn't be all of the same type. This is also true for arrays, but in that case the array will be of type `Any` and performance will be hugely impacted. Avoid this whenever possible! 
+Note that the entries in a tuple or named tuple needn't be all of the same type. This is also true for arrays, but in that case the array will be of type `Any` and performance will be hugely impacted. **Avoid this whenever possible!**
 
 #### Ranges
+
 The third collection type we are considering are ranges. There are several ways to specify a range:
 
-```julia
+``` julia
 a = 1:10   # start : stop with default step of one, hence a unit range
 # 1:10
 
@@ -716,9 +739,15 @@ typeof(d)
 # StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64}
 ```
 
+::: callout-note
+The `Base.TwicePrecision{Float64}` part may be confusion. Directly from the Julia help (type `?Base.TwicePrecision` at the REPL prompt:
+
+> *TwicePrecision is an internal type used to increase the precision of floating-point ranges, and not intended for external use. If you encounter them in real code, the most likely explanation is that you are directly accessing the fields of a range. Use the function interface instead, step(r) rather than r.step*
+:::
+
 And just like before, we access the entries with `[]`:
 
-```julia
+``` julia
 a[2]
 # 2
 
@@ -736,7 +765,7 @@ The main difference is that, while arrays and tuples consist of values stored in
 
 You can change a range into an array, with the `collect()` function:
 
-```julia
+``` julia
 collect(1:10)
 # 10-element Vector{Int64}:
 #   1
@@ -752,9 +781,10 @@ collect(1:10)
 ```
 
 #### Iterables
+
 Arrays, tuples and ranges (and strings) are all iterable types, meaning you can iterate through their entries:
 
-```julia
+``` julia
 a = [1, 5, 10]
 # 3-element Vector{Int64}:
 #   1
@@ -786,14 +816,13 @@ end
 # 3
 ```
 
-::: {.callout-note}
+::: callout-note
 You can also use the Unicode symbol ∈ (`\in<tab>`) in place of the word `in`.
 :::
 
 From a programmer's point of view, iterable types all behave the same. We can therefore write a function that can handle any iterable type. The only requirement for this example is that the item passed should have at least two entries, or there will be an error.
 
-
-```julia
+``` julia
 function mycomp(a)
     if a[1] > a[2]
         return true
@@ -827,14 +856,14 @@ mycomp(r)
 For each case, the Julia compiler will generate optimised code depending on the type of the variable passed.
 
 #### Indexing
+
 In the examples above, we used one-dimensional arrays and there was really no choice in how to index into the structure. The entries are all in a row in memory.
 
 In the case if multi-dimensional arrays, the entries are still sequential in memory - that is how RAM works! Here, however, there are better and worse options for accessing a given entry in the array.
 
 This is because of how the values are stored in memory. It is faster to sequentially access values that are stored next to each other than to jump around in memory. Julia is *column major*, meaning that the values in the first column of a matrix are stored next to each other in memory, followed by the values of the second column etc. For higher dimensions, the sequence is similar: each subsequent index follows the next. This is then the fastest way of iterating through the whole array.
 
-
-```julia
+``` julia
 A = rand(10_000, 10_000);  # the _ is ignored - it is just to make reading easier. The ; at the end suppresses output of the result
 
 function myfunc(A)
@@ -870,7 +899,7 @@ using BenchmarkTools
 
 So, in our 10,000 x 10,000 random matrix, summing up the values row-wise takes 644.754ms, while column-wise it takes only 96.449ms. Quite the improvement! If you are worried you won't remember the correct way of iterating through a structure, Julia has you covered. Use `eachindex()` to get the optimal sequence:
 
-```julia
+``` julia
 function myfunc3(A)
     mysum = 0.0
     m, n = size(A)
@@ -890,7 +919,7 @@ end
 
 Another useful indexing function is `enumerate()`. It returns an iterator of tuples, each containing an index and value pair. The indexes are linear, not cartesian.
 
-```julia
+``` julia
 A = rand(2,2)
 # 2×2 Matrix{Float64}:
 #  0.488632  0.177813
@@ -907,11 +936,10 @@ end
 
 For more information, see the [manual](https://docs.julialang.org/en/v1/base/iterators/#Base.Iterators.enumerate).
 
-
-::: {.callout-note}
+::: callout-note
 Julia also provides the keywords `begin` and `end` to directly index the first and last entries in an array:
 
-```julia
+``` julia
 a = [1, 2, 3]
 # 3-element Vector{Int64}: …
 
@@ -924,13 +952,15 @@ a[end]
 a[end-1] # second last entry
 # 2
 ```
-
 :::
 
 #### Array Assignments
-The array variable is a pointer that holds the address of the memory space where the contents is kept (on the heap). This is not an implementation detail - it is an important thing to keep in mind, as there is a difference between modifying the entries of the array (the values in the memory the array variable points to) and changing the array variable (which memory it points to):
 
-```julia
+The array variable is a pointer[^2] that holds the address of the memory space where the contents is kept (on the heap). This is not an implementation detail - it is an important thing to keep in mind, as there is a difference between modifying the entries of the array (the values in the memory the array variable points to) and changing the array variable (which memory it points to):
+
+[^2]: A pointer is just a memory address - computer guys like their jargon.
+
+``` julia
 a = collect(1:5)
 # 5-element Vector{Int64}:
 #  1
@@ -974,7 +1004,7 @@ Here we created an array variable, `a`. Then we assigned `a` to `b`. The result 
 
 If you want an independent copy of `a`, then use the `copy()` function:
 
-```julia
+``` julia
 a = collect(1:5)
 # 5-element Vector{Int64}:
 #  1
@@ -1012,9 +1042,10 @@ b
 ```
 
 #### Array Comprehensions
+
 This is a quick, flexible way of creating arrays with specific values, best illustrated by example:
 
-```julia
+``` julia
 a = [sin(i^2) for i in 0:0.1:2π]
 # 63-element Vector{Float64}:
 #   0.0
@@ -1036,7 +1067,7 @@ a = [sin(i^2) for i in 0:0.1:2π]
 #  0.333333  0.25      0.2
 #  0.25      0.2       0.166667
 
-[1/(x+y) for x in 1:3 for y in 1:3]
+[1/(x+y) for x in 1:3 for y in 1:3] # A second `for` keyword and no comma!
 # 9-element Vector{Float64}:
 #  0.5
 #  0.3333333333333333       
@@ -1049,12 +1080,13 @@ a = [sin(i^2) for i in 0:0.1:2π]
 #  0.16666666666666666 
 ```
 
-Take note of the subtle difference between the second and third examples. This is not terribly intuitive! 
+Take note of the subtle difference between the second and third examples. This is not terribly intuitive!
 
 #### Broadcasting
+
 You can process each entry in an iterable in a loop, or you can use the built-in broadcasting (a.k.a. dot notation). The following are equivalent:
 
-```julia
+``` julia
 a = collect(1:5) # create an array
 # 5-element Vector{Int64}:
 #  1
@@ -1101,17 +1133,17 @@ e = sqrt.(d) # works for any function (note the . is between the name and the op
 #  3.0
 #  3.4641016151377544
 #  3.872983346207417
-
 ```
 
 ### The Type Hierarchy
+
 The built-in types have a hierarchy:
 
 ![The type hierarchy - Image from https://thautwarm.github.io/](https://thautwarm.github.io/Site-32/_images/julia-type-hierarchy.png)
 
 This consists of abstract and concrete types. You can only instantiate a variable of a concrete type, but the abstract types are useful to specify groups of types that would behave similarly, e.g., `Float64` and `Int64` could both the added and multiplied. This is true for all the `Number` types, be they `Real` or `Complex`. We could specify allowed groups of types, via the `<:` operator, or specific types, via `::`, e.g.
 
-```julia
+``` julia
 function f(x::T) where T <: Number
     #do something
 end
@@ -1119,10 +1151,38 @@ end
 
 Here, Julia will allow us to call f(x) with any sub-type of the `Number` abstract type, such as `Float64`, `Int32` or `ComplexF64`. Calling f(x) with a `String` type will give an error, rather than try to compile a specialised version of `f()`.
 
+We can also use this to have alternative versions of a function for different types of inputs, via multiple dispatch:
+
+``` julia
+function addthem(a::T, b::S) where {T<:Number, S<:Number}
+    return a + b
+end
+
+function addthem(a::T, b::T) where T<:AbstractString
+    return a * b
+end
+
+addthem(1, 2)
+#3
+
+addthem(2, 2.0)
+#4.0
+
+addthem("One", "Two")
+#OneTwo
+```
+
+::: callout-note
+Note that in the first function we use T and S, both sub-types of `Number`. If both variables where `T<:Number`, then calling the function with an integer and a floating point value - the second example - would have given an error, as the two variables are not of the same type.
+
+We also used `AbstractString` for the second function, so any type that acts like a `String` should work, as long as they have the `*` operator defined.
+:::
+
 ### Structs
+
 Structs are use-defined complex types that can contain multiple fields. They are defined using the `struct` keyword:
 
-```julia
+``` julia
 struct PersonData
     name::String
     address::String
@@ -1154,7 +1214,7 @@ customers[1].name
 
 By default, a `struct` is immutable, meaning it cannot be changed once created:
 
-```julia
+``` julia
 bob.name = "Joe Bloggs"
 # ERROR: setfield!: immutable struct of type PersonData cannot be changed
 # Stacktrace:
@@ -1166,7 +1226,7 @@ bob.name = "Joe Bloggs"
 
 To make a `struct` mutable, simply add the keyword `mutable` to the definition.
 
-```julia
+``` julia
 mutable struct PersonData2
     name::String
     address::String
@@ -1189,16 +1249,17 @@ bob
 The `struct` is immutable by default to allow additional compiler optimisations. Mutable structs will therefore have worse performance, but more flexibility.
 
 #### Constructors
+
 Julia automatically creates a *constructor* for each struct you define. This is a function that takes the values of the fields, creates a new structure in memory and assigns the specified values to the fields.
 
 You can also create additional constructors. There are two types:
 
-- Outer constructors and
-- Inner constructors
+-   Outer constructors and
+-   Inner constructors
 
 The default constructor is an outer constructor. You can also specify additional outer constructors that e.g., have default values for some fields, or calculate some values from others:
 
-```julia
+``` julia
 struct PersonData
     name::String
     address::String
@@ -1226,7 +1287,7 @@ tom = PersonData("Tom Jones", "Las Vegas", 34556) # The default is still availab
 
 Inner constructors are defined as part of the `struct` definition and are used to validate the entries for the struct before creating the instance.
 
-```julia
+``` julia
 struct OnlyNegatives
     val::Float64
     OnlyNegatives(val) = val > 0 ? error("Non-negative value!") : new(val)
@@ -1248,18 +1309,18 @@ OnlyNegatives(1)
 
 Inner constructors have access to a special local function, `new()`, which acts like the default outer constructor would.
 
-::: {.callout-important}
-If you define an inner constructor, NO default constructors are created. You need to handle all cases via your inner constructors.
+::: callout-important
+If you define an inner constructor, **NO** default constructors are created. You need to handle all cases via your inner constructors.
 :::
 
-
 ## Loops
+
 Julia provides two types of loops:
 
-1. `for` loops for iterating over an iterable construct, like a range or array with a known length
-2. `while` loops for iterating until a logical criterium is met, with an initially unknown number of iterations
+1.  `for` loops for iterating over an iterable construct, like a range or array with a known length
+2.  `while` loops for iterating until a logical criterium is met, with an initially unknown number of iterations
 
-```julia
+``` julia
 a = zeros(5)
 # 5-element Vector{Float64}:
 #  0.0
@@ -1287,12 +1348,14 @@ end
 # 1       2.0
 # 2       8.0
 ```
+
 In a `while` loop, it is critical to manually implement a step (`i += 1` in the example), or the loop will execute indefinitely!
 
 ## Logic and Flow Control
+
 At some point in your code, you will want to execute different instructions depending on some criteria. The most basic form of flow control is the `if` statement:
 
-```julia
+``` julia
 if a < 0
     println("Negative")
 elseif a == 0
@@ -1302,33 +1365,34 @@ else
 end
 ```
 
-The `elseif` and `else` blocks are optional. You can have multiple `elseif` blocks with different criteria. You can also nest `if` statements. The `end` statement is a requirement.
+The `elseif` and `else` blocks are optional. You can have multiple `elseif` blocks with different criteria. You can also nest `if` statements. The `end` statement is a requirement. Unlike many other languages, there is no `then` keyword (`if`...`then`...`else`...`end`).
 
 Julia also offers a short-cut alternative for for simple `if` statements. The following two statements will both print the value `Negative` if `a < 0`.
 
-```julia
+``` julia
 a < 0 && println("Negative")
 a >= 0 || println("Negative")
 ```
+
 This looks a little arcane. It works as follows:
 
 The `&&` operator is a logical `and`. For an `and` statement to be true, both criteria must be true, so if the first statement (before the `&&`) is false, Julia won't bother to evaluate the second statement (after the `&&`), since the whole cannot be true. This is called *short-circuiting evaluation*. This means the `println()` is only executed if `a` is indeed less than zero.
 
 The `||` operator is a logical `or`. For an `or` statement to be true, either of the two criteria must be true, so if the first statement is true, there is no need need to also evaluate the second - the whole is already true. The `println()` will therefore not be executed if `a` is larger than or equal to zero.
 
-::: {.callout-tip}
+::: callout-tip
 To help you remember how *short-circuiting evaluations* work, try this:
 
-`a < 0 && println("Negative")` reads as  `a < 0` AND then `println()`
+`a < 0 && println("Negative")` reads as `a < 0` AND then `println()`
 
-`a >= 0 || println("Negative")` reads as  `a >= 0` OR else `println()`
+`a >= 0 || println("Negative")` reads as `a >= 0` OR else `println()`
 :::
 
 You may very well choose to stick to more readily understandable `if` statements in your code, but these *short-circuit* notations are commonly used and you will encounter them often in other people's code
 
 Finally, when you are only assigning values to a variable based on some criterium, there is the so-called *ternary operator*:
 
-```julia
+``` julia
 a
 # -1
 
@@ -1338,57 +1402,73 @@ b = a > 0 ? "Positive" : "Not positive"
 
 These can be nested as well:
 
-```julia
+``` julia
 b = a > 0 ? "Positive" : (a == 0 ? "Zero" : "Negative")
 # "Negative"
 ```
+
 The parentheses around the final statement are optional, but significantly improves readability.
 
 ## Functions
+
 Functions are the core of any Julia program. Inputs are passed as parameters and any number and type of values can be returned as a tuple. You can also modify the values of array parameters passed to the function. In this case, the function is called *mutating* and it is accepted practise in Julia to end the function name with an exclamation mark (or a bang, if you are American), to indicate that the function mutates one or more parameters. Typically, it would be the first parameter that is mutated.
+
+::: callout-note
+Most people use the terms *parameter* and *argument* interchangeably as they refer to functions. If you want to be strictly formal, then a function is defined to accept *parameters* and you pass specific *argument* values when you call the function. Here, we won't be formal - feel free to use either term.
+:::
 
 There are four ways to declare a function:
 
-1. Full declaration
-```julia
+1.  Full declaration
+
+``` julia
 function myfunc(a, b)
     return a + b
 end
 ```
-The keyword `return` is optional, but it significantly improves readability. In the absence of a `return` statement, Julia will return the last calculated result. You can also have multiple `return` statements in an `if` block. When a `return` is executed (evaluated in Julia parlance), the function will return the specified value and exit.
 
+The keyword `return` is optional, but it significantly improves readability. In the absence of a `return` statement, Julia will return the last calculated result. You can also have multiple `return` statements in, e.g., an `if` block. When a `return` is executed (evaluated in Julia parlance), the function will return the specified value and exit.
 
-2. Short-cut for single line functions
-```julia
+2.  Short-cut for single-line functions
+
+``` julia
 myfunc(a, b) = a + b
 ```
 
-3. Anonymous functions, typically used when passing a single-use function to a higher-level function (which takes a function as input)
-```julia
+3.  Anonymous functions, typically used when passing a single-use function to a higher-level function (a function that takes another function as input)
+
+``` julia
 mysum = sum(x -> x^2 + √x, somearray)
 ```
-Here Julia will apply the function `x -> x^2 + √x` to each entry in the array `somearray` and then adds up the results.
 
-You technically can pass only one parameter to an anonymous function, but since that parameter can be a tuple (and tuples can contain arrays or other tuples), there is practically no limit to the number of parameters passed, e.g.
-```julia
-f = x(x, y) -> 2x/y^2
+Here Julia will apply the function `x -> x^2 + √x` to each entry in the array `somearray` and then add up the results.
+
+You technically can pass only one parameter to an anonymous function, but since that parameter can be a tuple (and tuples can contain scalars. arrays or even other tuples), there is practically no limit to the number of parameters passed, e.g.
+
+``` julia
+f = (x, y) -> 2x/y^2
 ```
-Here we alo assign the result of the function definition to a variable, `f`, which means we can later call `f(x, y)`. There is really no reason to do this. Rather use the short-cut function definition above.
 
-4. Do blocks (similar to anonymous functions, but for multi-line functions)
-```julia
+Here we also assign the result of the function definition to a variable, `f`, which means we can later call `f(x, y)`. There is really no reason to do this. Rather use the short-cut function definition above.
+
+4.  Do blocks (similar to anonymous functions, but for multi-line functions)
+
+``` julia
 open("myfile.txt", "w") do io
     write(io, "Hello world!")
 end
 ```
+
 Here, there are a few things to pay attention to:
 
-- We are calling the higher-level function `open()`, which takes another function as its first parameter. The `do` block **ALWAYS** passes the specified (anonymous) function to the first parameter of the calling function. The nominal syntax for `open()` is `open(f::Function, args...; kwargs...)`. The function, `f` is specified by the `do` block.
-- We pass the parameter `io` to the function be specifying `io` next to the keyword `do`. This is similar to the `x -> ...` in an anonymous function, here we effectively have `io -> ...`
+-   We are calling the higher-level function `open()`, which takes another function as its first parameter. The `do` block **ALWAYS** passes the specified (anonymous) function to the first parameter of the calling function. The nominal syntax for `open()` is `open(f::Function, args...; kwargs...)`. The function, `f` is specified by the `do` block.
+-   We pass the parameter `io` to the function be specifying `io` next to the keyword `do`. This is similar to the `x -> ...` in an anonymous function, here we effectively have `io -> ...`
 
 ### Passing Values to Functions and Returning Results
 
-In all of the examples so far, we have passed values to the functions. These values are called *parameters* or *arguments* and there are two types of parameters in Julia: positional parameters and keyword arguments.
+In all of the examples so far, we have passed values to the functions. These values are called *parameters* or *arguments*[^3] and there are two types of parameters in Julia: positional parameters and keyword arguments.
+
+[^3]: See the previous comment on this - the terms are often used interchangeably
 
 #### Positional parameters
 
@@ -1398,7 +1478,7 @@ Positional parameters can have default values: `f(x, y=2)`. We can now either ca
 
 Multiple parameters can have default values, e.g. `f(x, y=2, z = 3)`. If we now call `f(2)`, `y` and `z` use their default values. What happens when we call `f(2, 10)`?
 
-```julia
+``` julia
 function f(x, y=2, z=4)
     println(x)
     println(y)
@@ -1415,13 +1495,16 @@ f(2, 10)
 # 10
 # 4
 ```
-We see that the second value is passed to `y`, since it is the second positional parameter. Positional values are always passed left to right, then default values are used. So how would we pass values for `x` and `z` and have `y` use its default value? The answer is keyword arguments.
+
+We see that the second value is passed to `y`, since it is the second positional parameter. Positional values are always assigned left to right, then default values are used for what is left. So how would we pass values for `x` and `z` and have `y` use its default value? The answer is keyword arguments.
 
 #### Keyword arguments
 
-Keyword arguments (a.k.a. keyword parameters, a.k.a. kwargs) are identified by name when passing values to a function. To define them, we first list the positional parameters, then a semi-colon, then the keyword arguments. Keyword arguments **must** all have default values assigned to them.
+Keyword arguments (a.k.a. keyword parameters, a.k.a. *kwargs*[^4]) are identified by name when passing values to a function. To define them, we first list the positional parameters, then a semi-colon, then the keyword arguments. Keyword arguments **must** all have default values assigned to them.
 
-```julia
+[^4]: In the spirit of computer science (and technical fields in general) the least understandable option - kwargs - is also the most used one. Go figure.
+
+``` julia
 function f(x; y=2, z=4)
     println(x)
     println(y)
@@ -1436,7 +1519,7 @@ f(2)
 
 So, as expected, `y` and `z` are using their default values. We can now decide to override the defaults for `y`, `z` or both:
 
-```julia
+``` julia
 f(2, z=3)
 # 2       
 # 2
@@ -1450,7 +1533,7 @@ f(2, y=5, z=10)
 
 Since `x` is a positional parameters, a value must always be passed for it, or we get an error:
 
-```julia
+``` julia
 f(y=5, z=10)
 # ERROR: MethodError: no method matching f(; y::Int64, z::Int64)
 
@@ -1459,22 +1542,22 @@ f(y=5, z=10)
 #    @ Main d:\JuliaCode\Julia4ER\Julia for Engineering Research\scrathpad.jl:42
 ```
 
-:::{.callout-note}
-It is common to find that positional and keyword arguments are separated with a semi-colon at the point where the function is called, e.g. `f(2; y=3, z=5)`. This is just done to emphasize that the parameters after the semi-colon are kwargs, but it is not required. A comma will do just fine.
+::: callout-note
+It is common to find that positional and keyword arguments are separated with a semi-colon at the point where the function is called, e.g. `f(2; y=3, z=5)`. This is just done to emphasise that the parameters after the semi-colon are kwargs, but it is not required. A comma will do just fine.
 :::
 
 #### Returning Results
 
-To return values from a function, there are two options:
+As mentioned above, to return values from a function, there are two preferred options:
 
-- Use the keyword `return`
-- Mutate (modify) an array passed as parameter to the function
+-   Use the keyword `return`
+-   Mutate (modify) an array passed as parameter to the function
 
 Functions in Julia will always return a value. Either there is an explicit `return` statement, or the last calculated value is automatically returned. It is good practise to always explicitly return a value. If your function returns nothing, then use `return nothing` to prevent an unexpected and unintended value from being returned.
 
-You can have multiple `return` statements, but the first one te execute will terminate the function and return to the line after the call to the function.
+You can have multiple `return` statements, but the first one to execute will terminate the function and return to the line after the call to the function.
 
-```julia
+``` julia
 function isnotnegative(x)
     if x >= 0
         return true
@@ -1483,9 +1566,10 @@ function isnotnegative(x)
     end
 end
 ```
+
 or more concisely
 
-```julia
+``` julia
 function isnotnegative(x)
     return x >= 0
 end
@@ -1493,7 +1577,7 @@ end
 
 This is more understandable than the equivalent:
 
-```julia
+``` julia
 function isnotnegative()
     x >= 0
 end
@@ -1503,7 +1587,7 @@ Julia uses *pass-by-sharing* for parameters passed to functions. If you don't kn
 
 The practical implications however are fairly simply to understand. Parameters are immutable - you cannot modify them:
 
-```julia
+``` julia
 function trychangeing(x)
     println("Passed value: $x")
     x = 10
@@ -1527,11 +1611,11 @@ println("Value at call site: $a")
 # Value at call site: [1]
 ```
 
-What happens is that Julia creates a new, local variable in the scope of the function and assigns it the value of the parameter that was passed. You can change the values of the parameters, but that does not affect the variables that were passed to the function - `x` and `a` in the examples.
+What happens is that Julia creates a new, local variable in the scope of the function, and assigns it the value of the argument that was passed. You can change the values of the parameters, but that does not affect the variables that were passed to the function - `x` and `a` in the examples above.
 
-How do you then mutate an argument? You cannot change scalar values at all. Neither can you change an array. But the value of an array is just a pointer to some data that it contains, and you *can* change that data:
+How do you then mutate an argument? You cannot change scalar values at all. Neither can you change an array. But the value of an array is just a pointer to some data that it contains, and you *can* change *that* data:
 
-```julia
+``` julia
 function canchange!(x)
     println("Passed value: $x")
     x[1] = -10
@@ -1546,13 +1630,14 @@ canchange!(a)
 println(a)
 [-10, 2, 3]
 ```
-:::{.callout-note}
-Note the addition of the exclamation mark (bang, for our American friends) to the name of the function. This is not a Julia requirement, just good manners. We inform the user of the code that one or parameter will be mutated.
+
+::: callout-note
+Note the addition of the exclamation mark (or "bang", for our American friends) to the name of the function. This is not a Julia requirement, just good manners. We inform the user of the code that one or parameter will be mutated. By convention, this will be the first parameter.
 :::
 
 A function returns only one value. What then if you need to return more than one result? Simply return them as a tuple and unpack them at the call site:
 
-```julia
+``` julia
 function sqr_two(a, b)
     return a^2, b^2 # The parentheses around the tuple are optional
 end
@@ -1564,9 +1649,9 @@ println("a2 = $a2 and b2 = $b2."
 
 #### Slurping and Splatting - Variable number of positional arguments
 
-Julia uses the `...` operator to *slurp* and *splat* values. Slurping means combining multiple scalar values into an array (slurping them up) and splatting means breaking an array into a number of scalar values. While this is sometimes used in other places, the most common application is to allow a variable number of parameters to be passed to a function.
+Julia uses the `...` operator to *slurp* and *splat* values. Slurping means combining multiple scalar values into an array or tuple (slurping them up) and splatting means breaking an array or tuple into a number of scalar values. While this is sometimes used in other places, the most common application is to allow a variable number of parameters to be passed to a function.
 
-```julia
+``` julia
 function confused(a, b, c...)
     println("a is $a")
     println("b is $b")
@@ -1581,7 +1666,7 @@ confused(1, 2, 3, 4, 5)
 
 Splatting allows an array to be passed to a function that expects a number of scalars:
 
-```julia
+``` julia
 function confused2(a, b, c)
     println("a is $a")
     println("b is $b")
@@ -1596,19 +1681,20 @@ confused2(x...)
 
 x = [1, 2, 3, 4]
 confused2(x...)
-# ERROR: MethodError: no method matching confused(::Int64, ::Int64, ::Int64, ::Int64)
+# ERROR: MethodError: no method matching confused2(::Int64, ::Int64, ::Int64, ::Int64)
 
 # Closest candidates are:
-#   confused(::Any, ::Any, ::Any)
+#   confused2(::Any, ::Any, ::Any)
 # ...
 ```
+
 The last example results in an error, as there is no version of the function that accepts four parameters.
 
-
 ## Type Stability and Fast Code
- Being able to change the type of a variable can be useful, but it does also open the door to something that can cause slowdown in your code: **type instability**. This is when the type of x changes during the execution of your code, making many of the optimisations Julia could do impossible. Instead, additional code is required to handle the type changes. Keep a look-out for something like this:
 
-```julia
+Being able to change the type of a variable can be useful, but it does also open the door to something that can cause slowdown in your code: **type instability**. This is when the type of x changes during the execution of your code, making many of the optimisations Julia could do, impossible. Instead, additional code is required to handle the type changes. Keep a look-out for something like this:
+
+``` julia
 function myfunc(n)
     sum = 0
     for i in 1:n
@@ -1622,47 +1708,50 @@ At first glance, there is nothing strange about this code. If you take a closer 
 
 Julia has a lot of code analyses tools. One of which is `@code_warntype`:
 
-```julia
+``` julia
 @code_warntype myfunc(5)
-# MethodInstance for myfunc(::Int64)
-#   from myfunc(n) in Main at REPL[20]:1
-# Arguments
-#   #self#::Core.Const(myfunc)
-#   n::Int64
-# Locals
-#   @_3::Union{Nothing, Tuple{Int64, Int64}}
-#   sum::Union{Float64, Int64}
-#   i::Int64
-# Body::Union{Float64, Int64}
-# 1 ─       (sum = 0)
-# │   %2  = (1:n)::Core.PartialStruct(UnitRange{Int64}, Any[Core.Const(1), Int64])
-# │         (@_3 = Base.iterate(%2))
-# │   %4  = (@_3 === nothing)::Bool
-# │   %5  = Base.not_int(%4)::Bool
-# └──       goto #4 if not %5
-# 2 ┄ %7  = @_3::Tuple{Int64, Int64}
-# │         (i = Core.getfield(%7, 1))
-# │   %9  = Core.getfield(%7, 2)::Int64
-# │         (sum = sum + 1.5)
-# │         (@_3 = Base.iterate(%2, %9))
-# │   %12 = (@_3 === nothing)::Bool
-# │   %13 = Base.not_int(%12)::Bool
-# └──       goto #4 if not %13
-# 3 ─       goto #2
-# 4 ┄       return sum
+
+MethodInstance for myfunc(::Int64)
+  from myfunc(n) in Main at REPL[20]:1
+Arguments
+  #self#::Core.Const(myfunc)
+  n::Int64
+Locals
+  @_3::Union{Nothing, Tuple{Int64, Int64}}
+  sum::Union{Float64, Int64}
+  i::Int64
+Body::Union{Float64, Int64}
+1 ─       (sum = 0)
+│   %2  = (1:n)::Core.PartialStruct(UnitRange{Int64}, Any[Core.Const(1), Int64])
+│         (@_3 = Base.iterate(%2))
+│   %4  = (@_3 === nothing)::Bool
+│   %5  = Base.not_int(%4)::Bool
+└──       goto #4 if not %5
+2 ┄ %7  = @_3::Tuple{Int64, Int64}
+│         (i = Core.getfield(%7, 1))
+│   %9  = Core.getfield(%7, 2)::Int64
+│         (sum = sum + 1.5)
+│         (@_3 = Base.iterate(%2, %9))
+│   %12 = (@_3 === nothing)::Bool
+│   %13 = Base.not_int(%12)::Bool
+└──       goto #4 if not %13
+3 ─       goto #2
+4 ┄       return sum
 ```
 
 Like when we looked at the LLVM code generated for a function, this may seem intimidating, but the important bits are these:
 
-```julia
+``` julia
 sum::Union{Float64, Int64}
 ```
+
 and
-```julia
+
+``` julia
 Body::Union{Float64, Int64}
 ```
 
-::: {.callout-note}
+::: callout-note
 In the REPL these are helpfully printed in red to draw your attention.
 :::
 
@@ -1672,8 +1761,8 @@ To learn more about type stability and many other useful tips to help you write 
 
 The main things to consider, if you want fast code are:
 
-1. The fastest code is code that you don't need to execute. **Better algorithms always trump more optimised code**
-2. Avoid type instability in your code.
-3. Avoid unnecessary memory allocation by re-using arrays where possible.
+1.  The fastest code is code that you don't need to execute. **Better algorithms always trump more optimised code**
+2.  Avoid type instability in your code.
+3.  Avoid unnecessary memory allocation by re-using arrays where possible.
 
 Once you have these issues under control, learning to properly benchmark your code (using [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl)) will allow you to fine tune the performance of your code. Writing fast code is mostly about *not writing slow code*.

@@ -2,9 +2,9 @@
 title: "Optimisation"
 ---
 
-
 ## Available packages
-There are many optimisation packages available in Julia, some for general purposes, other for very specific applications. The most commonly used ones include [Optim](https://github.com/JuliaNLSolvers/Optim.jl), [NLopt](https://github.com/JuliaOpt/NLopt.jl), [JuMP](https://jump.dev/), [Convex](https://github.com/jump-dev/Convex.jl), [BlackBoxOptim](https://github.com/robertfeldt/BlackBoxOptim.jl) and [IntervalOptimisation](https://juliaintervals.github.io/pages/packages/intervaloptimisation/). 
+
+There are many optimisation packages available in Julia, some for general purposes, other for very specific applications. The most commonly used ones include [Optim](https://github.com/JuliaNLSolvers/Optim.jl), [NLopt](https://github.com/JuliaOpt/NLopt.jl), [JuMP](https://jump.dev/), [Convex](https://github.com/jump-dev/Convex.jl), [BlackBoxOptim](https://github.com/robertfeldt/BlackBoxOptim.jl) and [IntervalOptimisation](https://juliaintervals.github.io/pages/packages/intervaloptimisation/).
 
 Optim and NLopt include several local optimisers. This include gradient free methods, such as Nelder-Mead, Particle Swarm and Simulated Annealing. There are gradient-based methods, such as Conjugated Gradient, Gradient Descent and BFGS/LBFGS, and finally methods that require the Hessian, like Newton's method.
 
@@ -14,23 +14,25 @@ BlackBoxOptim contains a variety of global optimisation algorithms (within the s
 
 Which package you use will depend on the type of problem you are solving and your personal preferences. For typical local optimisations in process engineering, Optim is very suitable. If you are doing a plant-wide optimisation, JuMP is a very powerful tool. If the function your are optimising has many local minima, BlackBoxOptim and IntervalOptimisation are both very robust. IntervalOptimisation also comes with mathematical guarantees of finding the global optimum in the search area.
 
-Unfortunately, this also implies that you would need to learn how to use several packages. This is were the SciML organisation again is very helpful. Their [Optimization](https://docs.sciml.ai/Optimization/stable/)^[This package was originally called GalacticOptim to indicate that it includes a galaxy of optimisers, but the name was shortened due to popular demand.] package provides a unified front-end for several other optimisation packages, including Optim, NLopt, BlackBoxOptim and all of the external solvers available to JuMP and Convex. There full [list](https://docs.sciml.ai/Optimization/stable/#Overview-of-the-Optimizers) includes several others as well. Optimizers can also be used with Flux - a deep learning package - to train neural networks.
+Unfortunately, this also implies that you would need to learn how to use several packages. This is were the SciML organisation again is very helpful. Their [Optimization](https://docs.sciml.ai/Optimization/stable/)[^1] package provides a unified front-end for several other optimisation packages, including Optim, NLopt, BlackBoxOptim and all of the external solvers available to JuMP and Convex. There full [list](https://docs.sciml.ai/Optimization/stable/#Overview-of-the-Optimizers) includes several others as well. Optimizers can also be used with Flux - a deep learning package - to train neural networks.
+
+[^1]: This package was originally called GalacticOptim to indicate that it includes a galaxy of optimisers, but the name was shortened due to popular demand.
 
 As with the other sections in this tutorial, we shall look only at the unified front-end of Optimisation. For each of the other packages, the documentation linked to above will provide information on how to use the package and several examples.
 
 ## Optimization.jl
-To use the various optimiser packages with Optimization, you must also install and use packages that link the external solvers with the Optimization interface. For example, to use the solvers in Optim, you would need to use the Optimization package along with the OptimizationOptimJL  package, and to use BlackBoxOptim, you would use the OptimizationBBO package along with Optimization. These additional packages are used in order to prevent the need for having to install **all** of the solver packages as dependencies for Optimization. The specific linker packages needed are given in the documentation section for *Optimizer Packages*.
+
+To use the various optimiser packages with Optimization, you must also install and use packages that link the external solvers with the Optimization interface. For example, to use the solvers in Optim, you would need to use the Optimization package along with the OptimizationOptimJL package, and to use BlackBoxOptim, you would use the OptimizationBBO package along with Optimization. These additional packages are used in order to prevent the need for having to install **all** of the solver packages as dependencies for Optimization. The specific linker packages needed are given in the documentation section for *Optimizer Packages*.
 
 For our example, we use the famous [Rosenbrock function](https://en.wikipedia.org/wiki/Rosenbrock_function). This function is notorious for pushing optimisers to their limit due to its large flat section around the optimum at (1.0, 1.0), as well as steep slopes away from the optimum.
 
-$$f(x, y) = (a - x)^2 + b(y - x^2)^2$$
-with $a = 1$ and $b = 100$
+$$f(x, y) = (a - x)^2 + b(y - x^2)^2$$ with $a = 1$ and $b = 100$
 
 ![Rosenbrock's function in two dimensions](/img/rosebrock.svg)
 
 In this example (taken from the introductory tutorials of Optimization.jl), we use two optimisers, Nelder-Mead from Optim and an Adaptive Differential Evolution method from BlackBoxOptim. We also time both of these solvers using `@btime` from BenchmarkTools.
 
-```julia
+``` julia
 using Optimization, OptimizationOptimJL, OptimizationBBO, BenchmarkTools
 
 rosenbrock(u, p) = (p[1] - u[1])^2 + p[2] * (u[2] - u[1]^2)^2
@@ -59,6 +61,6 @@ sol = solve(prob, BBO_adaptive_de_rand_1_bin_radiuslimited())
 #  0.9999999999998918
 ```
 
-As we see,  both methods could find the optimum for this function, although the genetic algorithm method from BlackBoxOptim took about 14x longer. This is typical for genetic algorithm methods. They are not fast, but they are extremely robust and will often still find the optima where other methods will fail.
+As we see, both methods could find the optimum for this function, although the genetic algorithm method from BlackBoxOptim took about 14x longer. This is typical for genetic algorithm methods. They are not fast, but they are extremely robust and will often still find the optima where other methods will fail.
 
 The benefit of using Optimization.jl as a front-end is indeed in these cases of difficult to optimise functions, since you can easily change algorithms to find the best methods for your specific problem.

@@ -8,7 +8,7 @@ It is often required to solve systems of non-linear equations in engineering. As
 
 A popular package is [`NLsolve.jl`](https://github.com/JuliaNLSolvers/NLsolve.jl). This package provides three methods: Trust region, Newton's method with optional line search, and Anderson acceleration. It can also solve fixed-point problems.
 
-Alternatively, you could use [`JuMP`](https://jump.dev/) - a **very** powerful mathematical programming modeling language, built on top of Julia, that can call several free and commercial solvers. In this case, set up a problem with non-linear constraints matching your system and a constant value objective function.
+Alternatively, you could use [`JuMP`](https://jump.dev/) - a **very** powerful mathematical programming modelling language, built on top of Julia, that can call several free and commercial solvers. In this case, set up a problem with non-linear constraints matching your system and a constant value objective function.
 
 There are also several less popular packages available.
 
@@ -22,12 +22,12 @@ The `NonlinearSolve.jl` package can be used to solve three types of problem:
 
 1.  Interval root-finding (bracketing) problems, where a scalar root is found within a specified interval: find $t ∈ [tₗ, tₕ]$ such that $f(t) = 0$\
 2.  Solving a system of non-linear equations, i.e. find $\mathbf{u}$ such that $f(\mathbf{u}) = \mathbf{0}$
-3.  Solving stead-state problems, i.e. solve $u' = f(u, t) = f(u, \infty) = 0$
+3.  Solving steady-state problems, i.e. solve $u' = f(u, t) = f(u, \infty) = 0$
 
 To solve a problem, you need to provide a function that defines the system of equations. This can take one of two forms:
 
--   A non-mutating function, `f(t, p)`, which returns `u`
--   A mutating function, `f!(u, t, p)`, which mutates the parameter `u`
+-   A non-mutating function (*out-of-place*), `f(t, p)`, which returns `u`
+-   A mutating function (*in-place*), `f!(u, t, p)`, which mutates the parameter `u`
 
 You then define either an `IntervalNonlinearProblem`, `NonlinearProblem` or `SteadyStateProblem`, depending on which of the three types of problems above you want to solve.
 
@@ -35,7 +35,7 @@ Finally, you call `solve()` to get the result.
 
 As a simple demonstration, we shall calculate the boiling point of water, using the Antoine correlation with parameters from NIST. We calculate the boiling point by finding the root of a function that is the difference between the vapour pressure at a specified temperature and 1 atm. We do this in two ways, using the Newton-Raphson method from a starting guess and using the *regula falsi* method to find roots in a specified interval.
 
-```julia
+``` julia
 using NonlinearSolve
 
 """
@@ -71,9 +71,9 @@ We can also solve for the steady-state solution of a differential equation:
 
 $$u'(t) = u(t) - u^2(t)$$
 
-with $u(0) = 1.5$. This ODE will have a steady-state at $u = 0$.
+with $u(0) = 1.5$. This ODE will have a steady-state at $u = 1$.
 
-```julia
+``` julia
 using NonlinearSolve, DifferentialEquations
 
 function ssode(u, p, t)

@@ -5,23 +5,24 @@ title: "Modeling Toolkit and Symbolics"
 Up to now, when we needed to solve a system of ODEs or non-linear equations, for example, we have programmed these and passed them to a solver. If you are comfortable with writing code, this is not a problem. There is however a few tools available in Julia that can make the task a lot easier, both for experienced and novice programmers - a modern Computer Algebra System, [Symbolics.jl](https://symbolics.juliasymbolics.org/stable/).
 
 ## Symbolics.jl and the Symbolics Ecosystem
-Symbolics allows you to simply specify the equations for your system and then do symbolic manipulations and simplifications to the system. Since Symbolics is written in pure Julia, it interacts seamlessly with normal Julia code and you can do anything with a symbolic variable you would do with any other Julia variable. This gives great flexibility. It doesn't stop there however - it will also generate a Julia function for you - optimised and parallelised, if specified. 
+
+Symbolics allows you to simply specify the equations for your system and then do symbolic manipulations and simplifications to the system. Since Symbolics is written in pure Julia, it interacts seamlessly with normal Julia code and you can do anything with a symbolic variable you would do with any other Julia variable. This gives great flexibility. It doesn't stop there however - it will also generate a Julia function for you - optimised and parallelised, if specified.
 
 In addition, there are several other packages that build on Symbolics:
 
-- **ModelingToolkit**: Provides the tools to symbolically specify common numerical systems like ODEs, PDEs, non-linear systems, control problems, causal and acausal modelling etc.
-- **Catalyst**: Provides tools for specifying reaction networks and kinetics
-- **DataDrivenDiffEq**: Automatic identifications of ODEs/DAEs from data
-- **SymbolicRegression**: Genetic programming to find equations from data
-- **ReversePropagation**: Source-to-source mode automatic differentiation
+-   **ModelingToolkit**: Provides the tools to symbolically specify common numerical systems like ODEs, PDEs, non-linear systems, control problems, causal and acausal modelling etc.
+-   **Catalyst**: Provides tools for specifying reaction networks and kinetics
+-   **DataDrivenDiffEq**: Automatic identifications of ODEs/DAEs from data
+-   **SymbolicRegression**: Genetic programming to find equations from data
+-   **ReversePropagation**: Source-to-source mode automatic differentiation
 
 ## Using Symbolics
+
 This is a very brief introduction to Symbolics. For more detail, refer to the [manual](https://symbolics.juliasymbolics.org/stable/getting_started/).
 
-At the simples level, Symbolics works with symbolic variables and equations. You specify equations with the `@variables` macro and then simply build equations with these symbolic variables. You can simplify equations, using `simplify()`, define and calculate derivates and jacobians etc. If you are using Symbolics in a Jupyter notebook or in Pluto, the equations will be rendered as $LaTeX$. In the REPL or a script, there will be text output. You can also generate $LaTeX$ expressions with the [Latexify](https://korsbo.github.io/Latexify.jl/stable/) package.
+At the simplest level, Symbolics works with symbolic variables and equations. You specify equations with the `@variables` macro and then simply build equations with these symbolic variables. You can simplify equations, using `simplify()`, define and calculate derivatives and Jacobians etc. If you are using Symbolics in a Jupyter notebook or in Pluto, the equations will be rendered as $LaTeX$. In the REPL or a script, there will be text output. You can also generate $LaTeX$ expressions with the [Latexify](https://korsbo.github.io/Latexify.jl/stable/) package.
 
-
-```julia
+``` julia
 using Symbolics
 
 @variables x, y
@@ -64,6 +65,7 @@ latexify(A)
 # \end{equation}
 # "
 ```
+
 The last result, when rendered in $LaTeX$, or in a Jupyter notebook, for example, looks like this:
 
 $$
@@ -77,11 +79,11 @@ y & 2 x y & x^{2} y \\
 \end{equation}
 $$
 
-So, we can do basic math and calculus and make pretty equations for reports. What else can we do? Well, a whole lot, as it turns out. Symbolics is a full-featured CAS (Computer Algebra System). Whats more, since it is fully written in Julia, it interacts with the rest of Julia in a pretty seamless manner. Anything you would do with a Julia variable, you can also do with a symbolic (type `Num`) variable.
+So, we can do basic mathematics and calculus and make pretty equations for reports. What else can we do? Well, a whole lot, as it turns out. Symbolics is a full-featured CAS (Computer Algebra System). Whats more, since it is fully written in Julia, it interacts with the rest of Julia in a pretty seamless manner. Anything you would do with a Julia variable, you can also do with a symbolic (type `Num`) variable.
 
-For example, we can call a function:
+For example, we can call a normal, generic function:
 
-```julia
+``` julia
 f(u) = 2*u[1] - u[2]
 # f (generic function with 1 method)
 
@@ -91,7 +93,7 @@ f([x, y])
 
 We can also define more complicated systems, where the variables are dependent on each other:
 
-```julia
+``` julia
 using Symbolics, Latexify
 
 @variables t x(t) y(t) # Declare an unknown dependency on t for x and y
@@ -114,20 +116,19 @@ latexify(expand_derivatives(Dt(z)))
 # t \frac{\mathrm{d} x\left( t \right)}{\mathrm{d}t} + t^{2} \frac{\mathrm{d} y\left( t \right)}{\mathrm{d}t} + 2 t y\left( t \right) + x\left( t \right)
 # \end{equation}
 # "
-
 ```
-Where the result from the last line is:
-$$
+
+Where the result from the last line is: $$
 \begin{equation}
 t \frac{\mathrm{d} x\left( t \right)}{\mathrm{d}t} + t^{2} \frac{\mathrm{d} y\left( t \right)}{\mathrm{d}t} + 2 t y\left( t \right) + x\left( t \right)
 \end{equation}
 $$
 
-In other words, since we indicated that `x` and `y` depend on `t`, this information was included in the derivative calculation. 
+In other words, since we indicated that `x` and `y` depend on `t`, this information was included in the derivative calculation.
 
 The final, but most important part of Symbolics is its ability to convert symbolic equations into Julia code.
 
-```julia
+``` julia
 
 using Symbolics
 
@@ -152,17 +153,17 @@ Base.remove_linenums!.(f_expr)
 #   end), :(function (ˍ₋out, ˍ₋arg1)
 #       begin
 #           begin
-#               #= C:\Users\Braam\.julia\packages\SymbolicUtils\H684H\src\code.jl:399 =# @inbounds begin
-#                       ˍ₋out[1] = (+)(ˍ₋arg1[2], (^)(ˍ₋arg1[1], 2))
-#                       ˍ₋out[2] = (+)(ˍ₋arg1[1], (^)(ˍ₋arg1[2], 2))
-#                       nothing
-#                   end
+#               @inbounds begin
+#                   ˍ₋out[1] = (+)(ˍ₋arg1[2], (^)(ˍ₋arg1[1], 2))
+#                   ˍ₋out[2] = (+)(ˍ₋arg1[1], (^)(ˍ₋arg1[2], 2))
+#                   nothing
+#               end
 #           end
 #       end
 #   end))
 ```
 
-:::{.callout-note}
+::: callout-note
 The `Base.remove_linenums!()` call just removes a lot of additional line number information form the result to make it more readable. You would not normally bother with this.
 :::
 
@@ -170,7 +171,7 @@ Don't worry if this looks unlike anything related to Julia code you have ever se
 
 So, what is going on here? The first thing to note is that the expression contains a tuple that holds two functions. The first starts with `function (ˍ₋arg1,)`, while the second starts with `function (ˍ₋out, ˍ₋arg1)`. If you look more closely at the code, you will see that the functions (we'll call then `func1` and `func2!` here) are equivalent to:
 
-```julia
+``` julia
 function func1(u)
     return u[2] + u[1]^2, u[1] + u[2]^2
 end 
@@ -180,11 +181,12 @@ function func2!(z, u)
     z[2] = u[1] + u[2]^2
 end
 ```
+
 Both functions will do the same calculations, but `func1` returns the values, which requires allocating an array/tuple to store it in, while `func2!` mutates the first parameter to return the value. These are simply two version of the same function. The first is called an *out-of-place* function and the second, an *in-place* function. Sound familiar? We saw these in the chapter on differential equations.
 
 How do we use them? We need to tell Julia to evaluate the expression to generate the code:
 
-```julia
+``` julia
 myf1 = eval(f_expr[1])
 # #7 (generic function with 1 method)
 
@@ -212,15 +214,16 @@ z
 This is the key functionality from Symbolics we want to use. But we won't use it directly. Rather, we shall use the [ModelingToolkit](https://docs.sciml.ai/ModelingToolkit/stable/) package, that builds on Symbolics and makes it easy to specify systems of equations, differential or non-linear, and then solve them with numerical solvers.
 
 ## Modeling Toolkit
+
 ### Non-linear system
+
 Let's start with an example of a simple set of non-linear equations:
 
-$$y = 2x^{2} - 7$$
-$$y = 10\sqrt{x}$$
+$$y = 2x^{2} - 7$$ $$y = 10\sqrt{x}$$
 
 ![](img/mtkexample1.svg)
 
-```julia
+``` julia
 using ModelingToolkit, NonlinearSolve
 
 @variables x y
@@ -256,6 +259,7 @@ We need a variable to refer to the object created by `NonlinearSystem`. Internal
 Next, we create a `NonlinearProblem`, just like we did in the chapter on solving non-linear systems. Instead of passing a function that encodes the system of equations, we pass the object created by `NonlinearSystem`. Then we solve the problem, exactly like before.
 
 ### Solving ODEs
+
 The example above was a fairly straightforward problem. `ModelingToolkit` can however do a lot more for us. To illustrate some of the *magic*, we'll look at an example from the `ModelingToolkit` documentation.
 
 Here we have a system three of ODEs, the first of which is a second order ODE.
@@ -266,7 +270,7 @@ $$\begin{align}
 \frac{\mathrm{d} z\left( t \right)}{\mathrm{d}t} =& x\left( t \right) y\left( t \right) - \beta z\left( t \right)
 \end{align}$$
 
-```julia
+``` julia
 using ModelingToolkit, DifferentialEquations, Plots
 
 @parameters σ ρ β
@@ -303,21 +307,21 @@ Like in our previous example, we now need to ask `ModelingToolkit` to build the 
 
 As it happens, the full call would be:
 
-```julia
+``` julia
 @named sys = ODESystem(eqs, t, [x, y, z], [σ, ρ, β])
 ```
 
-The parameters are the equations, the independent variables, the dependent variables and the parameters. `ModelingToolkit` is clever enough to figure out which is which for ODESystems. This doesn't work for `NonlinearSystems` yet, but one would imaging this functionality is on its way.
+The parameters are the equations, the independent variables, the dependent variables and the parameters. `ModelingToolkit` is clever enough to figure out which is which for ODESystems. This doesn't work for `NonlinearSystems` yet, but one would image this functionality is on its way.
 
 The next part is where the magic happens:
 
-```julia
+``` julia
 sys = structural_simplify(sys)
 ```
 
 We call the all-singing, all-dancing `structural_simplify()`, which is really the heart of `ModelingToolkit`. It will do a whole host of transformations of your system, using everything available in `Symbolics`. Let's look at the intermediate results to understand what it is doing for us:
 
-```julia
+``` julia
 @named sys = ODESystem(eqs, t, [x, y, z], [σ, ρ, β])
 
 # Model sys with 3 equations
@@ -357,7 +361,7 @@ equations(sys)
 #  Differential(t)(xˍt(t)) ~ xˍtt(t)
 ```
 
-From the results of each line, you can see that `structural_simplify()` has converted our system of three first and second order ODEs into a system of four first order ODEs. We can inspect these equations with the `equations()` function, and get the pretty versions with `latexify()`:
+From the results of each line, you can see that `structural_simplify()` has converted our system of two first- and one second-order ODEs into a system of four first order ODEs. We can inspect these equations with the `equations()` function, and get the pretty versions with `latexify()`:
 
 $$\begin{align}
 \frac{\mathrm{d} y\left( t \right)}{\mathrm{d}t} =&  - y\left( t \right) + \left( \rho - z\left( t \right) \right) x\left( t \right) \\
@@ -368,7 +372,7 @@ $$\begin{align}
 
 Wait a minute! Aren't we missing some details on the last two equations? What is `x_tt(t)` defined as? For reasons that are as clear as mud, you need to also call `observed(sys)` to see the missing bits:
 
-```julia
+``` julia
 observed(sys)
 # 1-element Vector{Equation}:
 #  xˍtt(t) ~ σ*(y(t) - x(t))
@@ -376,7 +380,7 @@ observed(sys)
 
 The rest of the code should be familiar. We specify the initial values and the time span for the integration, create an ODEProblem and call the solver. The only part that will be new is in the call to `ODEProblem`:
 
-```julia
+``` julia
 prob = ODEProblem(sys, u0, tspan, p, jac = true)
 ```
 

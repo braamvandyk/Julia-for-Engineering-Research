@@ -8,49 +8,52 @@ There are several plotting packages available in Julia. We shall focus only on o
 
 Other popular plotting packages include [Makie](https://docs.makie.org/stable/) (with the [AlgebraOfGraphs](https://aog.makie.org/stable/) add-on for statistical analysis plotting) and [Gadfly](http://gadflyjl.org/stable/) - similar to R's ggplot, which are left for discovery by the reader.
 
-`Plots.jl` is a generic front-end for several plotting backends. These can also be used directly, but Plots allows a single front-end and you can switch the backend with a single line of code without having to modify the actual calls to plotting functions. `Plots.jl` also has a powerful recipe system, which is widely supported. Package authors can define recipes for plots of the data types defined in their packages, which will then automatically generate sensible plots with the normal `plot()` function.
+`Plots.jl` is a generic front-end for several plotting back-ends. These can also be used directly, but Plots allows a single front-end and you can switch the back-end with a single line of code without having to modify the actual calls to plotting functions. `Plots.jl` also has a powerful recipe system, which is widely supported. Package authors can define recipes for plots of the data types defined in their packages, which will then automatically generate sensible plots with the normal `plot()` function.
 
-### Backends Supported
-The following backends are supported:
+### Back-ends Supported
 
-1. GR (default). Supports all features. Best choice for speed.
-2. Plotly / PlotlyJS. Best choice for interactivity. The plot is generated in a browser. Plotly requires an internet connection, while PlotlyJS runs locally.
-3. PythonPlot. Julia front-end for PyPlot, the Python front-end for Matplotlib. When installing, this will also install a private Python installation (will use the same installation as Jupyter).
-4. UnicodePlots. Plots generated with Unicode (text) characters.
-5. Gaston. A Julia front-end for the GnuPlot backend.
-6. InspectDR
-7. PGFPlotsX. Plotting engine based on TikZ - popular for $LaTeX$ documents
+The following back-ends are supported:
+
+1.  GR (default). Supports all features. Best choice for speed. Not currently interactive, but this feature is in development.
+2.  Plotly / PlotlyJS. Best choice for interactivity. The plot is generated in a browser. Plotly requires an internet connection, while PlotlyJS runs locally.
+3.  PythonPlot. Julia front-end for PyPlot, the Python front-end for Matplotlib. When installing, this will also install a private Python installation (it will use the same installation as Jupyter).
+4.  UnicodePlots. Plots generated with Unicode (text) characters right in the REPL.
+5.  Gaston. A Julia front-end for the GnuPlot back-end.
+6.  InspectDR
+7.  PGFPlotsX. Plotting engine based on TikZ - popular for $LaTeX$ documents
 
 ### Installation
-The `Plots.jl` package installed as a normal package via the package manager. This will also automatically install the `GR.jl` package as a dependency. In order to use the other backends, they must first be installed individually and then they must be activated, e.g.:
 
-```julia
-using Plots # Will use default backend: GR
+The `Plots.jl` package installed as a normal package via the package manager. This will also automatically install the `GR.jl` package as a dependency. In order to use the other back-ends, they must first be installed individually and then they must be activated, e.g.:
+
+``` julia
+using Plots # Will use default back-end: GR
 
 plotlyjs() # Switch to PlotlyJS - previously installed
 # Plots.PlotlyJSBackend()
 
-gr() # Switch back to GR backend
+gr() # Switch back to GR back-end
 # Plots.GRBackend()
 ```
+
 ### General use
 
-For detailed documentation on all the features of Plots.jl, see the [manual](https://docs.juliaplots.org/stable/). 
+For detailed documentation on all the features of Plots.jl, see the [manual](https://docs.juliaplots.org/stable/).
 
 A simple plot is generated with the `plot()` function. An existing plot can be added to with the `plot!()` function. If no plot variable is specified, this will add to the last generated plot. There are also mutating functions to add/modify the axis labels, plot title etc:
 
-- title!()
-- xlabel!()
-- ylabel!()
-- etc.
+-   title!()
+-   xlabel!()
+-   ylabel!()
+-   etc.
 
-You can combine multiple plots in one. By default, the layout is a simple grid, but there is the option to specify complex layouts. 
+You can combine multiple plots in one. By default, the layout is a simple grid, but there is the option to specify complex layouts.
 
 You can save the plot to file. Both `*.png` and `*.svg` formats are available and selected simply by specifying the extension in the filename.
 
 Two examples:
 
-```julia
+``` julia
 using Plots
 
 data1 = rand(5)
@@ -80,9 +83,10 @@ plot(
 
 savefig("plotsexample.svg")
 ```
+
 ![A plot generated with Plots.jl](./img/plotsexample1.svg)
 
-```julia
+``` julia
 data2 = rand(7)
 data3 = rand(6)
 plot(data2, label="Experiment 2", linestyle=:dashdotdot)
@@ -93,12 +97,14 @@ ylabel!("Sample size")
 
 savefig("plotsexample2.svg")
 ```
+
 ![Another plot generated with Plots.jl](./img/plotsexample2.svg)
 
 ### More Advanced Examples
+
 You can also generate contour and surface plots:
 
-```julia
+``` julia
 f(x, y) = x*sin(x) - y^2 * cos(y)
 x = range(0, 5, length=100)
 y = range(0, 3, length=50)
@@ -108,11 +114,16 @@ savefig("img/plotscontour.svg")
 surface(x, y, z)
 savefig("img/plotssurface.svg")
 ```
+
 ![Plots.jl contour plot](./img/plotscontour.svg)
 
 ![Plots.jl surface plot](./img/plotssurface.svg)
 
 The `Plots.jl` package has a LOT more features than is shown here. This includes histograms, heatmaps and many more. See the [Plots.jl](https://docs.juliaplots.org/stable/) manual for details.
+
+:::{.callout-note}
+Those paying attention may have seen the `@.` in the previous example. This means every operator and function call in the line is broadcast automatically. I prefer explicitly broadcasting for clarity, but this is commonly used.
+:::
 
 ### Statistics Plots
 

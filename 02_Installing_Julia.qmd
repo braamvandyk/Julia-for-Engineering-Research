@@ -4,23 +4,27 @@ title: "Installing Julia"
 
 To use Julia, you need two things:
 
-1. The Julia compiler
-2. A code editor
+1.  The Julia compiler
+2.  A code editor
 
 It is also recommended that you consider a few additional tools, although they are optional.
 
 ## Windows Terminal
+
 While not strictly required, installing Windows Terminal is highly recommended. Windows Terminal is a much more modern replacement for the venerable Windows command prompt. It has the same features as a typical Linux terminal and will make your experience of the Julia REPL a lot more pleasant.
 
 If you are going to use Windows Terminal, install it first, from the Microsoft Store. If you then install Julia or Git, they will automatically configure themselves in Windows Terminal.
 
 ## The Julia compiler
+
 There are several ways to install Julia on your machine, whether or not you have local administrator rights. Julia will happily run from a user-only installation, or you can install it for all users on your machine. You can also use a portable (not installed) version.
 
 ### Direct download and install
+
 You can download and install Julia from the official [homepage](www.julialang.org). The 64-bit version is recommended, unless you have a specific reason to want a 32-bit version.
 
 ### Microsoft Store
+
 The recommended way of installing Julia, if this is an option for you, is via the Microsoft Store. Installing Julia this way actually installs JuliaUp, an installation manager for Julia.
 
 JuliaUp allows you to have multiple installations of Julia, e.g., the current release version as well as the current development (pre-release) version.
@@ -29,13 +33,13 @@ You can easily switch between them with a single command-line instruction. Julia
 
 You can install from the Microsoft Store application, or from the command-line with:
 
-```
+```         
 winget install julia -s msstore
 ```
 
 You can then add and manage various Julia installations using the JuliaUp tool, e.g.
 
-```
+```         
 juliaup add release         # add the current release channel
 juliaup add rc              # add current release candidate channel
 juliaup add beta            # add current beta channel
@@ -44,18 +48,20 @@ juliaup default release     # set the version to use
 julia --help                # see the help options
 ```
 
-You can also directly launch a specific installed channel, e.g. 
+You can also directly launch a specific installed channel, e.g.
 
-```
+```         
 julia +rc
 ```
 
 ## Visual Studio Code
+
 The recommended code editor for Julia is Visual Studio Code (VSCode). This is a Microsoft project that is free and partially open-sourced. You can download and install it from the official [homepage](code.visualstudio.com) or via the Microsoft Store.
 
 VSCode will prompt you to install updates, so there is less reason to want to install this from the Microsoft Store. New releases are typically available monthly.
 
 ### The Julia Add-in for VSCode
+
 VSCode is a general-purpose code editor. To use it with Julia, you need to install the Julia add-in from within VSCode. You can also install Python, R, C, Fortran and many other add-ins.
 
 If you are adventurous, you can install the *insider version* of the Julia add-in, but this is not recommended for for typical end-users. The insider version is the pre-release version with newer, but not yet fully tested features.
@@ -65,57 +71,62 @@ The Julia add-in not only links Julia to VSCode seamlessly, but it also provides
 See the [documentation](https://www.julia-vscode.org/docs/stable/) for more information.
 
 ### Other Useful Add-ins
+
 Some add-ins recommended for everyday use are:
 
-- Edit CSV
-- Rainbow CSV
-- SandDance for VSCode
-- SVG
+-   Edit CSV
+-   Rainbow CSV
+-   SandDance for VSCode
+-   SVG
 
-Edit CSV allows for easy editing CSV (Comma-Separated Values) files right within VSCode, so you don't need to go back to Excel for small edits.
+**Edit CSV** allows for easy editing CSV (Comma-Separated Values) files right within VSCode, so you don't need to go back to Excel for small edits.
 
-Rainbow CSV color-codes the columns in CSV files, making it much easier to work with them.
+**Rainbow CSV** colour-codes the columns in CSV files, making it much easier to work with them.
 
-SandDance generates plots of the data in a CSV for quick data exploration.
+**SandDance** generates plots of the data in a CSV for quick data exploration.
 
-SVG allows you to preview SVG (Scalable Vector Graphics) files inside VSCode. Most of the plotting packages can save plots as SVG files, which is recommended, since you can zoom in or out infinitely without loss of quality. Microsoft Office can include SVG files in, e.g., Word and PowerPoint.
+**SVG** allows you to preview SVG (Scalable Vector Graphics) files inside VSCode. Most of the plotting packages can save plots as SVG files, which is recommended, since you can zoom in or out infinitely without loss of quality. Microsoft Office can include SVG files in, e.g., Word and PowerPoint.
 
 For writing technical documents that include running code, e.g., to generate the plots, and to publish these to web pages, .PDF or DOCX documents, among others, consider Quarto (this will require the installation of the [Quarto](https://quarto.org/) program as well as the VSCode add-in)
 
 ## Fonts
-Julia can make full use of Unicode fonts. This means you can use greek letters, emojis or anything else as variable names. Julia will also use common mathematical symbols, although there are alternatives for those who prefer to stick to ASCII. For examples:
 
-```julia
+Julia can make full use of Unicode fonts. This means you can use Greek letters, emojis or anything else as variable names. Julia will also use common mathematical symbols, although there are alternatives for those who prefer to stick to ASCII. For examples:
+
+``` julia
 mass = 1.23
 vol = 2.56
 
 ρ = mass/vol
-if 0.1 <= ρ <= 1.0
+if 0.1 ≤ ρ ≤ 1.0
     if ρ ≈ 0.48
         println("Correct")
     end
 end
 ```
+
 This reads a lot more like what you would normally write out by hand, e.g., using `ρ` instead of `rho`. In the place of `≈`, you can use the `isapprox()` function, which has a few more options.
 
-The use of `<=` is entirely optional as well. You simply type a `<` followed by `=`, and with the correct fonts installed, this will automatically be rendered as `<=`. If you don't like that, just change the option in VSCode that allows use of font ligatures.
+If you are using a font that supports font ligatures, you may see `≤` symbols instead of `<`, followed by `=`. This is entirely optional as well. You simply type a `<` followed by `=`, and with the correct fonts installed, this will automatically be rendered as `≤` without changing the contents of the actual source code file. If you don't like that, just change the option in VSCode that allows use of font ligatures.
 
-To make use of the Unicode abilities in you need a font installed that can handle ligatures and has a decent coverage of Unicode symbols. The following are recommended
-- [JetBrains Mono](https://www.jetbrains.com/lp/mono/)
-- [JuliaMono](https://juliamono.netlify.app/)
-- [Fira Code](https://github.com/tonsky/FiraCode)
+To make use of the Unicode abilities in you need a font installed that can handle ligatures and has a decent coverage of Unicode symbols. The following are recommended - [JetBrains Mono](https://www.jetbrains.com/lp/mono/) - [JuliaMono](https://juliamono.netlify.app/) - [Fira Code](https://github.com/tonsky/FiraCode)
 
 VSCode uses fall-back fonts, so if the first font specified in the settings does not include the character it should render, it will look in the next font until it finds the glyph, or runs out of fonts to look in. You can therefore install all three these fonts and then add them to the from of the list of specified fonts.
 
-You use Unicode characters by typing, e.g., `\rho` and pressing the `<tab>` key. If you find a character in someone's code that you don't know how to type, simply copy it and paste it next to the help prompt in Julia:
+You use Unicode characters by typing, e.g., `\rho` and pressing the `<tab>` key. If you find a character in someone's code that you don't know how to type, simply copy it and paste it next to the help[^1] prompt in Julia:
 
-```julia
+[^1]: You access the help mode by typing ? at the REPL prompt.
+
+``` julia
 help?> ℱ
 "ℱ" can be typed by \scrF<tab>
 ```
 
+There is a comprehensive list available in the [manual](https://docs.julialang.org/en/v1/manual/unicode-input/).
+
 ## Git
-Git is a version control software. No, more accurately, Git is THE version control software. You do not need to use Git, but it will most certainly make your life a lot easier if you are either working in a team or working on large projects. 
+
+Git is a version control software. No, more accurately, Git is THE version control software. You do not need to use Git, but it will most certainly make your life a lot easier if you are either working in a team or working on large projects.
 
 Git is integrated into VSCode, but it is often handy to have the command-line version. You can get it from the Git [homepage](https://git-scm.com/). Like Julia and VSCode, Git is free and open-sourced.
 
