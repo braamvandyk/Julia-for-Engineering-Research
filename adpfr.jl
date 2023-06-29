@@ -2,8 +2,9 @@ using ModelingToolkit, DifferentialEquations
 
 #=
     Differential molar balance for i
-        ∂Cᵢ/∂t = Dₐ*∂²Cᵢ/∂z² - ∂(uCᵢ)/∂z + ∑(reaction j)νᵢⱼrᵢ
-        Peₐ = ul/Dₐ (l = characteristic length)
+        ∂Cᵢ/∂t = Dₐ*∂²Cᵢ/∂z² - ∂(uₛCᵢ)/∂z + ∑(reaction j)νᵢⱼrᵢ
+        Dₐ(z) = uₛ(z)l/Peₐ (l = characteristic length = L = reactor length)
+        uₛ(z) = V̇/A = ṅRT/P(z)
 
     Dankwerts boundary conditions
         z = 0   uₛCᵢ(z = 0) - Dₐ*dCₜₒₜ/dz(z=0) = uₛCᵢ(feed)
