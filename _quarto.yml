@@ -6,10 +6,12 @@ website:
   title: "Julia for Engineering Research"
   favicon: img/julia.ico
   back-to-top-navigation: true
-  search: false
+  search:
+    location: sidebar
+    type: textbox
   sidebar:
     style: "docked"
-    search: false
+    search: true
     contents:
       - text: "Home"
         file: index.qmd

@@ -6,7 +6,7 @@ This section is meant to give you a running start in using Julia. The ultimate r
 
 ## Package Management
 
-Julia will open up in the default environment, e.g., `@v1.9`. You can add packages to this environment, and they will be available to load as soon as you open Julia. Be very careful about doing this, as this can very often lead to what is lightly called *dependency hell*. This is what happens when a package you want to update depends on another package that can't update, sometime because it depends on a specific version of yet another package. The more packages you have in the current environment, to more often this will happen. The correct solution is to create a new environment for each project and add only the packages you are actually using in the project.
+Julia will open up in the default environment, e.g., `@v1.9`. You can add packages to this environment, and they will be available to load as soon as you open Julia. Be very careful about doing this, as this can very often lead to what is lightly called *dependency hell*. This is what happens when a package you want to update depends on another package that can't update, sometime because it depends on a specific version of yet another package. The more packages you have in the current environment, the more often this will happen. The correct solution is to create a new environment for each project and add only the packages you are actually using in the project.
 
 ``` julia
                _
