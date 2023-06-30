@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Julia for Engineering Research - Running Julia</title>
+<title>Julia for Engineering Research - DataFrames</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -3314,7 +3314,8 @@ vertical-align: -.125em;
 }</script>
 
 
-<style type="text/css"></style>
+<style type="text/css">
+</style>
 </head>
 
 <body class="nav-sidebar docked">
@@ -3326,7 +3327,7 @@ vertical-align: -.125em;
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_Getting_started_with_Julia.html">Introduction</a></li><li class="breadcrumb-item"><a href="./03_Running_Julia.html">Running Julia</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12_Working_with_Files.html">Data Processing</a></li><li class="breadcrumb-item"><a href="./13_DataFrames.html">DataFrames</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
     </div>
@@ -3372,7 +3373,7 @@ vertical-align: -.125em;
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03_Running_Julia.html" class="sidebar-item-text sidebar-link active">
+  <a href="./03_Running_Julia.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Running Julia</span></a>
   </div>
 </li>
@@ -3465,7 +3466,7 @@ vertical-align: -.125em;
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./13_DataFrames.html" class="sidebar-item-text sidebar-link">
+  <a href="./13_DataFrames.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">DataFrames</span></a>
   </div>
 </li>
@@ -3481,15 +3482,13 @@ vertical-align: -.125em;
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-repl" id="toc-the-repl" class="nav-link active" data-scroll-target="#the-repl">The REPL</a>
+  <li><a href="#what-is-a-dataframe" id="toc-what-is-a-dataframe" class="nav-link active" data-scroll-target="#what-is-a-dataframe">What is a DataFrame?</a>
   <ul class="collapse">
-  <li><a href="#keyboard-shortcuts" id="toc-keyboard-shortcuts" class="nav-link" data-scroll-target="#keyboard-shortcuts">Keyboard Shortcuts</a></li>
-  </ul></li>
-  <li><a href="#running-julia-inside-vscode" id="toc-running-julia-inside-vscode" class="nav-link" data-scroll-target="#running-julia-inside-vscode">Running Julia inside VSCode</a></li>
-  <li><a href="#jupyter-and-pluto" id="toc-jupyter-and-pluto" class="nav-link" data-scroll-target="#jupyter-and-pluto">Jupyter and Pluto</a>
-  <ul class="collapse">
-  <li><a href="#installing-jupyter" id="toc-installing-jupyter" class="nav-link" data-scroll-target="#installing-jupyter">Installing Jupyter</a></li>
-  <li><a href="#installing-pluto" id="toc-installing-pluto" class="nav-link" data-scroll-target="#installing-pluto">Installing Pluto</a></li>
+  <li><a href="#creating-a-dataframe" id="toc-creating-a-dataframe" class="nav-link" data-scroll-target="#creating-a-dataframe">Creating a DataFrame</a></li>
+  <li><a href="#accessing-the-data" id="toc-accessing-the-data" class="nav-link" data-scroll-target="#accessing-the-data">Accessing the Data</a></li>
+  <li><a href="#data-wrangling-with-dataframes" id="toc-data-wrangling-with-dataframes" class="nav-link" data-scroll-target="#data-wrangling-with-dataframes">Data Wrangling with DataFrames</a></li>
+  <li><a href="#grouping-data" id="toc-grouping-data" class="nav-link" data-scroll-target="#grouping-data">Grouping Data</a></li>
+  <li><a href="#joining-dataframes" id="toc-joining-dataframes" class="nav-link" data-scroll-target="#joining-dataframes">Joining DataFrames</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -3499,7 +3498,7 @@ vertical-align: -.125em;
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Running Julia</h1>
+<h1 class="title">DataFrames</h1>
 </div>
 
 
@@ -3514,87 +3513,945 @@ vertical-align: -.125em;
 
 </header>
 
-<section id="the-repl" class="level2">
-<h2 class="anchored" data-anchor-id="the-repl">The REPL</h2>
-<p>When you open up Julia, you will be presented with the REPL (Read Execute Print Loop). This is basically a command prompt that Reads your input, Executes the instructions, Prints the results and then Loops back to waiting for a new input.</p>
-<pre><code>               _
-   _       _ _(_)_     |  Documentation: https://docs.julialang.org
-  (_)     | (_) (_)    |
-   _ _   _| |_  __ _   |  Type &quot;?&quot; for help, &quot;]?&quot; for Pkg help.
-  | | | | | | |/ _` |  |
-  | | |_| | | | (_| |  |  Version 1.9.1 (2023-06-07)
- _/ |\__&#39;_|_|_|\__&#39;_|  |  Official https://julialang.org/ release
-|__/                   |
+<section id="what-is-a-dataframe" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-dataframe">What is a DataFrame?</h2>
+<p>In short, a DataFrame is a table of data, where each column has a title and a type. Operations can be performed on a per column or per row basis, and columns and rows can be added or removed easily. The <a href="https://dataframes.juliadata.org/stable/"><code>DataFrames</code></a> package in Julia is the <em>de facto</em> standard for working with tabular data and is integrated in many other packages. In the previous section we have seen that you can read a data file directly into a DataFrame via the <code>CSV</code> package, but this is only one example of other packages integrating with <code>DataFrames</code>.</p>
+<p>The <code>DataFrames</code> package provides a lot of functionality for manipulating the data contain in a DataFrame. There are also additional packages that provide either more options, or alternative (simpler) syntax for convenience, such as <code>DataFramesMeta</code> and <code>Tidier</code>.</p>
+<p>We shall look at the basic use of DataFrames and leave these auxiliary packages and some more advanced functionality of <code>DataFrames</code> for self-study.</p>
+<section id="creating-a-dataframe" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-dataframe">Creating a DataFrame</h3>
+<p>Usually, you would create a DataFrame by reading in data from a file. You can however also create a DataFrame from variables directly:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(X <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>], Y <span class="op">=</span> [<span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>], Z <span class="op">=</span> <span class="fl">2.0</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×3 DataFrame</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Float64</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────────────</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      2      2.0</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2      3      2.0</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     3      4      2.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note that columns <code>X</code> and <code>Y</code> are specified as arrays of integers, and so the columns are typed as <code>Int64</code>. <code>Z</code> is specified as a floating point value and hence the column is types as <code>Float64</code>. The length of <code>Z</code> is also expanded to be the same as the other columns, with a fixed value. The column names, <code>X</code>, <code>Y</code> and <code>Z</code>, are all legal Julia symbols (variable names) and so we can use the assignment operator (<code>=</code>) here.</p>
+<p>You can also give columns longer names, with spaces, but then instead you need to either use the pair operator, <code>=&gt;</code>, or define a <code>Dict</code> and then convert that to a DataFrame:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(<span class="st">&quot;X values&quot;</span> <span class="op">=&gt;</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>], <span class="st">&quot;Y values&quot;</span> <span class="op">=&gt;</span> [<span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>], <span class="st">&quot;Z&quot;</span> <span class="op">=&gt;</span> <span class="fl">2.0</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×3 DataFrame</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X values  Y values  Z</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64     Int64     Float64</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────────────</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │        1         2      2.0</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │        2         3      2.0</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │        3         4      2.0</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="fu">Dict</span>(<span class="st">&quot;X values&quot;</span> <span class="op">=&gt;</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>], <span class="st">&quot;Y values&quot;</span> <span class="op">=&gt;</span> [<span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>], <span class="st">&quot;Z&quot;</span> <span class="op">=&gt;</span> <span class="fl">2.0</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Dict{String, Any} with 3 entries:</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   &quot;Z&quot;        =&gt; 2.0</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   &quot;X values&quot; =&gt; [1, 2, 3]</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   &quot;Y values&quot; =&gt; [2, 3, 4]</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(d)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×3 DataFrame</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X values  Y values  Z</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64     Int64     Float64</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────────────</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │        1         2      2.0</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │        2         3      2.0</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │        3         4      2.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Caution
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Don’t use strings for column names just because you can. Using a symbol, like <code>:X_values</code>, instead of the string “X values” will give faster results and is just as readable. This does mean you need to use underscores instead of spaces, but all-in-all that is not too high a price to pay.</p>
+</div>
+</div>
+<p>A DataFrame can also be constructed one column at a time:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 0×0 DataFrame</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>df.A <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1:3</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>df.B <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="fl">6</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2:2:6</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>df</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×2 DataFrame</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ A      B</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      2</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2      4</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     3      6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Or row by row:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(A<span class="op">=</span><span class="dt">String</span>[], B<span class="op">=</span><span class="dt">Int64</span>[])</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 0×2 DataFrame</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ A       B</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ String  Int64</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┴───────────────</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">push!</span>(df, (<span class="st">&quot;Bob&quot;</span>, <span class="fl">1</span>))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 1×2 DataFrame</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ A       B</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ String  Int64</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ Bob         1</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">push!</span>(df, (<span class="st">&quot;Tom&quot;</span>, <span class="fl">5</span>))</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 2×2 DataFrame</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ A       B</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ String  Int64</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ Bob         1</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ Tom         5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note how we forced types of the columns in the creation of the empty DataFrame. This is needed to give the columns names, and tell the empty DataFrame how many columns it will hold. You could specify the types as <code>Any</code>, but that would not lead to good performance.</p>
+<p>Lastly, you can also convert a matrix to a DataFrame. This requires you to either allow DataFrames to automatically generate column names, or to pass a vector of names:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> <span class="fu">rand</span>(<span class="fl">5</span>, <span class="fl">5</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 5×5 Matrix{Float64}:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.460589   0.734461   0.771352   0.292767   0.0078547</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.254958   0.153814   0.571355   0.196476   0.739701</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.0799407  0.457583   0.553493   0.25409    0.245967</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.106429   0.435509   0.0184347  0.932008   0.805972</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.0877892  0.0231817  0.435262   0.0187286  0.812151</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(m, <span class="op">:</span>auto) <span class="co"># Automatically generate names</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 5×5 DataFrame</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ x1         x2         x3         x4         x5</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Float64    Float64    Float64    Float64    Float64</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────────────────────────────────────────────</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ 0.460589   0.734461   0.771352   0.292767   0.0078547</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ 0.254958   0.153814   0.571355   0.196476   0.739701</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │ 0.0799407  0.457583   0.553493   0.25409    0.245967</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │ 0.106429   0.435509   0.0184347  0.932008   0.805972</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │ 0.0877892  0.0231817  0.435262   0.0187286  0.812151</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(m, [<span class="op">:</span>X, <span class="op">:</span>Y, <span class="op">:</span>Z, <span class="op">:</span>W, <span class="op">:</span>Q]) <span class="co"># Specify names</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 5×5 DataFrame</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X          Y          Z          W          Q</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Float64    Float64    Float64    Float64    Float64</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────────────────────────────────────────────</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ 0.460589   0.734461   0.771352   0.292767   0.0078547</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ 0.254958   0.153814   0.571355   0.196476   0.739701</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │ 0.0799407  0.457583   0.553493   0.25409    0.245967</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │ 0.106429   0.435509   0.0184347  0.932008   0.805972</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │ 0.0877892  0.0231817  0.435262   0.0187286  0.812151</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="accessing-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="accessing-the-data">Accessing the Data</h3>
+<p>Once the data is in a DataFrame, you can access column like they are individual vectors<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df.X</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 5-element Vector{Float64}:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.460589206535297</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.25495814887990786</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.07994066869519556</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.10642869978604408</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.0877892134158087</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also add columns, even via calculations:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df.New <span class="op">=</span> (df.X)<span class="op">.^</span><span class="fl">2</span> <span class="op">.-</span> df.Y</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 5-element Vector{Float64}:</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  -0.5223183397440386</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  -0.08881079559662731</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  -0.45119243718262425</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  -0.42418203290738643</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#  -0.015474773743873368</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>df</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 5×6 DataFrame</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X          Y          Z          W          Q          New</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Float64    Float64    Float64    Float64    Float64    Float64</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────────────────────────────────────────────────────────</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ 0.460589   0.734461   0.771352   0.292767   0.0078547  -0.522318</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ 0.254958   0.153814   0.571355   0.196476   0.739701   -0.0888108</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │ 0.0799407  0.457583   0.553493   0.25409    0.245967   -0.451192</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │ 0.106429   0.435509   0.0184347  0.932008   0.805972   -0.424182</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │ 0.0877892  0.0231817  0.435262   0.0187286  0.812151   -0.0154748</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note the use of broadcasting in the first command - using <code>.^</code> instead of <code>^</code> and <code>.-</code> instead of <code>-</code>. This tells Julia to execute these operations in element-wise fashion. The new column, <code>df.New</code>, is added to the DataFrame automatically.</p>
+<p>You can also access individual entries by specifying the row and column, the latter using either the names or indexes:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df[<span class="fl">2</span>, <span class="fl">3</span>] <span class="co"># Row 2, Column 3 (Z)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 0.5713552793835407</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>df[<span class="fl">2</span><span class="op">:</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">:</span><span class="fl">5</span>]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2×3 DataFrame</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ Z         W         Q</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Float64   Float64   Float64</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ 0.571355  0.196476  0.739701</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ 0.553493  0.25409   0.245967</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>df[<span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="op">:</span>W]</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 3-element Vector{Float64}:</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.29276715395306163</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.19647571959450094</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.25409034700483624</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To select an entire row or column, the <code>:</code> operator is used, just like in Arrays. This returns a copy of the slice of the DataFrame. When using a <code>!</code>, however, a view to the data is returned. Modifying the view will modify the contents of the DataFrame as well:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(X <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>], Y <span class="op">=</span> [<span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">6</span>], Z <span class="op">=</span> [<span class="fl">3</span>, <span class="fl">6</span>, <span class="fl">9</span>])</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×3 DataFrame</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      2      3</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2      4      6</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     3      6      9</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>xvals <span class="op">=</span> df[<span class="op">:</span>, <span class="op">:</span>X]</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 3-element Vector{Int64}:</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  1</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  2</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  3</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>xvals[<span class="fl">1</span>] <span class="op">=</span> <span class="fl">100</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 100</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>df</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×3 DataFrame</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      2      3</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2      4      6</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     3      6      9</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>xview <span class="op">=</span> df[!, <span class="op">:</span>X]</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 3-element Vector{Int64}:</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co">#  1</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co">#  2</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="co">#  3</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>xview[<span class="fl">1</span>] <span class="op">=</span> <span class="fl">100</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 100</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>df</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×3 DataFrame</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │   100      2      3</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2      4      6</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     3      6      9</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also select just specific rows and columns:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df[[<span class="fl">1</span>, <span class="fl">3</span>], [<span class="fl">1</span>, <span class="fl">3</span>]]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 2×2 DataFrame</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Z     </span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64 </span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      3</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     3      9</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="data-wrangling-with-dataframes" class="level3">
+<h3 class="anchored" data-anchor-id="data-wrangling-with-dataframes">Data Wrangling with DataFrames</h3>
+<p>Data wrangling is the pre-processing of your data to get it into the form you need for the modelling or analysis you intend to do with it. This can include many steps. DataFrames has a rich feature set to support you in this. We’ll look at several examples here, but if you are going to be doing this type of work often, save yourself a lot of page-turning and download, print and laminate a copy of the <a href="https://www.ahsmart.com/assets/pages/data-wrangling-with-data-frames-jl-cheat-sheet/DataFramesCheatSheet_v1.x_rev1.pdf"><strong>Data Wrangling with DataFrames.jl Cheat Sheet</strong></a>.</p>
+<p>We start off by creating a dataset to work with:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">:</span><span class="fl">1500</span>, Y <span class="op">=</span> <span class="fu">repeat</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, outer<span class="op">=</span><span class="fl">5</span>), Z <span class="op">=</span> <span class="fu">repeat</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, inner<span class="op">=</span><span class="fl">5</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×3 DataFrame</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z     </span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64 </span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1      1 </span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     4      2      1 </span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7      3      1 </span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │    10      4      1 </span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │    13      5      1 </span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    6 │    16      6      2 </span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#    7 │    19      7      2 </span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#    8 │    22      8      2 </span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">#    9 │    25      9      2 </span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮   </span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  492 │  1474     92     99 </span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co">#  493 │  1477     93     99</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  494 │  1480     94     99</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co">#  495 │  1483     95     99</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  496 │  1486     96    100</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  497 │  1489     97    100</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  1492     98    100</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  1495     99    100</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  1498    100    100</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="co">#            482 rows omitted</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="fu">first</span>(df,<span class="fl">3</span>)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×3 DataFrame</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z     </span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64 </span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1      1</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     4      2      1</span></span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7      3      1</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="fu">last</span>(df,<span class="fl">4</span>)</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a><span class="co"># 4×3 DataFrame</span></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z     </span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64 </span></span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────</span></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │  1489     97    100</span></span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │  1492     98    100</span></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │  1495     99    100</span></span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │  1498    100    100</span></span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(df)</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a><span class="co"># 3-element Vector{String}:</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;X&quot;</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Y&quot;</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Z&quot;</span></span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(df)</span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×7 DataFrame</span></span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ variable  mean     min    median   max    nmissing  eltype   </span></span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Symbol    Float64  Int64  Float64  Int64  Int64     DataType </span></span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────────────────────────────────────</span></span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ X           749.5      1    749.5   1498         0  Int64</span></span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ Y            50.5      1     50.5    100         0  Int64</span></span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │ Z            50.5      1     50.5    100         0  Int64</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In generating this data, we used Julia’s <code>repeat</code> function. For the <code>Y</code> column, we specify <code>outer=5</code>, which means the data (<code>1:100</code>) is repeated 5 times as a set, i.e. 1 to 100, then 1 to 100 again, for a total of 5 times. For the <code>Z</code> column, we specify <code>inner=5</code>, which means each of the values from 1 to 100 is repeated 5 times: 1, 1, 1, 1, 1, 2, 2, 2, 2, 2,… etc.</p>
+<p>We can quickly see the first or last few rows using the Julia functions <code>first</code> and <code>last</code>, with the second parameter showing how many entries to display. The number of rows displayed by Julia for the full DataFrame depends on the size of the window it is being displayed in. The middle omitted rows are indicated with the <code>⋮</code> characters. If the DataFrame is too wide, columns will also be omitted, with a message indicating how many columns are hidden.</p>
+<p>If you <strong>really</strong> want to see all the rows or columns, you can call <code>show</code> and specify <code>allrows=true</code> and/or <code>allcols=true</code></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show</span>(df, allrows<span class="op">=</span><span class="cn">true</span>, allcols<span class="op">=</span><span class="cn">true</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For obvious reasons, we won’t include the 500 rows of data here.</p>
+<p>The <code>names()</code> function returns a vector of the column names as strings. You can also get summary statistics of the data with the <code>describe()</code> function.</p>
+<p>If you only want specific statistics, you can specify them in the call:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(df, <span class="op">:</span>mean, <span class="op">:</span>std)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×3 DataFrame</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ variable  mean     std     </span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Symbol    Float64  Float64 </span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼────────────────────────────</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ X           749.5  433.445</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ Y            50.5   28.895</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │ Z            50.5   28.895</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can also apply a custom function to describe the data. Here we use the Julia function <code>extrema()</code>, which returns the minimum and maximum value in an array. We’ll specify that we want the results in a column call <code>minmax</code>:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(df, extrema <span class="op">=&gt;</span> <span class="op">:</span>minmax)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×2 DataFrame</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ variable  minmax    </span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Symbol    Tuple…    </span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ X         (1, 1498)</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ Y         (1, 100)</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │ Z         (1, 100)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Lastly, the number of rows and column can be easily retrieved:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(df)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 500</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(df)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="selecting-and-transforming-data" class="level4">
+<h4 class="anchored" data-anchor-id="selecting-and-transforming-data">Selecting and Transforming Data</h4>
+<section id="selecting-columns" class="level5">
+<h5 class="anchored" data-anchor-id="selecting-columns">Selecting Columns</h5>
+<p>In the introductory section, we selected specific rows and columns based on their indices. You can also select columns based on their names:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(df, [<span class="op">:</span>X, <span class="op">:</span>Z])</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×2 DataFrame     </span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Z     </span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64 </span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     4      1</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7      1</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  1492    100</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  1495    100</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  1498    100</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co">#     494 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>There are also selector function to allow for selection of ranges of columns:</p>
+<ul>
+<li><code>Not()</code>: Select all the columns expect the specified one(s)</li>
+<li><code>Between()</code>: Select all column starting with the first specified column and ending with the second. You can use names or indices to specify the columns</li>
+<li><code>Cols()</code>: Use this to combine other selector functions</li>
+<li><code>All()</code>: Select all columns - same as specifying <code>:</code></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<p>In the previous example we selected columns <code>X</code> and <code>Z</code>, which is the same as selecting everything expect <code>Y</code>:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(df, <span class="fu">Not</span>(<span class="op">:</span>Y))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×2 DataFrame</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Z     </span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64 </span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     4      1</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7      1</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  1492    100</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  1495    100</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  1498    100</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#     494 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We only passed a single symbol to <code>Not</code>, but could also pass an array of symbols to exclude multiple columns.</p>
+<p>To make things more interesting, we can first add a few more columns:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df.A <span class="op">=</span> <span class="fl">2</span> <span class="op">.*</span> df.X</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>df.B <span class="op">=</span> df.Y <span class="op">.+</span> df.Z</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>df.C <span class="op">=</span> df.Z <span class="op">.^</span> <span class="fl">2</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>df</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×6 DataFrame</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z      A      B      C     </span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64  Int64  Int64 </span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────────────────</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1      1      2      2      1</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     4      2      1      8      3      1</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7      3      1     14      4      1</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  1492     98    100   2984    198  10000</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  1495     99    100   2990    199  10000</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  1498    100    100   2996    200  10000</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 494 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(df, <span class="fu">Cols</span>(<span class="op">:</span>A, <span class="fu">Between</span>(<span class="op">:</span>X, <span class="op">:</span>Z)))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×4 DataFrame</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ A      X      Y      Z     </span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64 </span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼────────────────────────────</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     2      1      1      1</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     8      4      2      1</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │    14      7      3      1</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮      ⋮</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  2984   1492     98    100</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  2990   1495     99    100</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  2996   1498    100    100</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                   494 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here we used <code>Cols</code> to combine selecting column <code>A</code> and all columns from <code>X</code> to <code>Z</code>. This also changed the order of the columns.</p>
+<p>We used the <code>select</code> function to do the selections, but could as easily have used the normal array-type notation:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df[<span class="op">:</span>, <span class="fu">Cols</span>(<span class="op">:</span>A, <span class="fu">Between</span>(<span class="op">:</span>X, <span class="op">:</span>Z))]</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×4 DataFrame</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ A      X      Y      Z     </span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64 </span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼────────────────────────────</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     2      1      1      1</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     8      4      2      1</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │    14      7      3      1</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮      ⋮</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  2984   1492     98    100</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  2990   1495     99    100</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  2996   1498    100    100</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                   494 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To permanently change the DataFrame, either assign the returned result to the same variable, or use the mutating version of <code>select()</code>: <code>select!()</code>.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">select</span>(df, <span class="fu">Cols</span>(<span class="op">:</span>A, <span class="fu">Between</span>(<span class="op">:</span>X, <span class="op">:</span>Z)))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>df</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×4 DataFrame</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ A      X      Y      Z     </span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64 </span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼────────────────────────────</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     2      1      1      1</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     8      4      2      1</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │    14      7      3      1</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮      ⋮</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  2984   1492     98    100</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  2990   1495     99    100</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  2996   1498    100    100</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                   494 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select!</span>(df, <span class="fu">Cols</span>(<span class="op">:</span>A, <span class="fu">Between</span>(<span class="op">:</span>X, <span class="op">:</span>Z)))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×4 DataFrame</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ A      X      Y      Z     </span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64 </span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼────────────────────────────</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     2      1      1      1</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     8      4      2      1 Da</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │    14      7      3      1</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮      ⋮</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  2984   1492     98    100</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  2990   1495     99    100</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  2996   1498    100    100</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                   494 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It is also possible to select columns from a DataFrame that match to a <em>regular expression</em>. This is a template that describes a string of text. For more information, see one the many <a href="https://www.regular-expressions.info/tutorialcnt.html">tutorials</a> on the web.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    Names <span class="op">=</span> [<span class="st">&quot;Tom&quot;</span>, <span class="st">&quot;Dick&quot;</span>, <span class="st">&quot;Harry&quot;</span>], </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    AddressLine1 <span class="op">=</span> [<span class="st">&quot;2 Maple Drive&quot;</span>, <span class="st">&quot;4 Oak Street&quot;</span>, <span class="st">&quot;6 Pine Road&quot;</span>],</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    AddressLine2 <span class="op">=</span> [<span class="st">&quot;Hopetown&quot;</span>, <span class="st">&quot;Smallville&quot;</span>, <span class="st">&quot;Metropolis&quot;</span>],</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    AddressZip <span class="op">=</span> [<span class="fl">1234</span>, <span class="fl">2345</span>, <span class="fl">3456</span>]</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="fl">3</span><span class="op">×</span><span class="fl">4</span> DataFrame</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ Names   AddressLine1   AddressLine2  AddressZip </span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ String  String         String        Int64      </span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────────────────────────────────</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ Tom     2 Maple Drive  Hopetown            1234</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ Dick    4 Oak Street   Smallville          2345</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │ Harry   6 Pine Road    Metropolis          3456</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>df[<span class="op">:</span>, <span class="st">r&quot;Addr&quot;</span>]</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×3 DataFrame</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ AddressLine1   AddressLine2  AddressZip </span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ String         String        Int64      </span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────────────────────────</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ 2 Maple Drive  Hopetown            1234</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ 4 Oak Street   Smallville          2345</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │ 6 Pine Road    Metropolis          34</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here we select all rows, but only the column that have the sub-string “Addr” in their names.</p>
+</section>
+<section id="selecting-rows-filtering-and-sorting" class="level5">
+<h5 class="anchored" data-anchor-id="selecting-rows-filtering-and-sorting">Selecting Rows (Filtering) and Sorting</h5>
+<p>You can select rows by filtering the data. There are two equivalent ways:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(<span class="op">:</span>X <span class="op">=&gt;</span> <span class="op">&lt;=</span>(<span class="fl">10</span>), df)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 4×6 DataFrame</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z      A      B      C     </span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64  Int64  Int64 </span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────────────────</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1      1      2      2      1</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     4      2      1      8      3      1</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7      3      1     14      4      1</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │    10      4      1     20      5      1</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>df[df.X <span class="op">.&lt;=</span> <span class="fl">10</span>, <span class="op">:</span>]</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 4×6 DataFrame</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z      A      B      C     </span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64  Int64  Int64 </span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────────────────</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1      1      2      2      1</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     4      2      1      8      3      1</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7      3      1     14      4      1</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │    10      4      1     20      5      1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In both cases we pass a <em>predicate</em> function, i.e. a function that returns <code>true</code> for rows that should be included. In the first case, a pair operator links a column name to the predicate function and in the second case we simply pass an expression that returns true for all the correct instances. Note the use of broadcasting in the second example.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The contents of the column being checked in the predicate function is passed as the first parameter, so <code>:X =&gt; &lt;=(10)</code> is in fact <code>df[&lt;current row&gt;, X] &lt;= 10</code>, which can also be written as <code>&lt;=(df[&lt;current row&gt;, X], 10)</code>, since operators in Julia are just functions with special syntax - they can still be called like normal functions.</p>
+</div>
+</div>
+<p>You can use any predicate function. A new useful ones include:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df[<span class="fu">findfirst</span>(<span class="op">==</span>(<span class="fl">4</span>), df.C), <span class="op">:</span>] <span class="co"># Find the first row where column C has a value of 4</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># DataFrameRow</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z      A      B      C     </span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64  Int64  Int64 </span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────────────────</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    6 │    16      6      2     32      8      4</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>df[<span class="fu">findall</span>(<span class="op">==</span>(<span class="fl">4</span>), df.C), <span class="op">:</span>] <span class="co"># Find all rows where column C has a value of 4</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 5×6 DataFrame</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z      A      B      C     </span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64  Int64  Int64 </span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────────────────</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │    16      6      2     32      8      4</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │    19      7      2     38      9      4</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │    22      8      2     44     10      4</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │    25      9      2     50     11      4</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │    28     10      2     56     12      4</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>df[df.C <span class="op">.==</span> <span class="fl">4</span>, <span class="op">:</span>] <span class="co"># Find all rows where column C has a value of 4, alternative form</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 5×6 DataFrame</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z      A      B      C     </span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64  Int64  Int64 </span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────────────────</span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │    16      6      2     32      8      4</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │    19      7      2     38      9      4</span></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │    22      8      2     44     10      4</span></span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │    25      9      2     50     11      4</span></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │    28     10      2     56     12      4</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It may also be useful to sort the data according to specified columns:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(df, <span class="op">:</span>Y)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×6 DataFrame</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z      A      B      C     </span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64  Int64  Int64 </span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────────────────</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1      1      2      2      1</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │   301      1     21    602     22    441</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │   601      1     41   1202     42   1681</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │   901      1     61   1802     62   3721</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │  1201      1     81   2402     82   6561</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  497 │   598    100     40   1196    140   1600</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │   898    100     60   1796    160   3600</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  1198    100     80   2396    180   6400</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  1498    100    100   2996    200  10000</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 491 rows omitted</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(df, [<span class="op">:</span>Y, <span class="op">:</span>B])</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×6 DataFrame</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z      A      B      C</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64  Int64  Int64</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────────────────</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1      1      2      2      1</span></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │   301      1     21    602     22    441</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │   601      1     41   1202     42   1681</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │   901      1     61   1802     62   3721</span></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │  1201      1     81   2402     82   6561</span></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  497 │   598    100     40   1196    140   1600</span></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │   898    100     60   1796    160   3600</span></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  1198    100     80   2396    180   6400</span></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  1498    100    100   2996    200  10000</span></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a><span class="co">#                                 491 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="applying-function-to-columns-and-rows" class="level5">
+<h5 class="anchored" data-anchor-id="applying-function-to-columns-and-rows">Applying Function to Columns and Rows</h5>
+<p>Applying a function to a column or multiple columns has been shown before when we added columns to a DataFrame. Since each column acts like a vector, we simply use normal Julia broadcasting to apply functions to whole columns:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df.BdivC <span class="op">=</span> df.B <span class="op">./</span> df.C</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 500-element Vector{Float64}:</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  2.0</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  3.0</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  4.0</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  5.0</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co">#  6.0</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  2.0</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co">#  2.25</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co">#  ⋮</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.01979389858177737</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.0196</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.0197</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.0198</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.0199</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  0.02</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a><span class="co"># df</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×7 DataFrame</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z      A      B      C      BdivC     </span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64  Int64  Int64  Float64   </span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────────────────────────────────────</span></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1      1      2      2      1  2.0</span></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     4      2      1      8      3      1  3.0</span></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7      3      1     14      4      1  4.0</span></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │    10      4      1     20      5      1  5.0</span></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │    13      5      1     26      6      1  6.0</span></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮        ⋮</span></span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  497 │  1489     97    100   2978    197  10000  0.0197</span></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  1492     98    100   2984    198  10000  0.0198</span></span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  1495     99    100   2990    199  10000  0.0199</span></span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  1498    100    100   2996    200  10000  0.02</span></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a><span class="co">#                                            491 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In order to apply functions across rows, we need to use some of the built-in functions of DataFrames, <code>select</code> and <code>transform</code>, along with <code>ByRow</code>.</p>
+<p>The basic syntax is:</p>
+<ul>
+<li><code>select(df, &lt;array of columns to select&gt;)</code></li>
+<li><code>select(df, &lt;array of columns to select&gt;, &lt;array of columns to pass to function&gt; =&gt; &lt;function&gt; =&gt; &lt;name(s) of column(s) to hold result(s)&gt;)</code></li>
+<li><code>select(df, AsTable(:) =&gt; &lt;function&gt; =&gt; &lt;name(s) of column(s) to hold result&gt;)</code> # pass the entire table to the function</li>
+</ul>
+<p>Some examples:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(df, <span class="op">:</span>X, <span class="op">:</span>X <span class="op">=&gt;</span> cumsum <span class="op">=&gt;</span> <span class="op">:</span>cumX) <span class="co"># Put the cumulative sum of X in column cumX</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×2 DataFrame</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      cumX   </span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  </span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1       1</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     4       5</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7      12</span></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │    10      22</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │    13      35</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  497 │  1489  370265</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  1492  371757</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  1495  373252</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  1498  374750</span></span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="co">#      491 rows omitted</span></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(df, [<span class="op">:</span>X, <span class="op">:</span>Y], [<span class="op">:</span>X, <span class="op">:</span>Y] <span class="op">=&gt;</span> <span class="fu">ByRow</span>((x, y) <span class="op">-&gt;</span> <span class="fu">sin</span>(x)<span class="fu">*cos</span>(y)) <span class="op">=&gt;</span> <span class="op">:</span>sinXcosY) <span class="co"># Put the value of sin(X)*cos*(Y) in column sinXcosY</span></span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×3 DataFrame</span></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      sinXcosY    </span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Float64     </span></span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────────────────</span></span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1   0.454649</span></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     4      2   0.314941</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7      3  -0.650412</span></span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │    10      4   0.355596</span></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │    13      5   0.119185</span></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮         ⋮</span></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a><span class="co">#  497 │  1489     97   0.106082</span></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  1492     98  -0.207859</span></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  1495     99  -0.0154374</span></span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  1498    100   0.443124</span></span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a><span class="co">#                  491 rows omitted</span></span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(df, <span class="fu">AsTable</span>(<span class="op">:</span>) <span class="op">=&gt;</span> <span class="fu">ByRow</span>(extrema) <span class="op">=&gt;</span> [<span class="op">:</span>min, <span class="op">:</span>max]) <span class="co"># Find the smallest and largest value in each row</span></span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×2 DataFrame</span></span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ min    max   </span></span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64 </span></span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────</span></span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      2</span></span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     1      8</span></span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     1     14</span></span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │     1     20</span></span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │     1     26</span></span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮</span></span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a><span class="co">#  497 │    97  10000</span></span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │    98  10000</span></span>
+<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │    99  10000</span></span>
+<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │   100  10000</span></span>
+<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a><span class="co">#     491 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In each case, we used <code>select</code> and it only returned the specified columns. In the last example, we didn’t select any column, but just specified the function to apply. As a result, only the columns holding the results of the function are selected. If we instead call <code>transform</code>, the entire DataFrame is returned, as well as any new columns added in the calculations, e.g.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">transform</span>(df, <span class="fu">AsTable</span>(<span class="op">:</span>) <span class="op">=&gt;</span> <span class="fu">ByRow</span>(extrema) <span class="op">=&gt;</span> [<span class="op">:</span>min, <span class="op">:</span>max])</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 500×8 DataFrame</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z      A      B      C      min    max   </span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Int64  Int64  Int64  Int64  Int64 </span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼────────────────────────────────────────────────────────</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1      1      2      2      1      1      2</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     4      2      1      8      3      1      1      8</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7      3      1     14      4      1      1     14</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │    10      4      1     20      5      1      1     20</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │    13      5      1     26      6      1      1     26</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮      ⋮      ⋮      ⋮      ⋮      ⋮</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  497 │  1489     97    100   2978    197  10000     97  10000</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  498 │  1492     98    100   2984    198  10000     98  10000</span></span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  499 │  1495     99    100   2990    199  10000     99  10000</span></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  500 │  1498    100    100   2996    200  10000    100  10000</span></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                                               491 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Just like before, <code>select</code> and <code>transform</code> return new DataFrames, while <code>select!</code> and <code>transform!</code> will modify the existing DataFrame.</p>
+</section>
+</section>
+</section>
+<section id="grouping-data" class="level3">
+<h3 class="anchored" data-anchor-id="grouping-data">Grouping Data</h3>
+<p>DataFrames will group your data by column values through the <code>groupby()</code> function. One or more columns can be specified and you will get a <code>GroupedDataFrame</code> - a container of <code>SubDataFrame</code>s for each unique combination of the values in the specified columns.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> <span class="fu">DataFrame</span>(X <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">50</span>, Y <span class="op">=</span> <span class="fu">repeat</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, outer<span class="op">=</span><span class="fl">25</span>), Z <span class="op">=</span> <span class="fu">repeat</span>(<span class="fl">2</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="fl">10</span>, inner<span class="op">=</span><span class="fl">10</span>))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 50×3 DataFrame</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z     </span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64 </span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1      2 </span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2      2      2</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     3      1      2</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │     4      2      2</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │     5      1      2</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    6 │     6      2      2</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   45 │    45      1     10</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   46 │    46      2     10</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   47 │    47      1     10</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   48 │    48      2     10</span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="co">#   49 │    49      1     10</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   50 │    50      2     10</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a><span class="co">#             38 rows omitted</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>gdf <span class="op">=</span> <span class="fu">groupby</span>(df, [<span class="op">:</span>Y, <span class="op">:</span>Z]</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a><span class="co"># GroupedDataFrame with 10 groups based on keys: Y, Z</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a><span class="co"># First Group (5 rows): Y = 1, Z = 2</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z     </span></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64 </span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────</span></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      1      2</span></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮</span></span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │     9      1      2</span></span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a><span class="co">#              3 rows omitted</span></span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a><span class="co"># ⋮</span></span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Last Group (5 rows): Y = 2, Z = 10</span></span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ X      Y      Z     </span></span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64 </span></span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────</span></span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │    42      2     10</span></span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮</span></span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │    50      2     10</span></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a><span class="co">#              3 rows omitted</span></span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> <span class="fu">combine</span>(gdf, nrow, <span class="op">:</span>X <span class="op">=&gt;</span> mean)</span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a><span class="co">#     10×4 DataFrame</span></span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ Y      Z      nrow   X_mean</span></span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Float64</span></span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────</span></span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      2      5      5.0</span></span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     1      4      5     15.0</span></span>
+<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     1      6      5     25.0</span></span>
+<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │     1      8      5     35.0</span></span>
+<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │     1     10      5     45.0</span></span>
+<span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a><span class="co">#    6 │     2      2      5      6.0</span></span>
+<span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a><span class="co">#    7 │     2      4      5     16.0</span></span>
+<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a><span class="co">#    8 │     2      6      5     26.0</span></span>
+<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a><span class="co">#    9 │     2      8      5     36.0</span></span>
+<span id="cb30-55"><a href="#cb30-55" aria-hidden="true" tabindex="-1"></a><span class="co">#   10 │     2     10      5     46.0</span></span>
+<span id="cb30-56"><a href="#cb30-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-57"><a href="#cb30-57" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> <span class="fu">select</span>(gdf, nrow, <span class="op">:</span>X <span class="op">=&gt;</span> mean) </span>
+<span id="cb30-58"><a href="#cb30-58" aria-hidden="true" tabindex="-1"></a><span class="co"># 50×4 DataFrame</span></span>
+<span id="cb30-59"><a href="#cb30-59" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ Y      Z      nrow   X_mean  </span></span>
+<span id="cb30-60"><a href="#cb30-60" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  Int64  Int64  Float64 </span></span>
+<span id="cb30-61"><a href="#cb30-61" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────</span></span>
+<span id="cb30-62"><a href="#cb30-62" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1      2      5      5.0</span></span>
+<span id="cb30-63"><a href="#cb30-63" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2      2      5      6.0</span></span>
+<span id="cb30-64"><a href="#cb30-64" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     1      2      5      5.0</span></span>
+<span id="cb30-65"><a href="#cb30-65" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │     2      2      5      6.0</span></span>
+<span id="cb30-66"><a href="#cb30-66" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │     1      2      5      5.0</span></span>
+<span id="cb30-67"><a href="#cb30-67" aria-hidden="true" tabindex="-1"></a><span class="co">#    6 │     2      2      5      6.0</span></span>
+<span id="cb30-68"><a href="#cb30-68" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │   ⋮      ⋮      ⋮       ⋮</span></span>
+<span id="cb30-69"><a href="#cb30-69" aria-hidden="true" tabindex="-1"></a><span class="co">#   45 │     1     10      5     45.0</span></span>
+<span id="cb30-70"><a href="#cb30-70" aria-hidden="true" tabindex="-1"></a><span class="co">#   46 │     2     10      5     46.0</span></span>
+<span id="cb30-71"><a href="#cb30-71" aria-hidden="true" tabindex="-1"></a><span class="co">#   47 │     1     10      5     45.0</span></span>
+<span id="cb30-72"><a href="#cb30-72" aria-hidden="true" tabindex="-1"></a><span class="co">#   48 │     2     10      5     46.0</span></span>
+<span id="cb30-73"><a href="#cb30-73" aria-hidden="true" tabindex="-1"></a><span class="co">#   49 │     1     10      5     45.0</span></span>
+<span id="cb30-74"><a href="#cb30-74" aria-hidden="true" tabindex="-1"></a><span class="co">#   50 │     2     10      5     46.0</span></span>
+<span id="cb30-75"><a href="#cb30-75" aria-hidden="true" tabindex="-1"></a><span class="co">#                      38 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here we create a DataFrame with three columns: <code>X</code> ranges from 1 to 50, <code>Y</code> alternates between 1 and 2, and <code>Z</code> is a sequence of the even numbers from 2 to 10. We then group by <code>Y</code> and <code>Z</code>, which gives us a <code>GroupedDataFrame</code> with 10 groups, for the 10 unique combinations of values in <code>Y</code> and <code>Z</code>. The second command created a new DataFrame, called <code>counts</code> which contains the number of rows in each of the 10 <code>SubDataFrame</code>s in our <code>GroupedDataFrame</code> (<code>gdf</code>) as well as the mean<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> value of the <code>X</code> column in each of the 10 groups. Lastly, we repeat the second example, but with <code>select</code> instead of <code>combine</code>. This returns a DataFrame with the same number (and order) of rows as in the <strong>original</strong> source DataFrame (not the grouped one!), but with only the newly created column. In this case, we see 50 rows, not the expected 10.</p>
+<section id="a-more-complete-example" class="level4">
+<h4 class="anchored" data-anchor-id="a-more-complete-example">A More Complete Example</h4>
+<p>For this example, we use a dataset from <a href="https://www.kaggle.com/datasets/uom190346a/food-ingredients-and-allergens">Kaggle</a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. The data file includes information on the ingredients of 399 types of food.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> CSV.<span class="fu">read</span>(<span class="st">raw&quot;D:\JuliaCode\KaggleData\food_ingredients_and_allergens.csv&quot;</span>, DataFrame; normalizenames<span class="op">=</span><span class="cn">true</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">select!</span>(df, [<span class="op">:</span>Food_Product, <span class="op">:</span>Allergens])</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 399×2 DataFrame</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ Food_Product             Allergens</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ String                   String31</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────────────────────────────────</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ Almond Cookies           Almonds, Wheat, Dairy</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ Almond Cookies           Almonds, Wheat, Dairy</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │ Chicken Noodle Soup      Chicken, Wheat, Celery</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │ Chicken Noodle Soup      Chicken, Wheat, Celery</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │ Cheddar Cheese           Dairy</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="co">#    6 │ Ranch Dressing           Dairy</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="co">#    7 │ Caramel Popcorn          Dairy</span></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="co">#    8 │ Caesar Salad             Dairy</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │            ⋮                       ⋮</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  393 │ Chocolate Chip Pancakes  Wheat, Dairy, Cocoa</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="co">#  394 │ Lemon Bars               Wheat, Dairy, Eggs</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  395 │ Lemon Bars               Wheat, Dairy, Eggs</span></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a><span class="co">#  396 │ Pecan Pie                Wheat, Dairy, Nuts</span></span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  397 │ Zucchini Bread           Wheat, Dairy, Nuts</span></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  398 │ Banana Bread             Wheat, Dairy, Nuts</span></span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a><span class="co">#  399 │ Hawaiian Pizza           Wheat, Pork, Dairy</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a><span class="co">#                                        384 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We are going to focus on the allergens in these foods. We select to keep only the two column containing the names of the foods and the allergens contained in them. Unfortunately, the allergens are given as a single string of comma-separated values. This means we have to do a little processing of the data.</p>
+<p>We ideally want a separate column for each allergen that contains a <code>true</code> (1) or <code>false</code> (0) to indicate if the allergen is present or not. To get this, we must process all the entries on allergens and split the strings into the individual allergens. We then need to identify the unique values, and add a true or false in a new column for each food and each allergen. This sounds like a lot of work, but Julia makes this easy.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>allAllergens <span class="op">=</span> <span class="dt">String</span>[] <span class="co">#empty array of strings</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> <span class="fu">eachrow</span>(df)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    allergens <span class="op">=</span> row.Allergens</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> s <span class="kw">in</span> <span class="fu">eachsplit</span>(allergens, <span class="st">&quot;, &quot;</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">push!</span>(allAllergens, s)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="fu">unique!</span>(allAllergens)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 24-element Vector{String}:</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Almonds&quot;</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Wheat&quot;</span></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Dairy&quot;</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Chicken&quot;</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Celery&quot;</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Anchovies&quot;</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Cocoa&quot;</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  ⋮</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Oats&quot;</span></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Peanuts&quot;</span></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Pine nuts&quot;</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Rice&quot;</span></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Shellfish&quot;</span></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Pork&quot;</span></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a><span class="co">#  &quot;Alcohol&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We create an empty vector of <code>String</code>s to hold the allergen names - <code>allAllergens</code>. Then we iterate trough the DataFrame, one row at a time, using the <code>eachrow</code> iterator. We extract the string holding the allergens into a temporary string <code>allergens</code> with <code>allergens = row.Allergens</code> (where <code>row</code> is the current row in the iterator <code>eachrow</code>).</p>
+<p>To split the string (<code>allergens</code>) into the various allergens, we use the Julia function <code>eachsplit</code>, which splits the string with the specified delimiter (“,”), and returns an iterator of substrings. We loop through this iterator and push each substring into the empty vector we created at the start.</p>
+<p>Lastly, we use the Julia function <code>unique!</code> to remove all duplicates from this vector. We now have a list of 24 possible allergens.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> allergen <span class="kw">in</span> allAllergens</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transform!</span>(df, <span class="op">:</span>Allergens <span class="op">=&gt;</span> <span class="fu">ByRow</span>(s <span class="op">-&gt;</span> <span class="fu">contains</span>(<span class="fu">string</span>(s), allergen)) <span class="op">=&gt;</span> <span class="fu">Symbol</span>(allergen))</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>df[<span class="op">:</span>, [<span class="op">:</span>Food_Product, <span class="op">:</span>Almonds, <span class="op">:</span>Wheat, <span class="op">:</span>Dairy]]</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 399×4 DataFrame</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ Food_Product             Almonds  Wheat  Dairy </span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ String                   Bool     Bool   Bool  </span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼────────────────────────────────────────────────</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │ Almond Cookies              true   true   true</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │ Almond Cookies              true   true   true</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │ Chicken Noodle Soup        false   true  false</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │ Chicken Noodle Soup        false   true  false</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │ Cheddar Cheese             false  false   true</span></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="co">#    6 │ Ranch Dressing             false  false   true</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮  │            ⋮                ⋮       ⋮      ⋮</span></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="co">#  394 │ Lemon Bars                 false   true   true</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  395 │ Lemon Bars                 false   true   true</span></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="co">#  396 │ Pecan Pie                  false   true   true</span></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  397 │ Zucchini Bread             false   true   true</span></span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  398 │ Banana Bread               false   true   true</span></span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="co">#  399 │ Hawaiian Pizza             false   true   true</span></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="co">#                                       387 rows omitted</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We now run through our newly created list of allergens and call the DataFrames function <code>transform!</code> for each allergen. <code>transform!</code> is the mutating version of <code>transform</code> and will modify the specified DataFrame rather than return a new object. <code>transform</code> includes all of the columns in the original DataFrame, unlike <code>select</code>, which will include only the specified columns.</p>
+<p>We specify here than we want to take the contents of the <code>Allergens</code> column, and pass it, one row at a time (<code>ByRow()</code>) to an anonymous function (<code>s -&gt; contains(string(s), allergen))</code>) and store the result in a new column <code>Symbol(allergen)</code>. Note that we are converting the name of the allergen, which is a <code>String</code> to a <code>Symbol</code>, which is what DataFrames expects here.</p>
+<p>The anonymous function we define essentially only calls the Julia function <code>contains</code>, which will return a <code>true</code> or <code>false</code> depending on whether the string contains a specified substring. We convert the value from the DataFrame to a string (with the <code>string()</code> function), as DataFrames uses a more specialised data type for string values to save memory and improve performance. We have a quick look at three of the allergens and see that we indeed have exactly what we wanted.</p>
+<p>We can now analyse the data any way we want to. Let’s group the data to see combinations of almonds and wheat in the various foods:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>gdf <span class="op">=</span> <span class="fu">groupby</span>(df, [<span class="op">:</span>Almonds, <span class="op">:</span>Wheat])</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (keys, sdf) <span class="kw">in</span> <span class="fu">pairs</span>(gdf)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(<span class="st">&quot;Number of foods with </span><span class="sc">$</span>keys<span class="st">: </span><span class="sc">$</span>(<span class="fu">nrow</span>(sdf))<span class="st">&quot;</span>)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of foods with GroupKey: (Almonds = true, Wheat = true): 2</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of foods with GroupKey: (Almonds = false, Wheat = true): 94</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of foods with GroupKey: (Almonds = false, Wheat = false): 303</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="joining-dataframes" class="level3">
+<h3 class="anchored" data-anchor-id="joining-dataframes">Joining DataFrames</h3>
+<p>DataFrames allows for joining of tables, just like in a SQL database. We shall give a few key definitions here to illustrate the concept.</p>
+<p>Firstly, what is a <em>join</em>? It is a combination of two tables, based on the values in a specified column, typically an ID or similar index value. The resulting table may include columns from one or both of the tables, for the rows that are included in the joined table, depending on the type of join.</p>
+<p>We define two DataFrames to use in our examples:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="op">=</span> <span class="fu">DataFrame</span>(ID <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>], Floor <span class="op">=</span> [<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>], Office <span class="op">=</span> [<span class="fl">11</span>, <span class="fl">12</span>, <span class="fl">12</span>])</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×3 DataFrame</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ ID     Floor   Office </span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  String  Int64  </span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────────────</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1  A           11</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2  B           12</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     3  C           12</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> <span class="fu">DataFrame</span>(ID <span class="op">=</span> [<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">7</span>, <span class="fl">11</span>], Name <span class="op">=</span> [<span class="st">&quot;Tom&quot;</span>, <span class="st">&quot;Dan&quot;</span>, <span class="st">&quot;Harry&quot;</span>, <span class="st">&quot;Bob&quot;</span>])</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 4×2 DataFrame</span></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ ID     Name   </span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  String </span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1  Tom</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2  Dan</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7  Harry</span></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │    11  Bob</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Inner join</strong>: An inner join between two tables will include only the rows where the field (e.g. ID) on which you join, are the same in each table. Rows that include a value of ID that is only present in one of the two tables will not be included. All columns from both tables are included.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">innerjoin</span>(df1, df2, on<span class="op">=:</span>ID)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 2×4 DataFrame</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ ID     Floor   Office  Name   </span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  String  Int64   String </span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────────────────────</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1  A           11  Tom</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2  B           12  Dan</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Left join</strong>: A left join between two tables will include all the rows from the <em>left</em> table, as well as those rows from <em>right</em> table where the joining field (e.g. ID) match. All columns are included, which may result in <code>missing</code> values in columns from the <em>right</em> table.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">leftjoin</span>(df1, df2, on<span class="op">=:</span>ID)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 3×4 DataFrame</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ ID     Floor   Office  Name    </span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  String  Int64   String? </span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼────────────────────────────────</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1  A           11  Tom</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2  B           12  Dan</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     3  C           12  missing </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Right join</strong>: Similar to a <em>left join</em>, but all rows from the <em>right table</em> are included and only matching rows from the <em>left</em> table. This may result in <code>missing</code> values in columns from the <em>left</em> table.</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rightjoin</span>(df1, df2, on<span class="op">=:</span>ID)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 4×4 DataFrame</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ ID     Floor    Office   Name   </span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  String?  Int64?   String </span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼─────────────────────────────────</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1  A             11  Tom</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2  B             12  Dan</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     7  missing  missing  Harry</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │    11  missing  missing  Bob</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Outer join</strong>: This will include all rows from both <em>left</em> and <em>right</em> tables, possibly resulting in <code>missing</code> values in all columns.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># outerjoin(df1, df2, on=:ID)</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 5×4 DataFrame</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ ID     Floor    Office   Name    </span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  String?  Int64?   String? </span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼──────────────────────────────────</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1  A             11  Tom</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2  B             12  Dan</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co">#    3 │     3  C             12  missing </span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="co">#    4 │     7  missing  missing  Harry</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    5 │    11  missing  missing  Bob</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Semi join</strong> (a.k.a. <strong>Left semi join</strong>): Like an inner join, this will only return rows that match in both columns, but will only return columns from the <em>left</em> table. This is useful if you want to select, for example, names from a list that are also present in another list, without including additional data from that list. To do a <em>right semi join</em>, just reverse the order to the two <code>DataFrame</code>s.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">semijoin</span>(df1, df2, on<span class="op">=:</span>ID)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 2×3 DataFrame</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ ID     Floor   Office </span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  String  Int64  </span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────────────</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     1  A           11</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co">#    2 │     2  B           12</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Anti join</strong> (a.k.a. <strong>Left anti join</strong>): Like the semi join, but will only return rows from the <em>left</em> table that are <strong>NOT</strong> matched in the <em>right</em> table.</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">antijoin</span>(df1, df2, on<span class="op">=:</span>ID)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1×3 DataFrame</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  Row │ ID     Floor   Office </span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      │ Int64  String  Int64  </span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ─────┼───────────────────────</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="co">#    1 │     3  C           12</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
-julia&gt;</code></pre>
-<p>You can enter code directly at the <code>julia&gt;</code> prompt, but since none of this will be saved, it is probably not the preferred way of coding.</p>
-<p>A better way would be to save your code into a file, e.g. <em>myscript.jl</em>, and then execute this <em>script</em> by using the <code>include()</code> command. For example, if the file myscript.jl includes the following:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">UnicodePlots</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>([<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>], <span class="fu">rand</span>(<span class="fl">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>then my can run the script as follows:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">&quot;myscript.jl&quot;</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#    ┌                                        ┐</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#  A ┤■■■■■■■■■■■■■■■■■■■ 0.479201</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#  B ┤■■■■■■■■■■■■■■■■ 0.394627</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#  C ┤■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 0.754307</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">#    └                                        ┘</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>You can also run the script from the command line with:</p>
-<p><code>julia myscript.jl</code></p>
-<p>The REPL has a few modes. You can access the package manager by pressing <code>]</code> at the <code>julia&gt;</code> prompt. To access the help mode, use <code>?</code> (also inside the package manager). You can also access the underlying shell with <code>;</code>, but unless you are running Julia inside Windows Terminal, very little will work in Shell Mode.</p>
-<p>While it is good to be familiar with the REPL, realistically speaking, the most common thing the average user will do in the REPL is to access the package manager. This is where to install or remove packages and update installed packages.</p>
-<p>You can use Unicode characters in the REPL, but unless you are using Windows Terminal, most non-ASCII characters won’t display properly.</p>
-<section id="keyboard-shortcuts" class="level3">
-<h3 class="anchored" data-anchor-id="keyboard-shortcuts">Keyboard Shortcuts</h3>
-<p>The REPL has command line completion. For example, if you typed:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">include</span>(<span class="st">&quot;myscript.jl&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>in the previous example, then typing <code>inc</code> and pressing the up cursor will repeat the previous line that started with <code>inc</code>, i.e. <code>include(&quot;myscript.jl&quot;)</code>.</p>
-<p>You could also start typing a command and hit <code>&lt;tab&gt;</code> to get full command suggestions with some intelligence built-in. E.g., type <code>prin</code> and hit <code>&lt;tab&gt;</code>. Julia will complete the command to <code>print</code>. Hit <code>&lt;tab&gt;</code> again, and you get:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> print</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>print        println      printstyled</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>julia<span class="op">&gt;</span> print</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Since there are more than one command that starts with <code>print</code>, Julia lists them all, creates a new prompt and starts off with the letters <code>print</code>, so you can complete the line.</p>
-<p>You can clear the REPL with <code>ctrl-L</code> and close it with <code>ctrl-D</code> on an empty line.</p>
+
 </section>
 </section>
-<section id="running-julia-inside-vscode" class="level2">
-<h2 class="anchored" data-anchor-id="running-julia-inside-vscode">Running Julia inside VSCode</h2>
-<p>One of the most common ways of working with Julia is from inside VSCode. If everything is set up correctly, simply do the following</p>
-<ol type="1">
-<li>Create a folder for your project</li>
-<li>Right click inside the folder in Windows Explorer and select <code>Open with Code</code>. This will start up VSCode and open the folder inside the editor.</li>
-<li>Add a file to contain your code. Be sure to give it a <em>.jl</em> extension, so VSCode can identify it as Julia code.</li>
+
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Unless, of course, you used strings with spaces for column names.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Note that to use the <code>mean</code> function, you need to first include the <code>Statistics</code> standard library<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Kaggle is a website for data science enthusiasts. It has many data sets and run competitions to generate predictions based on these sets.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
-<p>Now you can enter code.</p>
-<p>To execute the code, either click the run button to execute the whole file, or click on a line you want to execute and hit <code>Shift-Enter</code> to execute the code block. A code block is intelligently identified, so if the line you are on is inside a function definition, for example, the function will be compiled.</p>
-<p>Once you are executing code, a Julia REPL will be open in the Terminal inside VSCode. Anything you can do in the REPL can be done here. The Julia add-in also provides more features, like listing all existing variables in the current scope and their values, as well as a plot pane and many other useful tools, such as debugger and a profiler.</p>
-</section>
-<section id="jupyter-and-pluto" class="level2">
-<h2 class="anchored" data-anchor-id="jupyter-and-pluto">Jupyter and Pluto</h2>
-<p>There are two more useful tools for running Julia. <em>Jupyter notebooks</em> and <em>Pluto notebooks</em>.</p>
-<p>These run inside your browser. Code is entered in cells and results displayed below (Jupyter) or above (Pluto) the cell after it is executed.</p>
-<p>The main difference between the two is that Jupyter cells are static - they only run when you execute them manually, while Pluto is <em>reactive</em>. If a cell in Pluto assigns a value to a variable and is edited, then Pluto will also execute all other cells that use this variable. To enable this, you should limit Pluto cells to single statements, or wrap code in a <code>begin..end</code> block, but still limit it to a single assignment per cell.</p>
-<p>Jupyter can be used with Python and R as well as Julia (the name Jupyter is from <strong>Ju</strong>lia, <strong>Pyt</strong>hon and <strong>R</strong>) as well as ~40 other languages. Pluto is only for Julia.</p>
-<section id="installing-jupyter" class="level3">
-<h3 class="anchored" data-anchor-id="installing-jupyter">Installing Jupyter</h3>
-<p>The easiest way to install Jupyter is to add the <code>IJulia.jl</code> package to Julia from within the REPL. Julia will install a private copy of Python as well as all the add-ins it needs. To launch Jupyter, do the following from within Julia:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">IJulia</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">notebook</span>(dir <span class="op">=</span> <span class="st">&quot;.&quot;</span>) <span class="co"># sets the starting folder to the current folder</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This will open up your default browser and start Jupyter with the Julia kernel selected.</p>
-</section>
-<section id="installing-pluto" class="level3">
-<h3 class="anchored" data-anchor-id="installing-pluto">Installing Pluto</h3>
-<p>Pluto is installed as a Julia package, so just open the package manager and <code>add Pluto</code>.</p>
-<p>To launch Pluto, then do the following:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">Pluto</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>Pluto.<span class="fu">run</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>This will open your default browser and start Pluto.</p>
-
-
-</section>
-</section>
-
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
