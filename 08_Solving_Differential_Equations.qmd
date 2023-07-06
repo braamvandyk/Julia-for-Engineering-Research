@@ -127,7 +127,7 @@ x = sol.t
 totflows = sum.(sol.u)
 
 # Now divide the individual flows with the total. 
-fracs = sol.u ./ n
+fracs = sol.u ./ totflows
 
 # We get the same structure as sol.u - an array of arrays.
 # We need to flatten this to plot it.
