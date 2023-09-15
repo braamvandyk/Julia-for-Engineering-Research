@@ -1,0 +1,280 @@
+---
+title: "Fun with Arrays"
+---
+
+In the previous section, we discussed the basics of using arrays in Julia. In this section, we shall briefly look at a few *"tricks of the trade"* to make working with arrays easier.
+
+## More on Indexing
+
+When we discussed the basics of using arrays, indexing was done on a single entry basis, e.g.
+
+``` julia
+a = [i^2 for i = 1:10]
+# 10-element Vector{Int64}:
+#    1
+#    4
+#    9
+#   16
+#   25
+#   36
+#   49
+#   64
+#   81
+#  100
+
+a[3]
+# 9
+```
+
+You can however also specify an array of indices:
+
+``` julia
+a[4:6]
+# 3-element Vector{Int64}:
+#  16
+#  25
+#  36
+```
+
+This opens up more sophisticated selection strategies. Let's just select the value larger than 30:
+
+``` julia
+a[a .> 30]
+# 5-element Vector{Int64}:
+#   36
+#   49
+#   64
+#   81
+#  100
+```
+
+Here `a .> 30` returns an array of the indices where a holds values larger than 30, and we simply use that to index into `a` to get the values.
+
+We can combine several tests into a test, or *predicate* function. For example, let's say we wanted to select only even values, larger than 30. The can use the `findall` function to return a array of indices that meet our requirements:
+
+``` julia
+# returns true when all the tests are passed
+function mytest(x)
+    return iseven(x) && (x > 30) 
+end
+
+idx = findall(mytest, a)
+# 3-element Vector{Int64}:
+#   6
+#   8
+#  10
+
+a[idx]
+# 3-element Vector{Int64}:
+#   36
+#   64
+#  100
+```
+
+In addition to `findall`, there is also `findfirst` and `findlast`, whose use should be obvious.
+
+To find the smallest or largest entries, use `findmax` and `findmin`. These take a function, `f(x)` and return the index in `a` where `f(x)` is maximal (or minimal), as well as the value of f(x). To just find the largest/smallest entry, you could just pass `identity` as the function, although `minimum` and `maximum` may be more efficient as they won't try to apply a function first. If you need both the smallest and largest values, use `extrema`.
+
+``` julia
+a = rand(5)
+# 5-element Vector{Float64}:
+#  0.6543374123600577 
+#  0.39436407973246723
+#  0.6426654745232094 
+#  0.7604450070679262 
+#  0.35561125088056034
+
+findmax(identity, a)
+# (0.7604450070679262, 4)
+
+minimum(a)
+# 0.35561125088056034
+
+maximum(a)
+# 0.7604450070679262
+
+extrema(a)
+# (0.35561125088056034, 0.7604450070679262)
+```
+
+A closely related option is `argmax`. This will return the value in `a` where the function is maximised.
+
+``` julia
+findmax(abs2, a)
+# (0.5782766087745382, 4)
+
+argmax(abs2, a)
+# 0.7604450070679262
+```
+
+Here `abs2` is a standard function that returns the square of the absolute value (so just the square for real inputs). `findmax` returns the maximum value of the function (0.57827...), and the index of the entry in `a` that maximised the function (4). `argmax` returns the **value** of the entry in `a` that maximised the function (0.76044...).
+
+There is of course also `findmin` and `argmin`.
+
+You can also check if any or all of the entries in an array return true for your predicate function, using `any` and `all`.
+
+Multidimensional arrays can also be index with a one-dimensional index:
+
+``` julia
+H = [1//(i + j -1) for i = 1:5, j = 1:5]
+# 5×5 Matrix{Rational{Int64}}:
+#  1//1  1//2  1//3  1//4  1//5
+#  1//2  1//3  1//4  1//5  1//6
+#  1//3  1//4  1//5  1//6  1//7
+#  1//4  1//5  1//6  1//7  1//8
+#  1//5  1//6  1//7  1//8  1//9
+
+
+H[2]
+# 1//2
+
+H[5]
+# 1//5
+```
+
+The index refers to the position in memory. Julia uses **column-major** ordering, so the array entries are arranged in memory in such a way that the first column's entries are sequential, followed by the second column's entries and so on.
+
+This means the fastest way to cycle through all the entries in a matrix is one column at a time. Let's see how much of a difference this makes:
+
+``` julia
+N = 10_000
+10000
+
+julia> A = rand(N, N)
+10000×10000 Matrix{Float64}:
+ 0.125774   0.99546    0.818036   0.336722    0.0801124  …  0.424328   0.211697    0.384141   0.991287   0.803988
+ 0.352014   0.275881   0.283768   0.255942    0.697316      0.338242   0.309393    0.0545593  0.951967   0.801345
+ 0.0798538  0.370381   0.18909    0.045718    0.40401       0.0178459  0.45153     0.662736   0.229347   0.978208
+ 0.20596    0.374736   0.697504   0.149587    0.557356      0.29373    0.0687817   0.743411   0.710738   0.977884
+ 0.272887   0.539657   0.293967   0.563295    0.48734       0.591128   0.73146     0.16616    0.0643573  0.37605
+ 0.856904   0.697862   0.431296   0.614269    0.44666    …  0.155158   0.0712897   0.833298   0.489254   0.451948
+ 0.180036   0.627582   0.939213   0.683959    0.130053      0.876024   0.168418    0.252402   0.100271   0.29253
+ 0.977263   0.824657   0.485721   0.902796    0.657551      0.381646   0.284706    0.954012   0.277599   0.410895
+ 0.273142   0.505615   0.190199   0.628423    0.345799      0.708315   0.0279852   0.863847   0.0679989  0.982656
+ 0.0444545  0.507261   0.472975   0.936737    0.460258      0.151091   0.186248    0.256901   0.888023   0.43243
+ 0.383873   0.344713   0.659127   0.67701     0.473101   …  0.265238   0.677027    0.459148   0.175624   0.0108319
+ 0.0978964  0.949814   0.121223   0.483722    0.303262      0.72285    0.826869    0.880193   0.0725074  0.397457
+ 0.837655   0.791215   0.301445   0.757322    0.725472      0.728449   0.247278    0.492649   0.757416   0.0875311
+ ⋮                                                       ⋱  ⋮
+ 0.0118103  0.823731   0.363951   0.00415639  0.38555       0.0709323  0.910507    0.648764   0.716338   0.19358
+ 0.602335   0.840785   0.151156   0.645298    0.643621      0.104928   0.925803    0.116246   0.0470635  0.118243
+ 0.442508   0.0942871  0.687552   0.878454    0.765566   …  0.330269   0.976848    0.657189   0.622884   0.527785
+ 0.036136   0.934861   0.0186539  0.767235    0.8053        0.0876643  0.476363    0.0331153  0.973213   0.340101
+ 0.698365   0.928986   0.899297   0.37211     0.641652      0.773955   0.00228385  0.156724   0.920929   0.438071
+ 0.942956   0.525783   0.733806   0.00928839  0.32164       0.585651   0.930962    0.709463   0.959226   0.641829
+ 0.140685   0.315704   0.467777   0.456009    0.226625      0.0200179  0.969894    0.707265   0.0822367  0.899115
+ 0.280121   0.979617   0.212137   0.456986    0.958369   …  0.847566   0.520314    0.449312   0.6345     0.0621001
+ 0.552303   0.918199   0.969841   0.0787598   0.631372      0.866611   0.311826    0.56646    0.65133    0.206941
+ 0.829611   0.429891   0.964987   0.519071    0.924919      0.550499   0.266589    0.486168   0.982127   0.55406
+ 0.0242417  0.0808636  0.317017   0.802046    0.815374      0.944076   0.0478049   0.100928   0.573823   0.331286
+ 0.138703   0.308092   0.889499   0.257449    0.975605      0.826279   0.688673    0.894047   0.416685   0.23544
+
+function sum1(A)
+    S = 0.0
+    n, m = size(A)
+    for i = 1:n, j=1:m
+        S += A[i, j]
+    end
+
+    return S
+end
+# sum1 (generic function with 1 method)
+
+function sum2(A)
+    S = 0.0
+    n, m = size(A)
+    for i = 1:n, j=1:m
+        S += A[j, i]
+    end
+
+    return S
+end
+# sum2 (generic function with 1 method)
+
+function sum3(A)
+    S = 0.0
+    for i in eachindex(A)
+        S += A[i]
+    end
+
+    return S
+end
+# sum3 (generic function with 1 method)
+
+using BenchmarkTools
+
+@btime sum1(A)
+#   742.853 ms (1 allocation: 16 bytes)
+# 5.000402991532415e7
+
+@btime sum2(A)
+#   102.889 ms (1 allocation: 16 bytes)
+# 5.000402991532869e7
+
+@btime sum3(A)
+#   102.183 ms (1 allocation: 16 bytes)
+# 5.000402991532869e7
+```
+
+Here we define three functions for summing up the values in the matrix `A`. It is *never* a good idea to benchmark code in global scope, as the compiler can do no optimistion in that case. This is because the types of any variables can change at any point. It is always better to put your code in a function.
+
+`sum1` adds up the values in `A` one row at a time. `sum2` adds the values one column at a time and `sum3` asks Julia to supply the best order with the `eachindex()` iterator.
+
+So, by picking the right order for our indices, we calculate the sum about 7.5X faster! The difference will be larger with larger arrays.
+
+To see the loss of speed in global scope, we run a simple timer using the best option from above, but not wrapped in a function:
+
+``` julia
+S = 0.0
+# 0.0
+
+@time for i = eachindex(A)
+           S += A[i]
+       end
+# 9.945456 seconds (500.00 M allocations: 8.941 GiB, 2.14% gc time)
+```
+
+Note the huge increase in both time and memory use. The exact extent of performance loss will vary depending on the state of you computer, but it is rarely negligible.
+
+The `eachindex` iterator only gives you the values in the array. If you also need an index, you can use `enumerate` instead:
+
+```julia
+A = collect(1:2:50)
+# 25-element Vector{Int64}:
+#   1
+#   3
+#   5
+#   7
+#   9
+#  11
+#  13
+#   ⋮
+#  37
+#  39
+#  41
+#  43
+#  45
+#  47
+#  49
+
+for (i, val) in enumerate(A)
+           if 10 <= val <= 20
+               println("Entry $i is equal to $val")
+           end
+       end
+# Entry 6 is equal to 11
+# Entry 7 is equal to 13
+# Entry 8 is equal to 15
+# Entry 9 is equal to 17
+# Entry 10 is equal to 19
+```
+
+## Pre-allocation and making the most of mutating functions
+
+
+
+## Application - Searching for prime numbers
+
+## Sorting and searching
+
+## Arrays of structs or structs of arrays?
