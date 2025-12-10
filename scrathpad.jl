@@ -12,3 +12,66 @@ contour!(z2)
 
 surface(x, y, z1)
 contour!(x, y, z1)
+
+
+
+N = 10
+
+function primesieve(N=2_000_000)
+    # Create the list, setting even numbers to false already
+    primes = isodd.(1:N) # This allocates an array
+    primes[1] = false # Also exclude 1
+    primes[2] = true # And remember that 2 is prime!
+
+    # Start the sieve at 3
+    nextval = 3
+    while nextval <= N ÷ 2 # ÷ does integer division
+        if primes[nextval] # Still in the list?
+            primes[2*nextval:nextval:N] .= false # Then remove all multiples
+        end
+        nextval += 1 # Start looking for next entry in list
+        while !primes[nextval] && nextval <= N
+            nextval += 1
+        end
+    end
+
+    return (1:N)[primes] # This allocates an array
+end
+
+using BenchmarkTools
+@btime primesieve()
+
+function primesieve!(primes)
+    N = length(primes)
+    # Create the list, setting even numbers to false already
+    primes[1] = false # Exclude 1
+    primes[2] = true # And remember that 2 is prime!
+
+    # Start the sieve at 3
+    nextval = 3
+    while nextval <= N ÷ 2 # ÷ does integer division
+        if primes[nextval] # Still in the list?
+            primes[2*nextval:nextval:N] .= false # Then remove all multiples
+        end
+        nextval += 1 # Start looking for next entry in list
+        while !primes[nextval] && nextval <= N
+            nextval += 1
+        end
+    end
+
+    return primes
+end
+
+N = 2_000_000
+primes = isodd.(1:N)
+idx = primesieve!(primes)
+primes = (1:N)[idx]
+sum(primes)
+
+using BenchmarkTools
+N = 2_000_000
+
+startval = isodd.(1:N)
+@btime primesieve!($primes) setup=(primes = copy(startval))
+primes = (1:N)[idx]
+sum(primes)

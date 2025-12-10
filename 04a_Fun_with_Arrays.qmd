@@ -2,7 +2,7 @@
 title: "Fun with Arrays"
 ---
 
-In the previous section, we discussed the basics of using arrays in Julia. In this section, we shall briefly look at a few *"tricks of the trade"* to make working with arrays easier.
+In the previous section, we discussed the basics of using arrays in Julia. In this section, we shall briefly look at a few ways to make working with arrays a little easier.
 
 ## More on Indexing
 
@@ -26,7 +26,7 @@ a[3]
 # 9
 ```
 
-You can however also specify an array of indices:
+You can however also specify an array of indices to return several values at once:
 
 ``` julia
 a[4:6]
@@ -36,21 +36,38 @@ a[4:6]
 #  36
 ```
 
-This opens up more sophisticated selection strategies. Let's just select the value larger than 30:
+This opens up more sophisticated selection strategies. Let's just select the values between 10 and 30:
 
 ``` julia
-a[a .> 30]
-# 5-element Vector{Int64}:
-#   36
-#   49
-#   64
-#   81
-#  100
+a[10 .<= a .<= 30]
+# 2-element Vector{Int64}:
+#  16
+#  25
 ```
 
-Here `a .> 30` returns an array of the indices where a holds values larger than 30, and we simply use that to index into `a` to get the values.
+Here `10 .<= a .<= 30` returns a `BitVector` indicating the indices where `a` holds values between 10 and 30, and we simply use that to index into `a` to get the values.
 
-We can combine several tests into a test, or *predicate* function. For example, let's say we wanted to select only even values, larger than 30. The can use the `findall` function to return a array of indices that meet our requirements:
+``` Julia
+10 .<= a .<= 30
+# 10-element BitVector:
+#  0
+#  0
+#  0
+#  1
+#  1
+#  0
+#  0
+#  0
+#  0
+#  0
+```
+:::{.callout-note}
+Note the use of the period before the comparison operators: `.<=`. This *broadcasts* the operator, i.e. applies it element-wise to the array.
+:::
+
+We can combine several tests of the data into a single selection function (called a *predicate*[^1] function). For example, let's say we wanted to select only even values, larger than 30. The can use the `findall` function to return a array of indices that meet our requirements:
+
+[^1]: A predicate function is a function that returns `true` or `false` based on some specified conditions.
 
 ``` julia
 # returns true when all the tests are passed
@@ -71,7 +88,7 @@ a[idx]
 #  100
 ```
 
-In addition to `findall`, there is also `findfirst` and `findlast`, whose use should be obvious.
+In addition to `findall`, there is also `findfirst` and `findlast`, whose use should be obvious from their names.
 
 To find the smallest or largest entries, use `findmax` and `findmin`. These take a function, `f(x)` and return the index in `a` where `f(x)` is maximal (or minimal), as well as the value of f(x). To just find the largest/smallest entry, you could just pass `identity` as the function, although `minimum` and `maximum` may be more efficient as they won't try to apply a function first. If you need both the smallest and largest values, use `extrema`.
 
@@ -107,7 +124,7 @@ argmax(abs2, a)
 # 0.7604450070679262
 ```
 
-Here `abs2` is a standard function that returns the square of the absolute value (so just the square for real inputs). `findmax` returns the maximum value of the function (0.57827...), and the index of the entry in `a` that maximised the function (4). `argmax` returns the **value** of the entry in `a` that maximised the function (0.76044...).
+Here `abs2` is a standard Julia function that returns the square of the absolute value (so just the square for real inputs). `findmax` returns the maximum value of the function (0.57827...), and the **index** of the entry in `a` that maximised the function (4). `argmax` returns the **value** of the entry in `a` that maximised the function (0.76044...).
 
 There is of course also `findmin` and `argmin`.
 
@@ -183,8 +200,8 @@ end
 function sum2(A)
     S = 0.0
     n, m = size(A)
-    for i = 1:n, j=1:m
-        S += A[j, i]
+    for j = 1:n, i=1:n
+        S += A[i, j]
     end
 
     return S
@@ -203,24 +220,28 @@ end
 
 using BenchmarkTools
 
-@btime sum1(A)
-#   742.853 ms (1 allocation: 16 bytes)
-# 5.000402991532415e7
+@btime sum1($A)
+#   1.449 s (0 allocations: 0 bytes)
+# 4.999981456219146e7
 
-@btime sum2(A)
-#   102.889 ms (1 allocation: 16 bytes)
-# 5.000402991532869e7
+@btime sum2($A)
+#   91.894 ms (0 allocations: 0 bytes)
+# 4.999981456220286e7
 
-@btime sum3(A)
-#   102.183 ms (1 allocation: 16 bytes)
-# 5.000402991532869e7
+@btime sum3($A)
+#   92.086 ms (0 allocations: 0 bytes)
+# 4.999981456220286e7
 ```
 
-Here we define three functions for summing up the values in the matrix `A`. It is *never* a good idea to benchmark code in global scope, as the compiler can do no optimistion in that case. This is because the types of any variables can change at any point. It is always better to put your code in a function.
+Here we define three functions for summing up the values in the matrix `A`. 
 
 `sum1` adds up the values in `A` one row at a time. `sum2` adds the values one column at a time and `sum3` asks Julia to supply the best order with the `eachindex()` iterator.
 
-So, by picking the right order for our indices, we calculate the sum about 7.5X faster! The difference will be larger with larger arrays.
+So, by picking the right order for our indices, we calculate the sum about 15X faster! The difference will be larger with larger arrays.
+
+::: {.callout-note}
+It is *never* a good idea to benchmark code in global scope, as the compiler can do no optimisation in that case. This is because the types of any variables can change at any point. It is always better to put your code in a function. Julia has a built-in `@time` macro, but we use `@btime` from [`BenchmarkTools`](https://github.com/JuliaCI/BenchmarkTools.jl) here. It is a more comprehensive, and more accurate benchmarking toolset. In addition, we pass `$A` instead of just `A` so the contents of the matrix is sent to the function (effectively as a constant), rather than a pointer to the global variable. This allows more accurate benchmarking.
+:::
 
 To see the loss of speed in global scope, we run a simple timer using the best option from above, but not wrapped in a function:
 
@@ -231,14 +252,14 @@ S = 0.0
 @time for i = eachindex(A)
            S += A[i]
        end
-# 9.945456 seconds (500.00 M allocations: 8.941 GiB, 2.14% gc time)
+#  39.595608 seconds (500.00 M allocations: 8.941 GiB, 2.19% gc time)
 ```
 
 Note the huge increase in both time and memory use. The exact extent of performance loss will vary depending on the state of you computer, but it is rarely negligible.
 
 The `eachindex` iterator only gives you the values in the array. If you also need an index, you can use `enumerate` instead:
 
-```julia
+``` julia
 A = collect(1:2:50)
 # 25-element Vector{Int64}:
 #   1
@@ -270,11 +291,174 @@ for (i, val) in enumerate(A)
 ```
 
 ## Pre-allocation and making the most of mutating functions
+Consider the function below:
+
+```julia
+function mycalc(a, b, c, start, step, stop)
+    buffer = zeros(length(start:step:stop))
+
+    for (i, x) in enumerate(start:step:stop)
+        buffer[i] = a + b * x + c * x^2
+    end
+        
+    return sum(buffer)
+end
+
+ @btime mycalc(1, 2, 3, 0.0, 0.1, 100000.0)
+#   3.497 ms (2 allocations: 7.63 MiB)
+# 1.0000115001105e16
+```
+
+This function allocates memory to hold the array (`buffer`), every time it is called. Here it is a smallish array, but in more complicated calculations, or when you call this function many times, these allocations add up quickly. We can avoid this repeated allocation by creating the array once, outside the function, and then passing it to the function. The function will then modify this block of memory - **mutate** in the jargon. We call this type of function a *mutating* function, and in Julia convention, indicate this to the user by adding an exclamation mark to the name.
+
+```julia
+buffer = zeros(1000001)
+
+function mycalc!(buffer, a, b, c, start, step, stop)
+    for (i, x) in enumerate(start:step:stop)
+        buffer[i] = a + b * x + c * x^2
+    end
+    return sum(buffer)
+end
 
 
 
-## Application - Searching for prime numbers
+@btime mycalc!(buffer, 1, 2, 3, 0.0, 0.1, 100000.0)
+#   2.294 ms (0 allocations: 0 bytes)
+# 1.0000115001105e16
+
+```
+
+As you can see, the mutating version (sometimes called the *in-place* version) is quite a bit faster than the allocating (*out-of-place*) version. Allocating memory is not a quick step and as a general rule, something to be avoided in code where speed is critical. When you are not interested in squeezing every last nanosecond out of your code, there is no reason to be particularly focused on this. In that case rather write code that is easier to read, as a gift to your future self.
+
+And, since this is also important, note that there are usually several ways to get rid of allocations, other than pre-allocating memory:
+
+```julia
+function mycalc2(a, b, c, start, step, stop)
+    s = 0.0
+    for x in start:step:stop
+        s += a + b*x + c*x^2
+    end
+    return s
+end
+
+@btime mycalc2(1, 2, 3, 0.0, 0.1, 100000.0)
+#   2.224 ms (0 allocations: 0 bytes)
+# 1.0000115001103872e16
+```
+
+Here we just didn't store all of the intermediate calculations, so we didn't need to allocate memory to store them in. If you don't need it again later, don't waste CPU time on putting it somewhere.
+
+
+### Application - Searching for prime numbers
+The Sieve of Erastothenes is a method for finding prime numbers attributed to Erastothenes of of Cyrene, the third chief librarian at the Library of Alexandria, and dates back at least to the 2nd century. Erastothenes was also the first person to accurately culculate the Erath's [circumference](https://www.101computing.net/eratosthenes-the-ancient-scholar-who-measured-the-earth/).
+
+The sieve is a very simple algorithm. You start with a list of consecutive numbers, starting with 2, up to the largest number you are interested in (say, N). Starting with the first value, remove all multiples of it. Then select the next remaining number, and remove all multiples of this number. This continues up to N/2, since there are no multiples of numbers larger than N/2 in the list. The numbers that have not been removed, are all prime numbers.
+
+Let's write a simple version of the sieve to find all prime numbers smaller than a specified value for N:
+
+```julia
+function primesieve(N=2_000_000)
+    # Create the list, setting even numbers to false already
+    primes = isodd.(1:N) # This allocates an array
+    primes[1] = false # Also exclude 1
+    primes[2] = true # And remember that 2 is prime!
+
+    # Start the sieve at 3
+    nextval = 3
+    while nextval <= N ÷ 2 # ÷ does integer division
+        if primes[nextval] # Still in the list?
+            primes[2*nextval:nextval:N] .= false # Then remove all multiples
+        end
+        nextval += 1 # Start looking for next entry in list
+        while !primes[nextval] && nextval <= N
+            nextval += 1
+        end
+    end
+
+    return (1:N)[primes] # This allocates an array
+end
+
+using BenchmarkTools
+@btime primesieve()
+#   5.970 ms (7 allocations: 1.37 MiB)
+```
+
+Most of the code above should be easy to follow. Perhaps one _trick_ worth explaining is the last line of the function:
+
+`return (1:N)[primes]`
+
+This creates a `UnitRange` object - `1:N`. This is like an array, but lazily constructed. Lazy here is a good thing. It means the array is not actually created and memory allocated. The value of interest in the iterator is simply calculated on-the-fly when it is requested. Since a `UnitRange` is simply a list of values with start, step size and largest value (start, step, stop) all known, the n-th value can easily be found when you index into the iterator.
+
+Here we index with a `BitArray` (`primes`), which will return all the entries in the iterator for which the corresponding entry in `primes` is `true`. This requires Julia to allocate an array with the results.
+
+From the benchmarking results, we see that there were 7 allocations. If we need to squeeze every last millisecond of performance from the code, we can try to remove these allocations:
+
+```julia
+function primesieve!(primes)
+    N = length(primes)
+    # Create the list, setting even numbers to false already
+    primes[1] = false # Exclude 1
+    primes[2] = true # And remember that 2 is prime!
+
+    # Start the sieve at 3
+    nextval = 3
+    while nextval <= N ÷ 2 # ÷ does integer division
+        if primes[nextval] # Still in the list?
+            primes[2*nextval:nextval:N] .= false # Then remove all multiples
+        end
+        nextval += 1 # Start looking for next entry in list
+        while !primes[nextval] && nextval <= N
+            nextval += 1
+        end
+    end
+
+    return primes
+end
+
+N = 2_000_000
+primes = isodd.(1:N)
+idx = primesieve!(primes)
+primes = (1:N)[idx]
+
+startval = isodd.(1:N)
+@btime primesieve!($primes) setup=(primes = copy(startval))
+#   5.469 ms (0 allocations: 0 bytes)
+```
+
+So, with a very simple change, we eliminated the allocations and the code is now ~8% faster.
+
+:::{.callout-note}
+You will see some differences in how we benchmarked the second function.
+1. We use a setup block to reinitialise the `primes` array for each repeat of the benchmarking
+2. We *interpolate* the value of `primes` into the function call, by using `$primes` in the call.
+
+The latter is especially important when passing variables to a function you are benchmarking. Since `primes` is a global variable, Julia cannot do full optiisation of the code, as it must be able to handle any changes to `primes` that can cause it's type to change. Benchmarking in the global scope is therefore not best practise. We get around this by passing the interpolated value of the variable, so Julia actually creates a constant value from the variable and passes that. This gives more accurate benchmarking results.
+:::
+
 
 ## Sorting and searching
+
+Sorting and searching is an extremely common activity in coding. As a result, Julia has a rich set of built-in tools for this, so you do not have to build your own.
+
+The primary functions to call are `sort` (or `sort!` to modify in-place) and `sortperm` (and `sortperm!`), if you just want a permutation array, `p`, such that `A[p]` puts the entries of A in the correct order. This is another nice indexing trick in Julia!
+
+The function takes several inputs:
+
+```julia
+sort!(v; alg::Algorithm=defalg(v), lt=isless, by=identity, rev::Bool=false, order::Ordering=Forward)
+```
+
+Here, `v` is the vector to sort, `alg` can be one of `InsertionSort`, `QuickSort`, `PartialQuickSort(k)` or `MergeSort`, but you can also specify custom sorting algorithms by overloading the `defalg()` function for your array type.
+
+The `lt` (less than) parameter specifies the method used to determine if one entry in the array is less than another. The default method is to call Julia's `isless()` function, but you can specify any custom function, as long as it meets the requirements specified in the [Julia documentation](https://docs.julialang.org/en/v1/base/sort/): 
+
+`by` specifies a function that is applied to the entries of `v` before they are sorted. The entries are sorted based on the results of this function for each entry. The default function, `identity()`, just returns the input value, so the array is sorted based on the values of the entries. You could however, sort values based on the return values of any function.
+
+`rev` specifies whether the entries are sorted in increasing or decreasing order, based on the order specification given in `order`. Having both `rev` and `order` to specify the sequence in which results are ordered, is admittedly a little confusing, but is needed to allow alternative implementations for the `lt` function, that could include more options than `Forward` and `Reverse`.
+
+Many other Julia functions, such as searching, can take advantage of knowledge on whether the array has been sorted beforehand. You can check this for an arbitrary array (assuming you don't sort it yourself) with the `issorted()` function.
+
+Searching can then be done with `searchsorted()` or `searchsortedfirst()`. The former returns all indices in the array where the entries match the search criteria and the latter returns only the first (lowest index) entry that matches. The equivalent searching functions, where sorting is not assumed, are `findall()` and `findfirst()`.
 
 ## Arrays of structs or structs of arrays?
