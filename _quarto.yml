@@ -21,6 +21,7 @@ website:
         - 02_Installing_Julia.qmd
         - 03_Running_Julia.qmd
         - 04_An_Overview_of_the_Language.qmd
+        - 04a_More_on_Arrays.qmd
       - section: "Visualisation"
         contents:
         - 05_Plotting.qmd

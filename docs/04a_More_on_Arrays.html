@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Fun with Arrays – Julia for Engineering Research</title>
+<title>More on Arrays – Julia for Engineering Research</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -3875,9 +3875,7 @@ vertical-align: -.125em;
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
-      Julia for Engineering Research
-      </li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_Getting_started_with_Julia.html">Introduction</a></li><li class="breadcrumb-item"><a href="./04a_More_on_Arrays.html">More on Arrays</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -3939,6 +3937,12 @@ vertical-align: -.125em;
   <div class="sidebar-item-container"> 
   <a href="./04_An_Overview_of_the_Language.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">An Overview of the Language</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04a_More_on_Arrays.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">More on Arrays</span></a>
   </div>
 </li>
       </ul>
@@ -4053,9 +4057,9 @@ vertical-align: -.125em;
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01_Getting_started_with_Julia.html">Introduction</a></li><li class="breadcrumb-item"><a href="./04a_More_on_Arrays.html">More on Arrays</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Fun with Arrays</h1>
+<h1 class="title">More on Arrays</h1>
 </div>
 
 
@@ -4225,53 +4229,69 @@ Note
 <span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a> <span class="fl">0.138703</span>   <span class="fl">0.308092</span>   <span class="fl">0.889499</span>   <span class="fl">0.257449</span>    <span class="fl">0.975605</span>      <span class="fl">0.826279</span>   <span class="fl">0.688673</span>    <span class="fl">0.894047</span>   <span class="fl">0.416685</span>   <span class="fl">0.23544</span></span>
 <span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">sum1</span>(A)</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    S <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    n, m <span class="op">=</span> <span class="fu">size</span>(A)</span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span>n, j<span class="op">=</span><span class="fl">1</span><span class="op">:</span>m</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>        S <span class="op">+=</span> A[i, j]</span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> S</span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="co"># sum1 (generic function with 1 method)</span></span>
-<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">sum2</span>(A)</span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    S <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    n, m <span class="op">=</span> <span class="fu">size</span>(A)</span>
-<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span>n, i<span class="op">=</span><span class="fl">1</span><span class="op">:</span>n</span>
-<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>        S <span class="op">+=</span> A[i, j]</span>
-<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> S</span>
-<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a><span class="co"># sum2 (generic function with 1 method)</span></span>
-<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">sum3</span>(A)</span>
-<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>    S <span class="op">=</span> <span class="fl">0.0</span></span>
-<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="fu">eachindex</span>(A)</span>
-<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>        S <span class="op">+=</span> A[i]</span>
-<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
-<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> S</span>
-<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
-<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a><span class="co"># sum3 (generic function with 1 method)</span></span>
-<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">BenchmarkTools</span></span>
-<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="fu">sum1</span>(<span class="op">$</span>A)</span>
-<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a><span class="co">#   1.449 s (0 allocations: 0 bytes)</span></span>
-<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a><span class="co"># 4.999981456219146e7</span></span>
-<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="fu">sum2</span>(<span class="op">$</span>A)</span>
-<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>  <span class="fl">91.894</span> ms (<span class="fl">0</span> allocations<span class="op">:</span> <span class="fl">0</span> bytes)</span>
-<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a><span class="fl">4.999981456220286e7</span></span>
-<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="fu">sum3</span>(<span class="op">$</span>A)</span>
-<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a><span class="co">#   102.183 ms (1 allocation: 16 bytes)</span></span>
-<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a><span class="co"># 5.000402991532869e7</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Here we define three functions for summing up the values in the matrix <code>A</code>. It is <em>never</em> a good idea to benchmark code in global scope, as the compiler can do no optimisation in that case. This is because the types of any variables can change at any point. It is always better to put your code in a function. Julia has a built-in <code>@time</code> macro, but we use <code>@btime</code> from <a href="https://github.com/JuliaCI/BenchmarkTools.jl"><code>BenchmarkTools</code></a> here. It is a more comprehensive, and more accurate benchmarking toolset.</p>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Row-wise addition</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    S <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    n, m <span class="op">=</span> <span class="fu">size</span>(A)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="op">=</span> <span class="fl">1</span><span class="op">:</span>n, j<span class="op">=</span><span class="fl">1</span><span class="op">:</span>m</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>        S <span class="op">+=</span> A[i, j]</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> S</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="co"># sum1 (generic function with 1 method)</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">sum2</span>(A)</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Column-wise addition</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    S <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    n, m <span class="op">=</span> <span class="fu">size</span>(A)</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="op">=</span> <span class="fl">1</span><span class="op">:</span>n, i<span class="op">=</span><span class="fl">1</span><span class="op">:</span>m</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>        S <span class="op">+=</span> A[i, j]</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> S</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a><span class="co"># sum2 (generic function with 1 method)</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">sum3</span>(A)</span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Allow Julia to specify best indexing</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    S <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="fu">eachindex</span>(A)</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>        S <span class="op">+=</span> A[i]</span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> S</span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a><span class="co"># sum3 (generic function with 1 method)</span></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">BenchmarkTools</span></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="fu">sum1</span>(<span class="op">$</span>A)</span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="co">#   1.449 s (0 allocations: 0 bytes)</span></span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a><span class="co"># 4.999981456219146e7</span></span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="fu">sum2</span>(<span class="op">$</span>A)</span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a><span class="co">#   91.894 ms (0 allocations: 0 bytes)</span></span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a><span class="co"># 4.999981456220286e7</span></span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="fu">sum3</span>(<span class="op">$</span>A)</span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a><span class="co">#   92.086 ms (0 allocations: 0 bytes)</span></span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a><span class="co"># 4.999981456220286e7</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Here we define three functions for summing up the values in the matrix <code>A</code>.</p>
 <p><code>sum1</code> adds up the values in <code>A</code> one row at a time. <code>sum2</code> adds the values one column at a time and <code>sum3</code> asks Julia to supply the best order with the <code>eachindex()</code> iterator.</p>
-<p>So, by picking the right order for our indices, we calculate the sum about 7.5X faster! The difference will be larger with larger arrays.</p>
+<p>So, by picking the right order for our indices, we calculate the sum about 15X faster! The difference will be larger with larger arrays.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>It is <em>never</em> a good idea to benchmark code in global scope, as the compiler can do no optimisation in that case. This is because the types of any variables can change at any point. It is always better to put your code in a function. Julia has a built-in <code>@time</code> macro, but we use <code>@btime</code> from <a href="https://github.com/JuliaCI/BenchmarkTools.jl"><code>BenchmarkTools</code></a> here. It is a more comprehensive, and more accurate benchmarking toolset. In addition, we pass <code>$A</code> instead of just <code>A</code> so the contents of the matrix is sent to the function (effectively as a constant), rather than a pointer to the global variable. This allows more accurate benchmarking.</p>
+</div>
+</div>
 <p>To see the loss of speed in global scope, we run a simple timer using the best option from above, but not wrapped in a function:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> <span class="fl">0.0</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 0.0</span></span>
@@ -4279,7 +4299,7 @@ Note
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="pp">@time</span> <span class="cf">for</span> i <span class="op">=</span> <span class="fu">eachindex</span>(A)</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>           S <span class="op">+=</span> A[i]</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>       <span class="cf">end</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 9.945456 seconds (500.00 M allocations: 8.941 GiB, 2.14% gc time)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#  39.595608 seconds (500.00 M allocations: 8.941 GiB, 2.19% gc time)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Note the huge increase in both time and memory use. The exact extent of performance loss will vary depending on the state of you computer, but it is rarely negligible.</p>
 <p>The <code>eachindex</code> iterator only gives you the values in the array. If you also need an index, you can use <code>enumerate</code> instead:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> <span class="fu">collect</span>(<span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">:</span><span class="fl">50</span>)</span>
@@ -4327,7 +4347,8 @@ Note
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a> <span class="pp">@btime</span> <span class="fu">mycalc</span>(<span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">100000.0</span>)</span>
 <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   3.497 ms (2 allocations: 7.63 MiB)</span></span>
 <span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 1.0000115001105e16</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This function allocates memory to hold the array (<code>buffer</code>), every time it is called. Here it is a smallish array, but in more complicated calculations, or when you call this function many times, these allocations add up quickly. We can avoid this repeated allocation by creating the array once, outside the function, and then passing it to the function. The function will then modify this block of memory - <strong>mutate</strong> in the jargon. We call this type of function a <em>mutating</em> function, and in Julia convention, indicate this to the user by adding an exclamation mark to the name.</p>
+<p>This function allocates memory to hold the array (<code>buffer</code>), every time it is called. Here it is a smallish array, but in more complicated calculations, or when you call this function many times, these allocations add up quickly.</p>
+<p>We can avoid this repeated allocation by creating the array once, outside the function, and then passing it to the function. The function will then modify this block of memory - <strong>mutate</strong> in the jargon. We call this type of function a <em>mutating</em> function, and in Julia convention, indicate this to the user by adding an exclamation mark to the name<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>buffer <span class="op">=</span> <span class="fu">zeros</span>(<span class="fl">1000001</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">mycalc!</span>(buffer, a, b, c, start, step, stop)</span>
@@ -4358,16 +4379,92 @@ Note
 <p>Here we just didn’t store all of the intermediate calculations, so we didn’t need to allocate memory to store them in. If you don’t need it again later, don’t waste CPU time on putting it somewhere.</p>
 <section id="application---searching-for-prime-numbers" class="level3">
 <h3 class="anchored" data-anchor-id="application---searching-for-prime-numbers">Application - Searching for prime numbers</h3>
+<p>The Sieve of Erastothenes is a method for finding prime numbers attributed to Erastothenes of of Cyrene, the third chief librarian at the Library of Alexandria, and dates back at least to the 2nd century. Erastothenes was also the first person to accurately culculate the Erath’s <a href="https://www.101computing.net/eratosthenes-the-ancient-scholar-who-measured-the-earth/">circumference</a>.</p>
+<p>The sieve is a very simple algorithm. You start with a list of consecutive numbers, starting with 2, up to the largest number you are interested in (say, N). Starting with the first value, remove all multiples of it. Then select the next remaining number, and remove all multiples of this number. This continues up to N/2, since there are no multiples of numbers larger than N/2 in the list. The numbers that have not been removed, are all prime numbers.</p>
+<p>Let’s write a simple version of the sieve to find all prime numbers smaller than a specified value for N:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">primesieve</span>(N<span class="op">=</span><span class="fl">2_000_000</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create the list, setting even numbers to false already</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    primes <span class="op">=</span> <span class="fu">isodd</span>.(<span class="fl">1</span><span class="op">:</span>N) <span class="co"># This allocates an array</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    primes[<span class="fl">1</span>] <span class="op">=</span> <span class="cn">false</span> <span class="co"># Also exclude 1</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    primes[<span class="fl">2</span>] <span class="op">=</span> <span class="cn">true</span> <span class="co"># And remember that 2 is prime!</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Start the sieve at 3</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    nextval <span class="op">=</span> <span class="fl">3</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> nextval <span class="op">&lt;=</span> N <span class="op">÷</span> <span class="fl">2</span> <span class="co"># ÷ does integer division</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> primes[nextval] <span class="co"># Still in the list?</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>            primes[<span class="fl">2</span><span class="op">*</span>nextval<span class="op">:</span>nextval<span class="op">:</span>N] <span class="op">.=</span> <span class="cn">false</span> <span class="co"># Then remove all multiples</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>        nextval <span class="op">+=</span> <span class="fl">1</span> <span class="co"># Start looking for next entry in list</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> !primes[nextval] <span class="op">&amp;&amp;</span> nextval <span class="op">&lt;=</span> N</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>            nextval <span class="op">+=</span> <span class="fl">1</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (<span class="fl">1</span><span class="op">:</span>N)[primes] <span class="co"># This allocates an array</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">BenchmarkTools</span></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="fu">primesieve</span>()</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="co">#   5.970 ms (7 allocations: 1.37 MiB)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Most of the code above should be easy to follow. Perhaps one thing worth explaining is the last line of the function:</p>
+<p><code>return (1:N)[primes]</code></p>
+<p>This creates a <code>UnitRange</code> object - <code>1:N</code>. This is like an array, but lazily constructed. Lazy here is a good thing. It means the array is not actually created and memory allocated. The value of interest in the iterator is simply calculated on-the-fly when it is requested. Since a <code>UnitRange</code> is simply a list of values with start, step size and largest value (start, step, stop) all known, the n-th value can easily be found when you index into the iterator.</p>
+<p>Here we index with a <code>BitArray</code> (<code>primes</code>), which will return all the entries in the iterator for which the corresponding entry in <code>primes</code> is <code>true</code>. This requires Julia to allocate an array with the results.</p>
+<p>From the benchmarking results, we see that there were 7 allocations. If we need to squeeze every last millisecond of performance from the code, we can try to remove these allocations:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">primesieve!</span>(primes)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    N <span class="op">=</span> <span class="fu">length</span>(primes)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create the list, setting even numbers to false already</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    primes[<span class="fl">1</span>] <span class="op">=</span> <span class="cn">false</span> <span class="co"># Exclude 1</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    primes[<span class="fl">2</span>] <span class="op">=</span> <span class="cn">true</span> <span class="co"># And remember that 2 is prime!</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Start the sieve at 3</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    nextval <span class="op">=</span> <span class="fl">3</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> nextval <span class="op">&lt;=</span> N <span class="op">÷</span> <span class="fl">2</span> <span class="co"># ÷ does integer division</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> primes[nextval] <span class="co"># Still in the list?</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>            primes[<span class="fl">2</span><span class="op">*</span>nextval<span class="op">:</span>nextval<span class="op">:</span>N] <span class="op">.=</span> <span class="cn">false</span> <span class="co"># Then remove all multiples</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        nextval <span class="op">+=</span> <span class="fl">1</span> <span class="co"># Start looking for next entry in list</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> !primes[nextval] <span class="op">&amp;&amp;</span> nextval <span class="op">&lt;=</span> N</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>            nextval <span class="op">+=</span> <span class="fl">1</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">end</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">end</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> primes</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> <span class="fl">2_000_000</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>primes <span class="op">=</span> <span class="fu">isodd</span>.(<span class="fl">1</span><span class="op">:</span>N)</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>idx <span class="op">=</span> <span class="fu">primesieve!</span>(primes)</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>primes <span class="op">=</span> (<span class="fl">1</span><span class="op">:</span>N)[idx]</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>startval <span class="op">=</span> <span class="fu">isodd</span>.(<span class="fl">1</span><span class="op">:</span>N)</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="pp">@btime</span> <span class="fu">primesieve!</span>(<span class="op">$</span>primes) setup<span class="op">=</span>(primes <span class="op">=</span> <span class="fu">copy</span>(startval))</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a><span class="co">#   5.469 ms (0 allocations: 0 bytes)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>So, with a very simple change, we eliminated the allocations and the code is now ~8% faster.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You will see some differences in how we benchmarked the second function. 1. We use a setup block to reinitialise the <code>primes</code> array for each repeat of the benchmarking 2. We <em>interpolate</em> the value of <code>primes</code> into the function call, by using <code>$primes</code> in the call.</p>
+<p>The latter is especially important when passing variables to a function you are benchmarking. Since <code>primes</code> is a global variable, Julia cannot do full optiisation of the code, as it must be able to handle any changes to <code>primes</code> that can cause it’s type to change. Benchmarking in the global scope is therefore not best practise. We get around this by passing the interpolated value of the variable, so Julia actually creates a constant value from the variable and passes that. This gives more accurate benchmarking results.</p>
+</div>
+</div>
 </section>
 </section>
 <section id="sorting-and-searching" class="level2">
 <h2 class="anchored" data-anchor-id="sorting-and-searching">Sorting and searching</h2>
 <p>Sorting and searching is an extremely common activity in coding. As a result, Julia has a rich set of built-in tools for this, so you do not have to build your own.</p>
-<p>The primary functions to call are <code>sort</code> (or <code>sort!</code> to modify in-place) and <code>sortperm</code> (and <code>sortperm!</code>), if you just want a permutation array, <code>I</code>, such that <code>A[I]</code> puts the entries of A in the correct order.</p>
+<p>The primary functions to call are <code>sort</code> (or <code>sort!</code> to modify in-place) and <code>sortperm</code> (and <code>sortperm!</code>), if you just want a permutation array, <code>p</code>, such that <code>A[p]</code> puts the entries of A in the correct order. This is another nice indexing trick in Julia!</p>
 <p>The function takes several inputs:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sort!</span>(v; alg<span class="op">::</span><span class="dt">Algorithm</span>=<span class="fu">defalg</span>(v), lt<span class="op">=</span>isless, by<span class="op">=</span>identity, rev<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">false</span>, order<span class="op">::</span><span class="dt">Ordering</span>=Forward)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sort!</span>(v; alg<span class="op">::</span><span class="dt">Algorithm</span>=<span class="fu">defalg</span>(v), lt<span class="op">=</span>isless, by<span class="op">=</span>identity, rev<span class="op">::</span><span class="dt">Bool</span>=<span class="cn">false</span>, order<span class="op">::</span><span class="dt">Ordering</span>=Forward)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Here, <code>v</code> is the vector to sort, <code>alg</code> can be one of <code>InsertionSort</code>, <code>QuickSort</code>, <code>PartialQuickSort(k)</code> or <code>MergeSort</code>, but you can also specify custom sorting algorithms by overloading the <code>defalg()</code> function for your array type.</p>
-<p>The <code>lt</code> parameters specifies the method used to determine if one entry in the array is less than another. The default method is to call Julia’s <code>isless()</code> function, but you can specify any custom function, as long as it meets the requirements specifed in the <a href="https://docs.julialang.org/en/v1/base/sort/">Julia documentation</a>:</p>
+<p>The <code>lt</code> (less than) parameter specifies the method used to determine if one entry in the array is less than another. The default method is to call Julia’s <code>isless()</code> function, but you can specify any custom function, as long as it meets the requirements specified in the <a href="https://docs.julialang.org/en/v1/base/sort/">Julia documentation</a>:</p>
 <p><code>by</code> specifies a function that is applied to the entries of <code>v</code> before they are sorted. The entries are sorted based on the results of this function for each entry. The default function, <code>identity()</code>, just returns the input value, so the array is sorted based on the values of the entries. You could however, sort values based on the return values of any function.</p>
 <p><code>rev</code> specifies whether the entries are sorted in increasing or decreasing order, based on the order specification given in <code>order</code>. Having both <code>rev</code> and <code>order</code> to specify the sequence in which results are ordered, is admittedly a little confusing, but is needed to allow alternative implementations for the <code>lt</code> function, that could include more options than <code>Forward</code> and <code>Reverse</code>.</p>
 <p>Many other Julia functions, such as searching, can take advantage of knowledge on whether the array has been sorted beforehand. You can check this for an arbitrary array (assuming you don’t sort it yourself) with the <code>issorted()</code> function.</p>
@@ -4375,6 +4472,62 @@ Note
 </section>
 <section id="arrays-of-structs-or-structs-of-arrays" class="level2">
 <h2 class="anchored" data-anchor-id="arrays-of-structs-or-structs-of-arrays">Arrays of structs or structs of arrays?</h2>
+<p>Sometimes it can be tricky to decide on the best data structures to store your data in. If, as an example, we were interested in saving coordinates of points (x, y and z), we could create a <code>struct</code> to store the three values and then have an <code>array</code> of these <code>structs</code> for the various data points.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Point{T}</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    x<span class="op">::</span><span class="dt">T</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    y<span class="op">::</span><span class="dt">T</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    z<span class="op">::</span><span class="dt">T</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>points <span class="op">=</span> [<span class="fu">Point</span>(<span class="fu">randn</span>(<span class="fl">3</span>)<span class="op">...</span>) for _ <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>]</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>points[<span class="fl">1</span>].x</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 0.36386577310109675</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>points[<span class="fl">2</span>].y</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 0.7899375459147395</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>points = [Point(randn(3)...) for _ in 1:100]</code> may require some explanation (or at least a reminder):</p>
+<p><code>randn(3)</code> returns and <code>array</code> of three normally distributed random numbers. The <em>constructor</em> function for the <code>Point</code> <code>struct</code> expects three inputs - the x, y and z values. The <code>...</code> is the <em>splatting</em> operator, which splits the array into the three parameters that the constructor expects.</p>
+<p>We use <code>_</code> as the loop variable in the <em>array comprehension</em> to explicitly indicate that this is a variable we are not going to care about and which can be discarded by the compiler.</p>
+</div>
+</div>
+<p>Sometimes however, we may just want to access all of the x-values, or all of the y-values. Having an <code>array</code> of the x-values and an <code>array</code> of the y-values would then be very useful. Instead of now looping through the <code>points</code> array, and extracting the <code>x</code> field values, we can use the <a href="https://juliaarrays.github.io/StructArrays.jl/stable/"><code>StructArrays</code></a> package.</p>
+<p>Using <code>StructArrays</code>, we would do the following:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">StructArrays</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="kw">struct</span> Point{T}</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    x<span class="op">::</span><span class="dt">T</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    y<span class="op">::</span><span class="dt">T</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    z<span class="op">::</span><span class="dt">T</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>points_sa <span class="op">=</span> <span class="fu">StructArray</span><span class="dt">{Point}</span>((<span class="fu">randn</span>(<span class="fl">100</span>), <span class="fu">randn</span>(<span class="fl">100</span>), <span class="fu">randn</span>(<span class="fl">100</span>)))</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 100-element StructArray(::Vector{Float64}, ::Vector{Float64}, ::Vector{Float64}) with eltype Point:</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co">#  Point{Float64}(0.2296170085088406, -0.754060138141318, -0.03293009940470027)</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="co">#  Point{Float64}(1.1490000593949594, -1.1958286478128815, -2.1977494726346016)</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  ⋮</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="co">#  Point{Float64}(-1.356570072198423, 0.2094973793724703, 0.5984836696889012)</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="co">#  Point{Float64}(0.3323952236779933, -0.01368437886905607, -1.3470011216406736)</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>points_sa[<span class="fl">1</span>]</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Point{Float64}(0.2296170085088406, -0.754060138141318, -0.03293009940470027)</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>points_sa.x</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 100-element Vector{Float64}:</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="co">#   0.2296170085088406</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="co">#   1.1490000593949594</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="co">#   ⋮</span></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="co">#  -1.356570072198423</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="co">#   0.3323952236779933</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This package can give immense flexibility at very little loss of efficiency.</p>
 
 
 </section>
@@ -4384,6 +4537,7 @@ Note
 
 <ol>
 <li id="fn1"><p>A predicate function is a function that returns <code>true</code> or <code>false</code> based on some specified conditions.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>The exclamation mark itself is just a note to the user - it makes no difference to the compiler. A function without an exclamation mark can mutate parameters, and a function with an exclamation mark could as easily not mutate.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

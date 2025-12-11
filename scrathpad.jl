@@ -75,3 +75,19 @@ startval = isodd.(1:N)
 @btime primesieve!($primes) setup=(primes = copy(startval))
 primes = (1:N)[idx]
 sum(primes)
+
+using StructArrays
+
+struct Point{T}
+    x::T
+    y::T
+    z::T
+end
+
+points = [Point(randn(3)...) for _ in 1:100]
+points[1].x
+points[2].y
+
+points_sa = StructArray{Point}((randn(100), randn(100), randn(100)))
+points_sa[1]
+points_sa.x

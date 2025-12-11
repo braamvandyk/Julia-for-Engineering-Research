@@ -1,5 +1,5 @@
 ---
-title: "Fun with Arrays"
+title: "More on Arrays"
 ---
 
 In the previous section, we discussed the basics of using arrays in Julia. In this section, we shall briefly look at a few ways to make working with arrays a little easier.
@@ -187,6 +187,7 @@ julia> A = rand(N, N)
  0.138703   0.308092   0.889499   0.257449    0.975605      0.826279   0.688673    0.894047   0.416685   0.23544
 
 function sum1(A)
+# Row-wise addition
     S = 0.0
     n, m = size(A)
     for i = 1:n, j=1:m
@@ -198,9 +199,10 @@ end
 # sum1 (generic function with 1 method)
 
 function sum2(A)
+# Column-wise addition
     S = 0.0
     n, m = size(A)
-    for j = 1:n, i=1:n
+    for j = 1:n, i=1:m
         S += A[i, j]
     end
 
@@ -209,6 +211,7 @@ end
 # sum2 (generic function with 1 method)
 
 function sum3(A)
+# Allow Julia to specify best indexing
     S = 0.0
     for i in eachindex(A)
         S += A[i]
@@ -309,7 +312,11 @@ end
 # 1.0000115001105e16
 ```
 
-This function allocates memory to hold the array (`buffer`), every time it is called. Here it is a smallish array, but in more complicated calculations, or when you call this function many times, these allocations add up quickly. We can avoid this repeated allocation by creating the array once, outside the function, and then passing it to the function. The function will then modify this block of memory - **mutate** in the jargon. We call this type of function a *mutating* function, and in Julia convention, indicate this to the user by adding an exclamation mark to the name.
+This function allocates memory to hold the array (`buffer`), every time it is called. Here it is a smallish array, but in more complicated calculations, or when you call this function many times, these allocations add up quickly.
+
+We can avoid this repeated allocation by creating the array once, outside the function, and then passing it to the function. The function will then modify this block of memory - **mutate** in the jargon. We call this type of function a *mutating* function, and in Julia convention, indicate this to the user by adding an exclamation mark to the name[^2].
+
+[^2]: The exclamation mark itself is just a note to the user - it makes no difference to the compiler. A function without an exclamation mark can mutate parameters, and a function with an exclamation mark could as easily not mutate.
 
 ```julia
 buffer = zeros(1000001)
@@ -384,7 +391,7 @@ using BenchmarkTools
 #   5.970 ms (7 allocations: 1.37 MiB)
 ```
 
-Most of the code above should be easy to follow. Perhaps one _trick_ worth explaining is the last line of the function:
+Most of the code above should be easy to follow. Perhaps one thing worth explaining is the last line of the function:
 
 `return (1:N)[primes]`
 
@@ -462,3 +469,60 @@ Many other Julia functions, such as searching, can take advantage of knowledge o
 Searching can then be done with `searchsorted()` or `searchsortedfirst()`. The former returns all indices in the array where the entries match the search criteria and the latter returns only the first (lowest index) entry that matches. The equivalent searching functions, where sorting is not assumed, are `findall()` and `findfirst()`.
 
 ## Arrays of structs or structs of arrays?
+Sometimes it can be tricky to decide on the best data structures to store your data in. If, as an example, we were interested in saving coordinates of points (x, y and z), we could create a `struct` to store the three values and then have an `array` of these `structs` for the various data points.
+
+```julia
+struct Point{T}
+    x::T
+    y::T
+    z::T
+end
+
+points = [Point(randn(3)...) for _ in 1:100]
+points[1].x
+# 0.36386577310109675
+points[2].y
+# 0.7899375459147395
+```
+:::{.callout-note}
+`points = [Point(randn(3)...) for _ in 1:100]` may require some explanation (or at least a reminder):
+
+`randn(3)` returns and `array` of three normally distributed random numbers. The *constructor* function for the `Point` `struct` expects three inputs - the x, y and z values. The `...` is the *splatting* operator, which splits the array into the three parameters that the constructor expects.
+
+We use `_` as the loop variable in the *array comprehension* to explicitly indicate that this is a variable we are not going to care about and which can be discarded by the compiler.
+:::
+
+Sometimes however, we may just want to access all of the x-values, or all of the y-values. Having an `array` of the x-values and an `array` of the y-values would then be very useful. Instead of now looping through the `points` array, and extracting the `x` field values, we can use the [`StructArrays`](https://juliaarrays.github.io/StructArrays.jl/stable/) package.
+
+Using `StructArrays`, we would do the following:
+
+```julia
+using StructArrays
+
+struct Point{T}
+    x::T
+    y::T
+    z::T
+end
+
+points_sa = StructArray{Point}((randn(100), randn(100), randn(100)))
+# 100-element StructArray(::Vector{Float64}, ::Vector{Float64}, ::Vector{Float64}) with eltype Point:
+#  Point{Float64}(0.2296170085088406, -0.754060138141318, -0.03293009940470027)
+#  Point{Float64}(1.1490000593949594, -1.1958286478128815, -2.1977494726346016)
+#  ⋮
+#  Point{Float64}(-1.356570072198423, 0.2094973793724703, 0.5984836696889012)
+#  Point{Float64}(0.3323952236779933, -0.01368437886905607, -1.3470011216406736)
+
+points_sa[1]
+# Point{Float64}(0.2296170085088406, -0.754060138141318, -0.03293009940470027)
+
+points_sa.x
+# 100-element Vector{Float64}:
+#   0.2296170085088406
+#   1.1490000593949594
+#   ⋮
+#  -1.356570072198423
+#   0.3323952236779933
+```
+
+This package can give immense flexibility at very little loss of efficiency.
