@@ -4453,7 +4453,7 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <p>You will see some differences in how we benchmarked the second function. 1. We use a setup block to reinitialise the <code>primes</code> array for each repeat of the benchmarking 2. We <em>interpolate</em> the value of <code>primes</code> into the function call, by using <code>$primes</code> in the call.</p>
-<p>The latter is especially important when passing variables to a function you are benchmarking. Since <code>primes</code> is a global variable, Julia cannot do full optiisation of the code, as it must be able to handle any changes to <code>primes</code> that can cause it’s type to change. Benchmarking in the global scope is therefore not best practise. We get around this by passing the interpolated value of the variable, so Julia actually creates a constant value from the variable and passes that. This gives more accurate benchmarking results.</p>
+<p>The latter is especially important when passing variables to a function you are benchmarking. Since <code>primes</code> is a global variable, Julia cannot do full optimization of the code, as it must be able to handle any changes to <code>primes</code> that can cause it’s type to change. Benchmarking in the global scope is therefore not best practice. We get around this by passing the interpolated value of the variable, so Julia actually creates a constant value from the variable and passes that. This gives more accurate benchmarking results.</p>
 </div>
 </div>
 </section>
@@ -4614,7 +4614,7 @@ Note
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/braamvandyk\.github\.io\/Julia-for-Engineering-Research\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

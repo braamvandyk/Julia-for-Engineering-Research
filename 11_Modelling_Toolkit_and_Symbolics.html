@@ -4226,8 +4226,20 @@ window.Quarto = {
 <li><strong>Catalyst</strong>: Provides tools for specifying reaction networks and kinetics</li>
 <li><strong>DataDrivenDiffEq</strong>: Automatic identifications of ODEs/DAEs from data</li>
 <li><strong>SymbolicRegression</strong>: Genetic programming to find equations from data</li>
-<li><strong>ReversePropagation</strong>: Source-to-source mode automatic differentiation</li>
 </ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>ModelingToolkit is developing rapidly, which is great in terms of new features being added all the time. Unfortunately this also means syntax improvements are happening all the time, so you may need to check the <a href="https://docs.sciml.ai/ModelingToolkit/stable/">documentation</a> from time to time to catch up with new developments and new syntax.</p>
+</div>
+</div>
 </section>
 <section id="using-symbolics" class="level2">
 <h2 class="anchored" data-anchor-id="using-symbolics">Using Symbolics</h2>
@@ -4285,7 +4297,7 @@ y &amp; 2 x y &amp; x^{2} y \\
 \right]
 \end{equation}
 \]</span></p>
-<p>So, we can do basic mathematics and calculus and make pretty equations for reports. What else can we do? Well, a whole lot, as it turns out. Symbolics is a full-featured CAS (Computer Algebra System). Whats more, since it is fully written in Julia, it interacts with the rest of Julia in a pretty seamless manner. Anything you would do with a Julia variable, you can also do with a symbolic (type <code>Num</code>) variable.</p>
+<p>So, we can do algebra and calculus and make pretty equations for reports. What else can we do? Well, a whole lot, as it turns out. Symbolics is a full-featured CAS (Computer Algebra System). Whats more, since it is fully written in Julia, it interacts with the rest of Julia in a pretty seamless manner. Anything you would do with a Julia variable, you can also do with a symbolic (type <code>Num</code>) variable.</p>
 <p>For example, we can call a normal, generic function:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(u) <span class="op">=</span> <span class="fl">2</span><span class="op">*</span>u[<span class="fl">1</span>] <span class="op">-</span> u[<span class="fl">2</span>]</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># f (generic function with 1 method)</span></span>
@@ -4377,7 +4389,7 @@ Note
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    z[<span class="fl">1</span>] <span class="op">=</span> u[<span class="fl">2</span>] <span class="op">+</span> u[<span class="fl">1</span>]<span class="op">^</span><span class="fl">2</span></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    z[<span class="fl">2</span>] <span class="op">=</span> u[<span class="fl">1</span>] <span class="op">+</span> u[<span class="fl">2</span>]<span class="op">^</span><span class="fl">2</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Both functions will do the same calculations, but <code>func1</code> returns the values, which requires allocating an array/tuple to store it in, while <code>func2!</code> mutates the first parameter to return the value. These are simply two version of the same function. The first is called an <em>out-of-place</em> function and the second, an <em>in-place</em> function. Sound familiar? We saw these in the chapter on differential equations.</p>
+<p>Both functions will do the same calculations, but <code>func1</code> returns the values, which may require allocating an array/tuple to store it in, while <code>func2!</code> mutates the first parameter to return the value. These are simply two version of the same function. The first is called an <em>out-of-place</em> function and the second, an <em>in-place</em> function. Sound familiar? We saw these in the chapter on differential equations.</p>
 <p>How do we use them? We need to tell Julia to evaluate the expression to generate the code:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>myf1 <span class="op">=</span> <span class="fu">eval</span>(f_expr[<span class="fl">1</span>])</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># #7 (generic function with 1 method)</span></span>
@@ -4614,7 +4626,7 @@ Note
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/braamvandyk\.github\.io\/Julia-for-Engineering-Research\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
