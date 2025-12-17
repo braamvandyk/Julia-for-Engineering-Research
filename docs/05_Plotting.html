@@ -4002,7 +4002,8 @@ window.Quarto = {
 };
 </script>
 
-<style type="text/css"></style>
+<style type="text/css">
+</style>
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -4428,7 +4429,7 @@ Note
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/braamvandyk\.github\.io\/Julia-for-Engineering-Research\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

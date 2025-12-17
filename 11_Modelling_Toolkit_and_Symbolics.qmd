@@ -14,7 +14,10 @@ In addition, there are several other packages that build on Symbolics:
 -   **Catalyst**: Provides tools for specifying reaction networks and kinetics
 -   **DataDrivenDiffEq**: Automatic identifications of ODEs/DAEs from data
 -   **SymbolicRegression**: Genetic programming to find equations from data
--   **ReversePropagation**: Source-to-source mode automatic differentiation
+
+::: {.callout-note}
+ModelingToolkit is developing rapidly, which is great in terms of new features being added all the time. Unfortunately this also means syntax improvements are happening all the time, so you may need to check the [documentation](https://docs.sciml.ai/ModelingToolkit/stable/) from time to time to catch up with new developments and new syntax.
+:::
 
 ## Using Symbolics
 
@@ -79,7 +82,7 @@ y & 2 x y & x^{2} y \\
 \end{equation}
 $$
 
-So, we can do basic mathematics and calculus and make pretty equations for reports. What else can we do? Well, a whole lot, as it turns out. Symbolics is a full-featured CAS (Computer Algebra System). Whats more, since it is fully written in Julia, it interacts with the rest of Julia in a pretty seamless manner. Anything you would do with a Julia variable, you can also do with a symbolic (type `Num`) variable.
+So, we can do algebra and calculus and make pretty equations for reports. What else can we do? Well, a whole lot, as it turns out. Symbolics is a full-featured CAS (Computer Algebra System). Whats more, since it is fully written in Julia, it interacts with the rest of Julia in a pretty seamless manner. Anything you would do with a Julia variable, you can also do with a symbolic (type `Num`) variable.
 
 For example, we can call a normal, generic function:
 
@@ -182,7 +185,7 @@ function func2!(z, u)
 end
 ```
 
-Both functions will do the same calculations, but `func1` returns the values, which requires allocating an array/tuple to store it in, while `func2!` mutates the first parameter to return the value. These are simply two version of the same function. The first is called an *out-of-place* function and the second, an *in-place* function. Sound familiar? We saw these in the chapter on differential equations.
+Both functions will do the same calculations, but `func1` returns the values, which may require allocating an array/tuple to store it in, while `func2!` mutates the first parameter to return the value. These are simply two version of the same function. The first is called an *out-of-place* function and the second, an *in-place* function. Sound familiar? We saw these in the chapter on differential equations.
 
 How do we use them? We need to tell Julia to evaluate the expression to generate the code:
 

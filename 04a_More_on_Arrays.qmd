@@ -440,7 +440,7 @@ You will see some differences in how we benchmarked the second function.
 1. We use a setup block to reinitialise the `primes` array for each repeat of the benchmarking
 2. We *interpolate* the value of `primes` into the function call, by using `$primes` in the call.
 
-The latter is especially important when passing variables to a function you are benchmarking. Since `primes` is a global variable, Julia cannot do full optiisation of the code, as it must be able to handle any changes to `primes` that can cause it's type to change. Benchmarking in the global scope is therefore not best practise. We get around this by passing the interpolated value of the variable, so Julia actually creates a constant value from the variable and passes that. This gives more accurate benchmarking results.
+The latter is especially important when passing variables to a function you are benchmarking. Since `primes` is a global variable, Julia cannot do full optimization of the code, as it must be able to handle any changes to `primes` that can cause it's type to change. Benchmarking in the global scope is therefore not best practice. We get around this by passing the interpolated value of the variable, so Julia actually creates a constant value from the variable and passes that. This gives more accurate benchmarking results.
 :::
 
 

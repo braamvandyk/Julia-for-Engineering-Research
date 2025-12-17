@@ -1,93 +1,28 @@
-using Plots
+using ModelingToolkit, DifferentialEquations, Plots
 
-f1(x, y) = x*sin(x) - y^2 * cos(y)
-f2(x, y) = x*cos(x) - y^2 * sin(y)
-x = range(0, 5, length=100)
-y = range(0, 3, length=50)
-z1 = @. f1(x', y)
-z2 = @. f2(x', y)
-contour(z1)
-contour!(z2)
+@parameters σ ρ β
+@variables t x(t) y(t) z(t)
+D = Differential(t)
 
+eqs = [D(D(x)) ~ σ * (y - x),
+    D(y) ~ x * (ρ - z) - y,
+    D(z) ~ x * y - β * z]
 
-surface(x, y, z1)
-contour!(x, y, z1)
+@named sys = ODESystem(eqs)
 
+sys = structural_simplify(sys)
 
+u0 = [D(x) => 2.0,
+    x => 1.0,
+    y => 0.0,
+    z => 0.0]
 
-N = 10
+p = [σ => 28.0,
+    ρ => 10.0,
+    β => 8 / 3]
 
-function primesieve(N=2_000_000)
-    # Create the list, setting even numbers to false already
-    primes = isodd.(1:N) # This allocates an array
-    primes[1] = false # Also exclude 1
-    primes[2] = true # And remember that 2 is prime!
+tspan = (0.0, 100.0)
+prob = ODEProblem(sys, u0, tspan, p, jac = true)
+sol = solve(prob, Tsit5())
 
-    # Start the sieve at 3
-    nextval = 3
-    while nextval <= N ÷ 2 # ÷ does integer division
-        if primes[nextval] # Still in the list?
-            primes[2*nextval:nextval:N] .= false # Then remove all multiples
-        end
-        nextval += 1 # Start looking for next entry in list
-        while !primes[nextval] && nextval <= N
-            nextval += 1
-        end
-    end
-
-    return (1:N)[primes] # This allocates an array
-end
-
-using BenchmarkTools
-@btime primesieve()
-
-function primesieve!(primes)
-    N = length(primes)
-    # Create the list, setting even numbers to false already
-    primes[1] = false # Exclude 1
-    primes[2] = true # And remember that 2 is prime!
-
-    # Start the sieve at 3
-    nextval = 3
-    while nextval <= N ÷ 2 # ÷ does integer division
-        if primes[nextval] # Still in the list?
-            primes[2*nextval:nextval:N] .= false # Then remove all multiples
-        end
-        nextval += 1 # Start looking for next entry in list
-        while !primes[nextval] && nextval <= N
-            nextval += 1
-        end
-    end
-
-    return primes
-end
-
-N = 2_000_000
-primes = isodd.(1:N)
-idx = primesieve!(primes)
-primes = (1:N)[idx]
-sum(primes)
-
-using BenchmarkTools
-N = 2_000_000
-
-startval = isodd.(1:N)
-@btime primesieve!($primes) setup=(primes = copy(startval))
-primes = (1:N)[idx]
-sum(primes)
-
-using StructArrays
-
-struct Point{T}
-    x::T
-    y::T
-    z::T
-end
-
-points = [Point(randn(3)...) for _ in 1:100]
-points[1].x
-points[2].y
-
-points_sa = StructArray{Point}((randn(100), randn(100), randn(100)))
-points_sa[1]
-points_sa.x
+plot(sol, idxs = (x, y))
